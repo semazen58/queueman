@@ -1,0 +1,8 @@
+#summary New to !QueueMan - Start Here
+#labels Featured
+#sidebar ManualTOC
+=!QueueMan Manual=
+
+Please read the pages below for details on the use and operation of !QueueMan
+
+If you are new to !QueueMan please read ManualStart to dive in, otherwise have a look at the pages below for details on specific features. 

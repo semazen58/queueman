@@ -1,0 +1,10 @@
+#summary Just a collection of screen shots
+
+= Activity Screens =
+<img src="http://images.webbmaster.org/QueueMan/Queue_Man_Tabs.png" width="200" />
+<img src="http://images.webbmaster.org/QueueMan/movie_detail_land.png" width="300" />
+
+<img src="http://images.webbmaster.org/QueueMan/search_titles.png" width="200" />
+<img src="http://images.webbmaster.org/QueueMan/settings_land.png" width="300" />
+
+<img src="http://images.webbmaster.org/QueueMan/add_movie_detail.png" width="200" />

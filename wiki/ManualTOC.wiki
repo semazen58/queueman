@@ -1,0 +1,6 @@
+#summary Table of Contents pane for Manual pages
+* [Manual]
+ * [ManualStart]
+ * [ManualQueueManagement]
+ * [ManualAddTitles]
+ * [ManualSettings]
