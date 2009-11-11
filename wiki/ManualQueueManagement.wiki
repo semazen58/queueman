@@ -30,6 +30,5 @@ To change the position of a movie, press and hold the movie, select "move to (To
 
 ==Adding new Movies==
 
-You can add new movies to your disc and instant queue by selecting Search Netflix from the options menu.
+You can add new movies to your disc and instant queue by selecting Search Netflix from the options menu. See ManualAddTitles 
 
-ManualAddTitles 
