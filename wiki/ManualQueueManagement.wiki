@@ -8,14 +8,9 @@ When !QueueMan first loads you will be presented with your Queue in its current 
 By default only the first 10 titles are downloaded. See ManualSettings to learn how you may adjust this value.
 
 From this screen you may do the following;
-==View Movie Details==
-
-To see details for any movie just tap the movie title once.
-
-The details screen will appear similar to that seen when searching titles, but you will not have the option to add the title.
 
 ==View Title Details==
-You can get more details on any title currently ion your queu by clicking the title.
+You can get more details on any title currently ion your queue by clicking the title.
 <p><img src="http://images.webbmaster.org/QueueMan/movie_detail_land.png" /> </p>
 
 
