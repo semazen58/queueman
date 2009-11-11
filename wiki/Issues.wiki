@@ -2,16 +2,22 @@
 #labels Featured
 = Submitting Issues =
 
-Before submitting any issues, please search existing ones.
+*Before submitting any issues, please [http://code.google.com/p/queueman/issues/advsearch search existing] issues.*
+
+== How to Submit an Issue ==
+
+Please follow these steps to submit a new ticket;
+  * [http://code.google.com/p/queueman/issues/entry Start a new Issue] 
+  * Choose template type (Enhancement, Defect, etc)
+  * Enter descriptive summary
+  * Provide details listed in template.
 
 = Voting for Issues =
 
 "+1" etc is *not required*. Simply star the ticket to increase its rank.
 
-= Details =
+[http://code.google.com/p/queueman/issues/list Browse all issues]
 
-Please follow these steps to submit a new ticket;
-* Start a new Issue 
-* Choose template type (Enhancement, Defect, etc)
-* Enter descriptive summary
-* Provide details listed in template.
+
+= See All Tickets =
+If you just want to [http://code.google.com/p/queueman/issues/list see all tickets] thats OK too.
