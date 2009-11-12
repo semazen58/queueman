@@ -19,5 +19,5 @@ Please follow these steps to submit a new ticket;
 [http://code.google.com/p/queueman/issues/list Browse all issues]
 
 
-= See All Tickets =
-If you just want to [http://code.google.com/p/queueman/issues/list see all tickets] thats OK too.
+= Ticket Reports =
+If you just want to [http://code.google.com/p/queueman/issues/grid see a ticket grid] that may be interesting.
