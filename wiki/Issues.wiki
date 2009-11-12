@@ -20,4 +20,4 @@ Please follow these steps to submit a new ticket;
 
 
 = Ticket Reports =
-[an=2&q=&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&sort=&x=priority&y=stars&cells=tiles&mode=grid Grid by Severity and Popularity]
+[http://code.google.com/p/queueman/issues/list?can=2&q=&colspec=ID+Type+Status+Priority+Milestone+Owner+Summary&sort=&x=priority&y=stars&cells=tiles&mode=grid Grid by Severity and Popularity]
