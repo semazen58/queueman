@@ -1,5 +1,5 @@
 #summary Table of Contents for Public pages
-* [Features]
+* [FeatureList]
 * [Manual]
  * [ManualStart]
  * [ManualQueueManagement]
