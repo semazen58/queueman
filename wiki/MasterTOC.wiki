@@ -1,0 +1,8 @@
+#summary Table of Contents for Public pages
+* [Features]
+* [Manual]
+ * [ManualStart]
+ * [ManualQueueManagement]
+ * [ManualAddTitles]
+ * [ManualSettings]
+* [ScreenShots]
