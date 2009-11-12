@@ -137,7 +137,7 @@ public class NetFlix {
 			// NetFlix.oaprovider.getResponseParameters().get("request_token");
 			// Log.d("NetFlix","Url:"+tmp)
 			result = Uri.parse(tmp + "&application_name=" + APPLICATION_NAME
-					+ "&oauth_consumer_key=wkrcvszhrpjawegk78gt449z");
+					+ "&oauth_consumer_key="+CONSUMER_KEY);
 
 			Log.i("oauth", "request token:"
 					+ result.getQueryParameter("oauth_token"));
