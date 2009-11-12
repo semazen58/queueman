@@ -1,14 +1,13 @@
 #sidebar MasterTOC
 
-= QueueMan Wiki Pages =
+= !QueueMan Wiki Pages =
 
-Welcome to QueueMan's Wiki.  You may search above, use the TOC to the left. Important messages will be shown below.
+Welcome to !QueueMan's Wiki.  You may search above, use the TOC to the left. Important messages will be shown below.
 
 
 = Important Messages =
 
 == Eclair Compatibility ==
-Unfortunately QueueMan's lazy developer hasn't gotten around to installing the 2.0 SDK and making the changes necessary for a version compatible with the latest SDK release.
+Unfortunately !QueueMan's lazy developer hasn't gotten around to installing the 2.0 SDK and making the changes necessary for a version compatible with the latest SDK release.
 
 Please be patient as he gets around to it, or try coaxing him with sweets or other incentives.
-
