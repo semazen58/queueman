@@ -6,3 +6,4 @@
    * [ManualAddTitles]
    * [ManualSettings]
   * [ScreenShots]
+  * [Promotional]
