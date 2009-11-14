@@ -406,7 +406,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			case SESSION_TITLE_ADDED:
 				sessionStatus=SESSION_ACTIVE;
 				redrawQueue();
-				Toast.makeText(this,R.string.message_added_title,Toast.LENGTH_LONG);
+				Toast.makeText(QueueMan.this,R.string.message_added_title,Toast.LENGTH_LONG);
 				break;
 			
 			default:
