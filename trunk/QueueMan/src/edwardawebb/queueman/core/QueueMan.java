@@ -43,7 +43,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TabHost.OnTabChangeListener;
 
 import com.flurry.android.FlurryAgent;
@@ -63,12 +62,14 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	/*
 	 * Settings name and keys for sticky values
 	 */
-	protected static final String PREFS_NAME = "FlixManAppSettings";
+	public static final String PREFS_NAME = "FlixManAppSettings";
 	protected static final String MEMBER_ID_KEY = "member_id";
 	protected static final String ACCESS_TOKEN_KEY = "token_id";
 	protected static final String ACCESS_TOKEN_SECRET_KEY = "token_secret_id";
 	protected static final String WATCH_INSTANT_KEY = "can_watch_instant_id";
 	protected static final String TITLE_COUNT_KEY = "titles_to_download_id";
+	protected static final String RT_KEY = "request_token";
+	protected static final String RTS_KEY = "request_token_secret_id";
 
 	/**
 	 * what is a user?
@@ -202,6 +203,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		public void run() {
 			// make changes in UI
 			dialog.dismiss();
+			QueueMan.this.finish();
 		}
 	};
 	final Runnable mBrowserCallFailed = new Runnable() {
@@ -670,6 +672,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			// make changes. All objects are from android.context.Context
 			SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 			SharedPreferences.Editor editor = settings.edit();
+			//clear out old request tokens... we have an access token now!
 			editor.clear();
 			// values
 			userId = netflix.getUserID();
@@ -707,6 +710,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				if (netflix.isOnline()) {
 					authUrl = netflix.getRequestLoginUri();
 					if (authUrl != null) {
+						//save the created Request Token and secret in case of QM being closed in the middle
+						saveRequestToken(netflix.getRT(),netflix.getRTS());
 						// now send user off to tell netflix were good peoples
 						try {
 							Intent i = new Intent(Intent.ACTION_VIEW, authUrl);
@@ -735,13 +740,38 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	}
 
+	protected void saveRequestToken(String rt, String rts) {
+		// TODO Auto-generated method stub
+		// Save user preferences. We need an Editor object to
+		// make changes. All objects are from android.context.Context
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.clear();
+		// values
+		editor.putString(RT_KEY, rt);
+		editor.putString(RTS_KEY, rts);
+		// commit
+		editor.commit();
+	}
+
+	/*
+	 * if queueman is closed, we can reinstantiate Netflix with request tokens
+	 */
+	protected void loadRequestToken() {
+		// TODO Auto-generated method stub
+		// Save user preferences. We need an Editor object to
+		// make changes. All objects are from android.context.Context
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		netflix = new NetFlix(settings.getString(RT_KEY, ""),settings.getString(RTS_KEY, ""));
+	}
+
 	protected void retrieveAccessToken(final String requestToken) {
 		// show custom dialog to let them know
 		showCustomDialog("Welcome Back",
 				"Grabbing Access Key  \n (A one time operation)");
 		FlurryAgent.onEvent("retrieveAccessToken");
 		if(netflix == null){
-			FlurryAgent.onError("ER:13", "Netflix Class was lost while Linking", "QueueMan");
+		 loadRequestToken();
 		}
 		Log.d("QueueMan", "Netflix Exists Still:" + netflix.toString());
 
