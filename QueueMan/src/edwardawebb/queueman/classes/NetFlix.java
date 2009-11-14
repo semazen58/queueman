@@ -27,6 +27,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import android.content.SharedPreferences;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -57,6 +58,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import edwardawebb.queueman.apikeys.ApiKeys;
@@ -119,7 +121,23 @@ public class NetFlix {
 
 		// need to call authenticate before this is usable
 	}
+	public NetFlix(String requestToken,String requestTokenSecret) {// OAuthConsumer oac, OAuthProvider oap
+		// maybe pass in authentication info
+		// NetFlix.oaconsumer = oac;
+		// NetFlix.oaprovider = oap;
+		NetFlix.oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
+				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
+		NetFlix.oaprovider = new DefaultOAuthProvider(oaconsumer,
+				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
+				AUTHORIZE_WEBSITE_URL);
 
+		NetFlix.oaconsumer.setTokenWithSecret(requestToken, requestTokenSecret);
+		// oaprovider.setOAuth10a(false);
+
+		// need to call authenticate before this is usable
+	}
+
+	
 	public Uri getRequestLoginUri() {
 		Uri result = null;
 
@@ -139,7 +157,9 @@ public class NetFlix {
 			// Log.d("NetFlix","Url:"+tmp)
 			result = Uri.parse(tmp + "&application_name=" + APPLICATION_NAME
 					+ "&oauth_consumer_key="+CONSUMER_KEY);
-
+			
+			
+			
 			Log.i("oauth", "request token:"
 					+ result.getQueryParameter("oauth_token"));
 			Log.i("oauth", "secret:"
@@ -863,4 +883,10 @@ public class NetFlix {
 		return result;
 	}
 
+	public String getRT(){
+		return NetFlix.oaconsumer.getToken();
+	}
+	public String getRTS(){
+		return NetFlix.oaconsumer.getTokenSecret();
+	}
 }
