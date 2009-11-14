@@ -73,9 +73,6 @@ public class Disc implements Serializable {
 		this.year = year;
 	}
 
-	public String toString() {
-		return shortTitle;
-	}
 
 	public String getId() {
 		return id;
@@ -129,4 +126,15 @@ public class Disc implements Serializable {
 		return availibilityText;
 	}
 
+	/*
+	 * used by array adapter to show movie title
+	 */
+	@Override
+	public String toString() {
+		if(isAvailable){
+			return shortTitle;
+		}else{
+			return "Saved - " + shortTitle;
+		}
+	}
 }

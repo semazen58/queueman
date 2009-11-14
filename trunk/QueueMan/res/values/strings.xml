@@ -13,4 +13,5 @@
 <string name="red">0xFF0000FF</string>
 <string name="app_name_powered">QueueMan - delivered by Netflix</string>
 <string name="noinstant">Sorry, but according to Netflix this user is not authorized for Instant Viewing</string>
+<string name="menu_license">About..</string>
 </resources>

@@ -78,7 +78,8 @@ import edwardawebb.queueman.handlers.UserHandler;
  */
 public class NetFlix {
 	private static final String APPLICATION_NAME = "QueueMan";
-	// TODO you will need to maske this class after chkecin out. 
+	// TODO you will need to make this class after chkecin out. 
+	// See issue # 3
 	// TODO !! NEVER check in the class, these need to remain private
 	private static final String CONSUMER_KEY = ApiKeys.getConsumerKey();
 	private static final String CONSUMER_SECRET = ApiKeys.getConsumerSecret();
@@ -99,7 +100,7 @@ public class NetFlix {
 	private static OAuthProvider oaprovider;
 
 	private static String oathAccessToken;
-	private static String userID;
+	private static String userID ;
 	private static String oathAccessTokenSecret;
 	private static String resultStatus;
 	public String lastResponseMessage = "none";
