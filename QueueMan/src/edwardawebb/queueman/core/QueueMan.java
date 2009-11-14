@@ -18,9 +18,7 @@
 package edwardawebb.queueman.core;
 
 import java.util.HashMap;
-import java.util.List;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.Intent;
@@ -30,22 +28,22 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RatingBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TabHost.OnTabChangeListener;
 
 import com.flurry.android.FlurryAgent;
@@ -60,7 +58,7 @@ import edwardawebb.queueman.classes.NetFlixQueue;
  *
  */
 public class QueueMan extends TabActivity implements OnItemClickListener,
-		OnTabChangeListener {
+		OnTabChangeListener, OnClickListener {
 
 	/*
 	 * Settings name and keys for sticky values
@@ -101,6 +99,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private static final int REFRESH_ID = 2;
 	private static final int SIGNOUT_ID = 3;
 	private static final int SETTINGS_ID = 4;
+	private static final int LICENSE_ID = 5;
 	/*
 	 * context menu item codes
 	 */
@@ -144,6 +143,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 	private static Dialog dialog;
 	private TabHost mTabHost;
+	private Button accept;
+	private Button decline;
 
 	private ListView mListView;
 
@@ -382,7 +383,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					loadQueue();
 				}else{
 					//total newbie, run the full course
-					retrieveRequestToken();
+					showLicenseDialog();
 				}
 				break;
 			case SESSION_ACCESS:
@@ -457,6 +458,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		menu.add(0, SEARCH_ID, 0, R.string.menu_search);
 		menu.add(0, REFRESH_ID, 0, R.string.menu_refresh);
 		menu.add(0, SETTINGS_ID, 0, R.string.menu_settings);
+		menu.add(0, LICENSE_ID, 0, R.string.menu_license);
 		return result;
 	}
 
@@ -484,9 +486,15 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		case SETTINGS_ID:
 			FlurryAgent.onEvent("Launching Settings");
 			// Start the activity whose result we want to retrieve. The
-			Intent mintent = new Intent(this,
-					edwardawebb.queueman.core.Settings.class);
-			startActivity(mintent);
+			startActivity(new Intent(this,
+					edwardawebb.queueman.core.Settings.class));
+
+			return true;
+		case LICENSE_ID:
+			FlurryAgent.onEvent("Launching License");
+			// Start the activity whose result we want to retrieve. The
+			startActivity( new Intent(this,
+					edwardawebb.queueman.core.ViewLicense.class));
 
 			return true;
 		}
@@ -657,26 +665,28 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	}
 
 	protected void saveSettings() {
-		// Save user preferences. We need an Editor object to
-		// make changes. All objects are from android.context.Context
-		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-		SharedPreferences.Editor editor = settings.edit();
-		editor.clear();
-		// values
-		userId = netflix.getUserID();
-		accessToken = netflix.getAccessToken();
-		accessTokenSecret = netflix.getAccessTokenSecret();
-		editor.putString(MEMBER_ID_KEY, netflix.getUserID());
-		editor.putString(ACCESS_TOKEN_KEY, netflix.getAccessToken());
-		editor.putString(ACCESS_TOKEN_SECRET_KEY, netflix
-				.getAccessTokenSecret());
-		editor.putBoolean(WATCH_INSTANT_KEY, canWatchInstant);
-		if (downloadCount == null) {
-			downloadCount = "10";
+		if(netflix != null && netflix.getUserID() != null){
+			// Save user preferences. We need an Editor object to
+			// make changes. All objects are from android.context.Context
+			SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+			SharedPreferences.Editor editor = settings.edit();
+			editor.clear();
+			// values
+			userId = netflix.getUserID();
+			accessToken = netflix.getAccessToken();
+			accessTokenSecret = netflix.getAccessTokenSecret();
+			editor.putString(MEMBER_ID_KEY, netflix.getUserID());
+			editor.putString(ACCESS_TOKEN_KEY, netflix.getAccessToken());
+			editor.putString(ACCESS_TOKEN_SECRET_KEY, netflix
+					.getAccessTokenSecret());
+			editor.putBoolean(WATCH_INSTANT_KEY, canWatchInstant);
+			if (downloadCount == null) {
+				downloadCount = "10";
+			}
+			editor.putString(TITLE_COUNT_KEY, downloadCount);
+			// commit
+			editor.commit();
 		}
-		editor.putString(TITLE_COUNT_KEY, downloadCount);
-		// commit
-		editor.commit();
 	}
 
 	private void retrieveRequestToken() {
@@ -730,6 +740,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		showCustomDialog("Welcome Back",
 				"Grabbing Access Key  \n (A one time operation)");
 		FlurryAgent.onEvent("retrieveAccessToken");
+		if(netflix == null){
+			FlurryAgent.onError("ER:13", "Netflix Class was lost while Linking", "QueueMan");
+		}
 		Log.d("QueueMan", "Netflix Exists Still:" + netflix.toString());
 
 		Thread t = new Thread() {
@@ -826,9 +839,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 						mHandler.post(mRedrawQueue);
 						break;
 					default:
+						boolean hasAccess = (netflix.getAccessToken()!=null);
+						boolean hasID = (netflix.getUserID()!=null);
 						FlurryAgent.onError("ER:72",
 								"Failed to Retrieve Queue - "
-										+ netflix.lastResponseMessage,
+										+ netflix.lastResponseMessage
+										+ "Has Access: "+ hasAccess
+										+ "Has ID: "+ hasID,
 								"QueueMan");
 						mHandler.post(mAbort72);
 					}
@@ -869,6 +886,27 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setImageResource(R.drawable.icon);
 
+		dialog.show();
+	}
+
+	private void showLicenseDialog() {
+		dialog = new Dialog(this);
+		dialog.setContentView(R.layout.license_dialog);
+		dialog.setTitle("License Agreement");
+		TextView text = (TextView) dialog.findViewById(R.id.text);
+		text.setText( "QueueMan -  Copyright (C) 2009 Edward A. Webb\n"
+			    + " This program comes with ABSOLUTELY NO WARRANTY. "
+			    + "This is free software, and you are welcome to redistribute it "
+			     + "under certain conditions."
+			     + "\n Please see \"About\" in the Menu for details"
+		);
+		ImageView image = (ImageView) dialog.findViewById(R.id.image);
+		image.setVisibility(View.GONE);
+		accept = (Button) dialog.findViewById(R.id.accept);
+		accept.setOnClickListener(this);
+		decline = (Button) dialog.findViewById(R.id.decline);
+		decline.setOnClickListener(this);
+		
 		dialog.show();
 	}
 
@@ -949,6 +987,16 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	public static void updateDownloadCount(String titleCount) {
 		// TODO Auto-generated method stub
 		downloadCount = titleCount;
+	}
+
+	public void onClick(View v) {
+		if(v == accept){
+			dialog.dismiss();
+			retrieveRequestToken();
+		}else if(v == decline){
+			this.finish();
+		}
+		
 	}
 
 	/*	*//***
