@@ -131,7 +131,7 @@ public class Disc implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		if(isAvailable){
+		if(availibilityText!=null && availibilityText.equals("available now")){
 			return shortTitle;
 		}else{
 			return "Saved - " + shortTitle;
