@@ -392,7 +392,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				//purge intent so we don't repeat this :)
 				getIntent().setData(null);
 				//retrive handlers will set sessions status and call queue, or report error
-				retrieveAccessToken(rt);
+								retrieveAccessToken(rt);
 				
 				break;
 				
