@@ -7,3 +7,4 @@
    * [ManualSettings]
   * [ScreenShots]
   * [Promotional]
+  * [Icon]
