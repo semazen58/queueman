@@ -1,4 +1,5 @@
 #summary Promote QUeueman elsewhere
+#sidebar MasterTOC
 
 = !QueueMan  Just loves the Spotlight =
 Occasionally our little android mascot may add links to various sites where he feels promotion is in order.
