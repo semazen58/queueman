@@ -1,0 +1,23 @@
+#summary Vote for QueueMan's Icon
+#labels Featured,UserInterface
+
+= Introduction =
+
+Alexis Gonzalez recently suggested this new icon for QueueMan
+
+
+<img src="http://images.webbmaster.org/QueueMan/redQueueMan_icon.png" />
+
+
+And I have to admit I like it.
+
+But in the spirit of collaborative software, I am opening this up to a vote.
+
+If you like the new icon, vote here.
+If you want to keep the old one, vote here.
+
+Finally, if you think you can design a totally boss icon, than go for it! just email me ot post a ticket with your result.
+
+Thanks to all who participate.
+
+
