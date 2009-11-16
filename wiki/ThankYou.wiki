@@ -1,5 +1,6 @@
 #summary Roll credits!
 #labels Featured
+#sidebar MasterTOC
 = Thanks =
 
 There are some people who deserve recognition for going above and beyond in their contributions or efforts to make !QueueMan better.
