@@ -1,4 +1,9 @@
-#summary GEt people to rank QUeueman elsewhere
+#summary Promote QUeueman elsewhere
 
-= Now in Netflix App Gallery!  =
-Please rank QueueMan at [http://www.netflix.com/AppDisplay?id=2167&st=at&pn=1&lnkctr=apgl-it-2167]
+= !QueueMan  Just loves the Spotlight =
+Occasionally our little android mascot may add links to various sites where he feels promotion is in order.
+
+Please be courteous to his ego, and boost his awareness.
+
+== Now in Netflix App Gallery! ==
+Please rank !QueueMan at [http://www.netflix.com/AppDisplay?id=2167&st=at&pn=1&lnkctr=apgl-it-2167]
