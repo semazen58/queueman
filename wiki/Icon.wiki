@@ -22,7 +22,7 @@ You can see it while using !QueueMan, and in the upper left of this screen.
 *In the spirit of collaborative software, I am opening this up to a vote.*
 
   * If you like the new icon, [http://code.google.com/p/queueman/issues/detail?id=13 vote here].
-  * If you want to keep the old one, [http://code.google.com/p/queueman/issues/detail?id=13 vote here ].
+  * If you want to keep the old one, [http://code.google.com/p/queueman/issues/detail?id=14 vote here ].
 
 Finally, if you think you can design a totally boss icon, than go for it! just email me or post a ticket with your result.
 
