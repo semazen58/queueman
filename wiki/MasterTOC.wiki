@@ -6,5 +6,6 @@
    * [ManualAddTitles]
    * [ManualSettings]
   * [ScreenShots]
+  * [ThankYou]
   * [Promotional]
-  * [Icon]
+  * [Icon Icon Vote]
