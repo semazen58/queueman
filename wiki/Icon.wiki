@@ -1,5 +1,6 @@
 #summary Vote for QueueMan's Icon
 #labels Featured,UserInterface
+#sidebar MasterTOC
 
 = Introduction =
 
