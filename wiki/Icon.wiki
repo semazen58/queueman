@@ -3,21 +3,27 @@
 
 = Introduction =
 
-Alexis Gonzalez recently suggested this new icon for QueueMan
+I am not a graphic designer ( I know you are all shocked...) luckily I am getting some help!
+
+== New Icon Design ==
+Alexis Gonzalez recently suggested this new icon for !QueueMan
 
 
-<img src="http://images.webbmaster.org/QueueMan/redQueueMan_icon.png" />
+<img src="http://images.webbmaster.org/QueueMan/redQueueMan_icon.png" width="80"/>
 
 
 And I have to admit I like it.
 
-But in the spirit of collaborative software, I am opening this up to a vote.
+== Old Icon Design ==
+You can see it while using !QueueMan, and in the upper left of this screen.
 
-If you like the new icon, vote here.
-If you want to keep the old one, vote here.
+= Voting =
 
-Finally, if you think you can design a totally boss icon, than go for it! just email me ot post a ticket with your result.
+*In the spirit of collaborative software, I am opening this up to a vote.*
 
-Thanks to all who participate.
+  * If you like the new icon, [#13 vote here].
+  * If you want to keep the old one, [#14 vote here ].
 
+Finally, if you think you can design a totally boss icon, than go for it! just email me or post a ticket with your result.
 
+*Thanks to all who participate.*
