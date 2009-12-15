@@ -139,4 +139,14 @@ public class Disc implements Serializable {
 			return "Saved - " + shortTitle;
 		}
 	}
+
+	
+	public boolean equals(Disc disc) {
+		return (this.id.equals(disc.id));
+	}
+	
+	@Override
+	public int hashCode(){
+		return id.hashCode();
+	}
 }
