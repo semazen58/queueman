@@ -26,7 +26,8 @@ public class NetFlixQueue {
 	private String etag;
 	public static final int QUEUE_TYPE_DISC = 2;
 	public static final int QUEUE_TYPE_INSTANT = 3;
-	protected static final int QUEUE_TYPE_SEARCH = 4;
+	public static final int QUEUE_TYPE_SEARCH = 4;
+	public static final int QUEUE_TYPE_RECOMMEND = 5;
 
 	// A linked list gives you random access (implements List) and also
 	// implements Queue
@@ -79,6 +80,9 @@ public class NetFlixQueue {
 	}
 
 	public void add(Disc movie) {
+		if(discs.contains(movie)){
+			discs.remove(movie);
+		}
 		discs.add(movie);
 	}
 
@@ -89,6 +93,9 @@ public class NetFlixQueue {
 	 * @param movie
 	 */
 	public void add(int position, Disc movie) {
+		if(discs.contains(movie)){
+			discs.remove(movie);
+		}
 		if (position >= 1) {
 			discs.add(position - 1, movie);
 		} else {
@@ -124,4 +131,5 @@ public class NetFlixQueue {
 		discs.clear();
 
 	}
+	
 }

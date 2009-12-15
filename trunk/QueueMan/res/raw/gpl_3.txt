@@ -1,26 +1,29 @@
-    QueueMan - Android application for Netflix subscribers.
-    Copyright (C) 2009 Edward A. Webb
+QueueMan - Android application for Netflix subscribers.
+Copyright (C) 2009 Edward A. Webb
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License.
+	Comments? Issues?  
+Please visit <a href="http://code.google.com/p/queueman">http://code.google.com/p/queueman</a>
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-	( The GNU General Public License is included below )
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+( The GNU General Public License is included below )
 
 
 ------------
 
 
-                    GNU GENERAL PUBLIC LICENSE
-                       Version 3, 29 June 2007
+            GNU GENERAL PUBLIC LICENSE
+               Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
  Everyone is permitted to copy and distribute verbatim copies

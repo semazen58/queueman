@@ -24,6 +24,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -131,6 +132,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 	private static final int TAB_DISC = 0;
 	private static final int TAB_INSTANT = 1;
+	private static final int TAB_RECOMMEND = 2;
 	private static int queueType = NetFlixQueue.QUEUE_TYPE_DISC;
 
 	/*
@@ -146,6 +148,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private TabHost mTabHost;
 	private Button accept;
 	private Button decline;
+	private Button about;
 
 	private ListView mListView;
 
@@ -234,7 +237,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			TextView text = (TextView) dialog.findViewById(R.id.text);
 			text.setText("Sorry, unable to connect with NetFlix");
 			ImageView image = (ImageView) dialog.findViewById(R.id.image);
-			image.setImageResource(R.drawable.icon);
+			image.setImageResource(R.drawable.red_icon);
 
 			dialog.show();
 		}
@@ -253,7 +256,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			text
 					.setText("Sorry, I was unable to cadd the title to your queue.");
 			ImageView image = (ImageView) dialog.findViewById(R.id.image);
-			image.setImageResource(R.drawable.icon);
+			image.setImageResource(R.drawable.red_icon);
 
 			dialog.show();
 		}
@@ -273,7 +276,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			text
 					.setText("Sorry, but the action failed. Please try refreshing the Queue\n(Menu > Refresh)\n\npress back to close this window.");
 			ImageView image = (ImageView) dialog.findViewById(R.id.image);
-			image.setImageResource(R.drawable.icon);
+			image.setImageResource(R.drawable.red_icon);
 
 			dialog.show();
 		}
@@ -294,7 +297,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			text
 					.setText("We were not able to download your titles. Please try again later. if the problem persists, please notify the developer.");
 			ImageView image = (ImageView) dialog.findViewById(R.id.image);
-			image.setImageResource(R.drawable.icon);
+			image.setImageResource(R.drawable.red_icon);
 
 			dialog.show();
 
@@ -349,10 +352,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		setContentView(R.layout.queue_man);
 		mTabHost = getTabHost();
 		mListView = (ListView) findViewById(R.id.discqueue);
-		mTabHost.addTab(mTabHost.newTabSpec("discqueue").setIndicator("Netflix\nDiscs")
-				.setContent(R.id.discqueue));
-		mTabHost.addTab(mTabHost.newTabSpec("instantqueue").setIndicator(
-				"Netflix\nInstant").setContent(R.id.instantqueue));
+		mTabHost.addTab(mTabHost.newTabSpec("discqueue").setIndicator("Netflix\nDiscs",getResources().getDrawable(R.drawable.cd)).setContent(R.id.discqueue));
+		mTabHost.addTab(mTabHost.newTabSpec("instantqueue").setIndicator("Netflix\nInstant",getResources().getDrawable(R.drawable.instant2)).setContent(R.id.instantqueue));
+		mTabHost.addTab(mTabHost.newTabSpec("recommendations").setIndicator("Recommendations",getResources().getDrawable(R.drawable.heart)).setContent(R.id.recommendqueue));
 		mTabHost.setOnTabChangedListener(this);
 		// set current defaults
 		mTabHost.setCurrentTab(TAB_DISC);
@@ -438,13 +440,22 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	// Listen for results from search screen
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// See which child activity is calling us back.
+		Disc disc=null;
+		int queueType=NetFlixQueue.QUEUE_TYPE_DISC;
 		switch (resultCode) {
 		case SEARCH_MOVIES:
 			//they were searchin and found something they like, A
 			sessionStatus=SESSION_TITLE_ADDED;
-			Disc disc = (Disc) data.getSerializableExtra("Disc");
-			int queueType = data.getIntExtra(ACTION_KEY, (int) 0);
+			disc = (Disc) data.getSerializableExtra("Disc");
+			queueType = data.getIntExtra(ACTION_KEY, (int) 0);
 			addNewDisc(disc, queueType);
+			break;
+		case QueueSearch.ADD_MOVIES:
+			sessionStatus=SESSION_TITLE_ADDED;
+			disc = (Disc) data.getSerializableExtra("Disc");
+			queueType = data.getIntExtra(ACTION_KEY, (int) 0);
+			addNewDisc(disc, queueType);
+			break;
 		default:
 			break;
 		}
@@ -457,10 +468,14 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
-		menu.add(0, SEARCH_ID, 0, R.string.menu_search);
-		menu.add(0, REFRESH_ID, 0, R.string.menu_refresh);
-		menu.add(0, SETTINGS_ID, 0, R.string.menu_settings);
-		menu.add(0, LICENSE_ID, 0, R.string.menu_license);
+		menu.add(0, SEARCH_ID, 0, R.string.menu_search)
+			.setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, REFRESH_ID, 0, R.string.menu_refresh)
+			.setIcon(android.R.drawable.ic_menu_recent_history);
+		menu.add(0, SETTINGS_ID, 0, R.string.menu_settings)
+			.setIcon(android.R.drawable.ic_menu_preferences);
+		menu.add(0, LICENSE_ID, 0, R.string.menu_license)
+			.setIcon(android.R.drawable.ic_menu_info_details);
 		return result;
 	}
 
@@ -468,7 +483,11 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		switch (item.getItemId()) {
 		case REFRESH_ID:
 			netflix.purgeQueue(queueType);
-			loadQueue();
+			if(queueType == NetFlixQueue.QUEUE_TYPE_RECOMMEND){
+				loadRecommendations();
+			}else{			
+				loadQueue();
+				}
 			return true;
 		case SEARCH_ID:
 			FlurryAgent.onEvent("Launching Search");
@@ -507,6 +526,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
 		Disc disc = null;
+		Intent intent = new Intent(this,
+				edwardawebb.queueman.core.MovieDetails.class);
+		Bundle b = new Bundle();
+		
 		switch (mTabHost.getCurrentTab()) {
 		case TAB_INSTANT:
 			disc = NetFlix.instantQueue.getDiscs().get(position);
@@ -514,15 +537,20 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		case TAB_DISC:
 			disc = NetFlix.discQueue.getDiscs().get(position);
 			break;
+		case TAB_RECOMMEND:
+			disc = NetFlix.recomemendedQueue.getDiscs().get(position);
+			intent.putExtra(QueueMan.ACTION_KEY, QueueMan.ACTION_ADD);
+			break;
 		}
+		//@TODO
 		netflix.getTitleState(disc.getId());
-		Intent intent = new Intent(this,
-				edwardawebb.queueman.core.MovieDetails.class);
-		Bundle b = new Bundle();
 		b.putSerializable("Disc", disc);
-
 		intent.putExtras(b);
-		startActivity(intent);
+		if(mTabHost.getCurrentTab() == TAB_RECOMMEND){
+			startActivityForResult(intent, QueueSearch.ADD_MOVIES);
+		}else{
+			startActivity(intent);
+		}
 	}
 
 	/*
@@ -816,6 +844,15 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					android.R.layout.simple_list_item_1, NetFlix.instantQueue
 							.getDiscs()));
 			break;
+		case TAB_RECOMMEND:
+			mListView = (ListView) findViewById(R.id.recommendqueue);
+			// @ TODO decide best layout.
+			// mListView.setAdapter(new IconicAdapter(this,
+			// NetFlix.instantQueue.getDiscs()));
+			mListView.setAdapter(new ArrayAdapter(this,
+					android.R.layout.simple_list_item_1, NetFlix.recomemendedQueue
+							.getDiscs()));
+			break;
 		}
 
 		mListView.setTextFilterEnabled(true);
@@ -852,7 +889,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		}
 		text.setText("Patience is a virtue" + message);
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
-		image.setImageResource(R.drawable.icon);
+		image.setImageResource(R.drawable.red_icon);
 		// show message
 		dialog.show();
 
@@ -914,7 +951,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		TextView text = (TextView) dialog.findViewById(R.id.text);
 		text.setText(message);
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
-		image.setImageResource(R.drawable.icon);
+		image.setImageResource(R.drawable.red_icon);
 
 		dialog.show();
 	}
@@ -924,18 +961,15 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		dialog.setContentView(R.layout.license_dialog);
 		dialog.setTitle("License Agreement");
 		TextView text = (TextView) dialog.findViewById(R.id.text);
-		text.setText( "QueueMan -  Copyright (C) 2009 Edward A. Webb\n"
-			    + " This program comes with ABSOLUTELY NO WARRANTY. "
-			    + "This is free software, and you are welcome to redistribute it "
-			     + "under certain conditions."
-			     + "\n Please see \"About\" in the Menu for details"
-		);
+		text.setText(R.string.dialog_license_start);
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setVisibility(View.GONE);
 		accept = (Button) dialog.findViewById(R.id.accept);
 		accept.setOnClickListener(this);
 		decline = (Button) dialog.findViewById(R.id.decline);
 		decline.setOnClickListener(this);
+		about = (Button) dialog.findViewById(R.id.about);
+		about.setOnClickListener(this);
 		
 		dialog.show();
 	}
@@ -996,6 +1030,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			} else if (mTabHost.getCurrentTab() == TAB_DISC) {
 				queueType = NetFlixQueue.QUEUE_TYPE_DISC;
 				loadQueue();
+			} else if (mTabHost.getCurrentTab() == TAB_RECOMMEND) {
+				queueType = NetFlixQueue.QUEUE_TYPE_RECOMMEND;
+				loadRecommendations();
 			}
 		}
 	}
@@ -1025,46 +1062,76 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			retrieveRequestToken();
 		}else if(v == decline){
 			this.finish();
+		}else if(v == about){
+			startActivity( new Intent(this,
+					edwardawebb.queueman.core.ViewLicense.class));
 		}
 		
 	}
-
-	/*	*//***
-	 * Make the list rows a little more attarctive
-	 * 
+	
+	protected void loadRecommendations(){
+		 HashMap<String, String> parameters = new HashMap<String, String>();
+	 		parameters.put("Queue Type:", "Recommendations");
+	 		FlurryAgent.onEvent("loadRecommendations", parameters);
+	 		// show custom dialog to let them know
+	 		dialog = new Dialog(this);
+	 		dialog.setContentView(R.layout.custom_dialog);
+	 		dialog.setTitle("Loading Recommendations");
+	 		TextView text = (TextView) dialog.findViewById(R.id.text);
+	 		String message = "\nLet's see what Netflix thinks you'll like...";
+	 		
+	 		text.setText("Patience is a virtue" + message);
+	 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
+	 		image.setImageResource(R.drawable.red_icon);
+	 		// show message
+	 		dialog.show();
+		new DownloadRecommendations().execute();
+	}
+	/***
+	 * Manage ASync Tasks the Android way
 	 * @author eddie
-	 * 
+	 *
 	 */
-	/*
-	 * class IconicAdapter extends ArrayAdapter<Disc>{ Activity context;
-	 * List<Disc> items; IconicAdapter(Activity context,List<Disc> items){ //@
-	 * TODO changing layotu type? adjust layout here
-	 * super(context,R.layout.fancy_list,items); this.context=context;
-	 * this.items=items; }
-	 * 
-	 * public View getView(int position, View convertView, ViewGroup parent){
-	 * View row = convertView; RatingRowWrapper wrapper= null;
-	 * 
-	 * if(row == null){ LayoutInflater inflater=context.getLayoutInflater();
-	 * 
-	 * //@ TODO And here row = inflater.inflate(R.layout.fancy_list, null);
-	 * wrapper= new RatingRowWrapper(row); }else{
-	 * wrapper=(RatingRowWrapper)row.getTag(); }
-	 * 
-	 * 
-	 * Disc disc= (Disc) items.get(position);
-	 * wrapper.getLabel().setText(disc.toString());
-	 * 
-	 * wrapper.getPosition().setText(""+(position+1)); RatingBar
-	 * rb=(RatingBar)wrapper.getStars(); rb.setStepSize(0.1F); rb.setMax(5);
-	 * rb.setRating(disc.getRating().floatValue()); rb.setFocusable(false);
-	 * 
-	 * return (row);
-	 * 
-	 * }
-	 * 
-	 * 
-	 * }
-	 */
+	 private class DownloadRecommendations extends AsyncTask<Void, Integer, Integer> {
+	     protected Integer doInBackground(Void... arg0) {
+	         int result = 900;
+	       
+			if (netflix.isOnline()) {
+				// get queue will connect to neflix and resave the currentQ
+				// vairable
+				result = netflix.getRecommendations(downloadCount);
+				switch (result) {
+				case 200:
+				case 201:
+				default:
+					boolean hasAccess = (netflix.getAccessToken()!=null);
+					boolean hasID = (netflix.getUserID()!=null);
+					FlurryAgent.onError("ER:91",
+							"Failed to Retrieve Recommendations - "
+									+ netflix.lastResponseMessage
+									+ "Has Access: "+ hasAccess
+									+ "Has ID: "+ hasID,
+							"QueueMan");
+				}
+
+			} else {
+				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
+				result=901;
+			} 	
+	         
+	         return result;
+	     }
+
+	     protected void onProgressUpdate(Integer... progress) {
+	        //dont have indcators yet
+	     }
+
+	     protected void onPostExecute(Integer result) {
+	        dialog.dismiss();
+	        redrawQueue();
+	     }
+
+	 }
+
 
 }

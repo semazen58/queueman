@@ -6,6 +6,7 @@ import java.io.InputStream;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -29,6 +30,7 @@ public class ViewLicense extends Activity {
 			byte[] reader = new byte[is.available()];
 			while (is.read(reader) != -1) {
 			}
+			//this.readOutput.setText(Html.fromHtml(Html.toHtml(new String(reader))));
 			this.readOutput.setText(new String(reader));
 		} catch (IOException e) {
 			Log.e(LOGTAG, e.getMessage(), e);

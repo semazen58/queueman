@@ -14,4 +14,8 @@
 <string name="app_name_powered">QueueMan - delivered by Netflix</string>
 <string name="noinstant">Sorry, but according to Netflix this user is not authorized for Instant Viewing</string>
 <string name="menu_license">About..</string>
+<string name="dialog_license_start">QueueMan\nCopyright (C) 2009 Edward A. Webb\n
+			     This program is released under the GPL v3 License. \n\nPlease read the license terms by clicking 'Read License'.
+			     </string>
+<string name="dialog_accept">I agree</string>
 </resources>

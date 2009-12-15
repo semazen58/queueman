@@ -16,5 +16,6 @@
 	             
 	<Button android:text="Accept" android:id="@+id/accept" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 	<Button android:text="Decline" android:id="@+id/decline" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+	<Button android:text="Read License" android:id="@+id/about" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
 	</LinearLayout>
 </LinearLayout>

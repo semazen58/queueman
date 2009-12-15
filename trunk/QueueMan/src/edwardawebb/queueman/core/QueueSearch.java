@@ -170,9 +170,8 @@ public class QueueSearch extends Activity {
 		case ADD_MOVIES:
 			QueueSearch.this.setResult(QueueMan.SEARCH_MOVIES, data);
 			finish();
-
-		default:
 			break;
+		default:
 		}
 	}
 
