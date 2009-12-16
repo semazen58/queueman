@@ -6,6 +6,6 @@
    * [ManualAddTitles]
    * [ManualSettings]
   * [ScreenShots]
-  * [Installation]
-  * [Credits]
+  * [Installing]
+  * [ThankYou Credits]
   * [Promotional]
