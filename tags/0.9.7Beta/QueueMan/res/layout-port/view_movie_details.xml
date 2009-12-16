@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+	<RelativeLayout android:id="@+id/topsection"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<ImageView android:id="@+id/boxart" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="20dip"
+			android:layout_marginRight="20dip"
+			android:layout_marginLeft="20dip" 
+			android:src="@drawable/red_icon" />
+
+
+		<TextView android:id="@+id/mtitle" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_toRightOf="@id/boxart"
+			android:layout_marginTop="10dip"
+			android:textSize="30sp"  android:text="Jumanji" />
+			
+		<TextView android:id="@+id/myear" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_toRightOf="@id/boxart"
+			android:layout_marginTop="10dip"
+			android:textSize="30sp"  
+			android:layout_below="@id/mtitle"
+			android:text="1993" />
+			
+		<RatingBar
+		 android:id="@+id/RatingBar01"
+		  android:layout_marginRight="20sp"
+		  android:layout_width="wrap_content"
+		  android:layout_height="wrap_content"
+		   android:layout_below="@+id/myear"
+		   android:layout_toRightOf="@+id/boxart"
+		   style="?android:attr/ratingBarStyleSmall"/>
+	</RelativeLayout>
+	
+
+	
+
+<ScrollView android:layout_width="fill_parent" 
+android:layout_below="@id/topsection" 
+android:id="@+id/scroller" 
+ android:layout_height="wrap_content">
+<TextView android:id="@+id/synopsis" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" 
+		android:layout_marginTop="10dip"
+		android:paddingLeft="10dip"
+		android:text="" />
+</ScrollView>
+		
+		<TextView android:id="@+id/netflix_branding" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_below="@id/scroller"
+			android:gravity="bottom"
+			android:layout_marginTop="10dip"
+			android:textSize="10sp"  android:text="Delivered by Netflix" />
+</RelativeLayout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+
+	<TextView android:id="@+id/mtitle" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginTop="10dip"
+		android:layout_marginLeft="10dip" android:layout_centerHorizontal="true"
+		android:textSize="30sp" android:text="Jumanji" />
+	<RelativeLayout android:id="@+id/leftsection"
+		android:layout_below="@id/mtitle" android:layout_width="wrap_content"
+		android:layout_height="fill_parent">
+		<ImageView android:id="@+id/boxart" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginTop="10dip"
+			android:layout_marginRight="20dip" android:layout_marginLeft="10dip"
+			android:src="@drawable/red_icon" />
+
+
+		<TextView android:id="@+id/myear" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginTop="10dip"
+			android:layout_marginLeft="10dip" android:textSize="30sp"
+			android:layout_below="@id/boxart" android:text="1993" />
+
+		<RatingBar android:id="@+id/RatingBar01"
+			android:layout_marginRight="20sp" android:layout_width="wrap_content"
+			android:layout_marginLeft="10dip" android:layout_height="wrap_content"
+			android:layout_below="@+id/myear" style="?android:attr/ratingBarStyleSmall" />
+
+
+
+		<TextView android:id="@+id/Formats" android:text="Availability: "
+			android:layout_width="wrap_content" android:layout_marginLeft="10dip"
+			android:layout_below="@+id/RatingBar01"
+			android:layout_height="wrap_content" />
+
+	</RelativeLayout>
+
+	<ScrollView android:layout_width="wrap_content"
+		 android:id="@+id/ScrollView01"
+		android:layout_toRightOf="@id/leftsection" 
+		android:layout_below="@id/mtitle"
+			android:layout_height="wrap_content">
+		<RelativeLayout android:id="@+id/rightsection"
+			android:layout_width="wrap_content" android:layout_height="fill_parent">
+			<TextView android:id="@+id/synopsis" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginTop="10dip"
+				android:layout_marginRight="10dip" android:text="Unable to load Title Synopsis" />
+
+			<RadioGroup android:id="@+id/add_options"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:layout_below="@id/synopsis">
+
+				<RadioButton android:id="@+id/radio_top"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Add to Top of Disc Queue" />
+
+				<RadioButton android:id="@+id/radio_instant"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:text="Add to Instant Queue" />
+			</RadioGroup>
+			<Button android:id="@+id/add_movie" android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_centerHorizontal="true" android:layout_below="@id/add_options"
+				android:layout_marginBottom="5sp" android:layout_marginTop="5sp"
+				android:text="Add" />
+			<TextView android:id="@+id/netflix_branding"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:layout_below="@id/add_movie" android:gravity="bottom"
+				android:layout_marginTop="10dip" android:textSize="10sp"
+				android:text="Delivered by Netflix" />
+		</RelativeLayout>
+	</ScrollView>
+
+</RelativeLayout>
