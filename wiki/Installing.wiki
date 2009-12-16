@@ -1,0 +1,21 @@
+#labels Featured
+#sidebar MasterTOC
+= Installation =
+
+There are a few ways to install QueueMan. Most users will use the Android Market to install. If your looking to download and try one of the pre-releases, you'll need the SDK tools provided by Google.
+----
+
+= Market Installation =
+
+
+= Manual Installation = 
+
+Browse to your SDK tools;
+{{{
+  $ cd ~/android-sdk/tools
+}}}
+
+Push the install using adb
+{{{
+  $ ./adb install ~/Downloads/queueman...apk
+}}}
