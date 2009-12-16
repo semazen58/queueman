@@ -7,6 +7,10 @@ There are a few ways to install QueueMan. Most users will use the Android Market
 
 = Market Installation =
 
+Search the Market for "QueueMan".
+
+Or if you have Barcode Scanner , use this QR
+http://chart.apis.google.com/chart?cht=qr&chs=230x230&chl=http%3A%2F%2Fwebbmaster.org/qrit/%3Flinkto%3Dhttp%3A%2F%2Fmarket.android.com%2Fsearch%3Fq%3Dpname%3Aedwardawebb.queueman.core&rubbish=qr.png
 
 = Manual Installation = 
 
