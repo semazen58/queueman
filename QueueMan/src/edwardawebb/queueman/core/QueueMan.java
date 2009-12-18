@@ -92,6 +92,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private static final int SESSION_ACCESS = 1;  // we have request token, but need access token
 	private static final int SESSION_ACTIVE = 2; //we have access token saved locally
 	private static final int SESSION_TITLE_ADDED = 3; // they just cmae back from search and we have already called addDisc
+	private static final int SESSION_EULA_READ = 4; // tthey still havent accepted EULA, and are just reading it.
 	
 	/*
 	 * Menu Item Order
@@ -412,7 +413,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				redrawQueue();
 				Toast.makeText(QueueMan.this,R.string.message_added_title,Toast.LENGTH_LONG);
 				break;
-			
+			case SESSION_EULA_READ:
+				//they're coming from reading the license - hoep they enjoyed
+				sessionStatus=SESSION_STARTING;
+				break;
 			default:
 				//report error.
 				FlurryAgent.onError("ER:99",	"sessionStatus Invalid - method OnStart: "+sessionStatus, "QueueMan");
@@ -1063,6 +1067,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		}else if(v == decline){
 			this.finish();
 		}else if(v == about){
+			sessionStatus=SESSION_EULA_READ;
 			startActivity( new Intent(this,
 					edwardawebb.queueman.core.ViewLicense.class));
 		}

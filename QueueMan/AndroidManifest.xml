@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="edwardawebb.queueman.core" 
-	android:versionCode="26" android:versionName="0.9.7Beta">
+	android:versionCode="27" android:versionName="0.9.7.1Beta">
 	<uses-permission android:name="android.permission.INTERNET" />
 	
 	
@@ -28,5 +28,5 @@
 		<activity android:name=".ViewLicense" android:label="QueueMan EULA" >
 		</activity>
 </application>
-	<uses-sdk android:minSdkVersion="3" android:maxSdkVersion="5" />
+	<uses-sdk android:minSdkVersion="3" android:maxSdkVersion="6" />
 </manifest> 

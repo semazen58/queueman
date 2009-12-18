@@ -2,7 +2,7 @@
 		
 Android application for Netflix subscribers.
 Copyright (C) 2009 Edward A. Webb
-Version: 0.9.7 Beta
+Version: 0.9.7.1 Beta
 
 	Comments? Issues?  
 Please visit <http://code.google.com/p/queueman>
