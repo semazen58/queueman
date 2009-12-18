@@ -109,6 +109,14 @@ public class NetFlix {
 	private static String oathAccessTokenSecret;
 	private static String resultStatus;
 	public String lastResponseMessage = "none";
+	
+	
+	
+	public static final int NF_ERROR_BAD_DEFAULT=900; // defaukl return code
+	public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
+	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
+	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
+	
 
 	public NetFlix() {// OAuthConsumer oac, OAuthProvider oap
 		// maybe pass in authentication info
@@ -271,12 +279,12 @@ public class NetFlix {
 	 * 
 	 * @param queueType
 	 * @param maxResults
-	 * @return HttpStatusCOde or 900 for exceptions
+	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
 	 */
 	public int getQueue(int queueType, String maxResults) {
 		URL QueueUrl = null;
 		QueueHandler myQueueHandler = null;
-		int result = 900;
+		int result = NF_ERROR_BAD_DEFAULT;
 		if (maxResults.equals(QueueMan.ALL_TITLES_STRING)) {
 			maxResults = "500";
 		}
@@ -352,11 +360,11 @@ public class NetFlix {
 	 * 
 	 * @param queueType
 	 * @param maxResults
-	 * @return HttpStatusCOde or 900 for exceptions
+	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
 	 */
 	public int getRecommendations(String maxResults) {
 		URL QueueUrl = null;
-		int result = 900;
+		int result = NF_ERROR_BAD_DEFAULT;
 		if (maxResults.equals(QueueMan.ALL_TITLES_STRING)) {
 			maxResults = "500";
 		}
@@ -423,12 +431,12 @@ public class NetFlix {
 	 * 
 	 * @param queueType
 	 * @param maxResults
-	 * @return HttpStatusCOde or 900 for exceptions
+	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
 	 */
 	public int getTitleState(String titleID) {
 		URL url = null;
 		QueueHandler myQueueHandler = null;
-		int result = 900;
+		int result = NF_ERROR_BAD_DEFAULT;
 
 		/*String expanders = "?title_refs=" + titleID;
 		InputStream xml = null;
@@ -618,10 +626,10 @@ public class NetFlix {
 	 * 
 	 * @param disc
 	 * @param queueType
-	 * @return SubCode, httpResponseCode or 900 on exception
+	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
 	 */
 	public int addToQueue(Disc disc, int queueType) {
-		int result = 900;
+		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
@@ -737,11 +745,11 @@ public class NetFlix {
 	 * 
 	 * @param disc
 	 * @param newPosition
-	 * @return subcode, statuscode, or httpresponse code (900 on exception)
+	 * @return subcode, statuscode, or httpresponse code (NF_ERROR_BAD_DEFAULT on exception)
 	 */
 	public int moveInQueue(Disc disc, int oldPosition, int newPosition) {
 
-		int result = 900;
+		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
@@ -823,7 +831,7 @@ public class NetFlix {
 	}
 
 	public int deleteFromQueue(Disc disc, int queueType) {
-		int result = 900;
+		int result = NF_ERROR_BAD_DEFAULT;
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		postConsumer.setTokenWithSecret(oathAccessToken, oathAccessTokenSecret);
@@ -909,10 +917,16 @@ public class NetFlix {
 	 * 
 	 * @param disc
 	 * @param queueType
-	 * @return SubCode, httpResponseCode or 900 on exception
+	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
 	 */
-	public int setRating(String id, double rating) {
-		int result = 900;
+	public int setRating(String id, String rating) {
+		if (!rating.equals("not_interested")){
+			int ratingInt=Integer.valueOf(rating);
+			if(ratingInt >5 || ratingInt <1){
+				return NF_ERROR_BAD_INDEX;//
+			}			
+		}
+		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
@@ -941,10 +955,9 @@ public class NetFlix {
 			postConsumer.setTokenWithSecret(oathAccessToken,
 					oathAccessTokenSecret);
 
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			// Your DATA
-			nameValuePairs
-					.add(new BasicNameValuePair("title_ref", id));
+			nameValuePairs.add(new BasicNameValuePair("title_ref", id));
 			nameValuePairs.add(new BasicNameValuePair("rating", String.valueOf(rating)));
 
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));

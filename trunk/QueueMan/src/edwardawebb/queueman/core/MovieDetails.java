@@ -12,6 +12,7 @@ import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
@@ -44,6 +45,9 @@ public class MovieDetails extends Activity {
 	private RadioButton radioAddInstant;
 	private RatingBar ratingBar;
 	private TextView formats;
+	
+	private Button noThanks;
+	private RatingBar rate;
 
 	private Bitmap bitmap;
 	private int action;
@@ -115,6 +119,47 @@ public class MovieDetails extends Activity {
 				// formatsText.append("\n" + disc.getAvailibilityText());
 				formats.setText(formatsText);
 
+				//ratings!
+				/*rate=new RatingBar(ctxt);
+				noThanks=new Button(ctxt);
+				
+				noThanks.setBackgroundResource(R.drawable.no_interest_drk);
+				noThanks.setPadding(5,0,0,0);
+				noThanks.setWidth(92);
+				noThanks.setHeight(16);
+				
+				rate.setNumStars(5);
+				rate.setStepSize(0.1f);			
+								
+				RatingBar.OnRatingBarChangeListener l=
+											new RatingBar.OnRatingBarChangeListener() {
+					public void onRatingChanged(RatingBar ratingBar,float rating,boolean fromTouch)	{
+						rates[(Integer)ratingBar.getTag()]=rating;
+						if(fromTouch) {
+							rate.setStepSize(1.0f) ;
+							new SetRating().execute(String.valueOf(disc.getId()),String.valueOf((int)rating));
+						}
+					}
+				};
+				Button.OnClickListener cl=
+					new Button.OnClickListener() {				
+
+						public void onClick(View arg0) {
+							// TODO Auto-generated method stub
+							noThanks.setBackgroundResource(R.drawable.no_interest_lght);
+							rate.setRating(0.0f);
+							rate.setEnabled(false);
+							new SetRating().execute(String.valueOf(disc.getId()),"not_interested");
+							
+						}
+					};
+					
+				
+				noThanks.setOnClickListener(this);	
+				
+				rate.setOnRatingBarChangeListener(this);
+				*/
+				
 				break;
 			case QueueMan.ACTION_DELETE:
 				setContentView(R.layout.add_movie_detail);
