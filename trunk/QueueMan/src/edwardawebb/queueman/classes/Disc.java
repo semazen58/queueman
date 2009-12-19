@@ -1,4 +1,21 @@
 /**
+ *     This file is part of QueueMan.
+ *
+ *        QueueMan is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    any later version.
+ *
+ *    QueueMan is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with QueueMan.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+ /**
  * 
  */
 package edwardawebb.queueman.classes;
@@ -27,21 +44,23 @@ public class Disc implements Serializable {
 	private String boxArtUrl;
 	private String synopsis;
 	private String year;
-	private double rating;
+	private double avgRating;
+	private double userRating;
 	private Date availableFrom;
 	private Date availableUntil;
 	private boolean isAvailable;
 	private String availibilityText;
+	private boolean hasUserRating=false;
 
 	private ArrayList<String> formats = new ArrayList<String>();
 
 	public Disc(String id, String shortTitle, String fullTitle,
-			String boxArtUrl, Double rating) {
+			String boxArtUrl, Double avgRating) {
 		this.id = id;
 		this.shortTitle = shortTitle;
 		this.fullTitle = fullTitle;
 		this.boxArtUrl = boxArtUrl;
-		this.rating = rating;
+		this.avgRating = avgRating;
 	}
 
 	public Disc(String id, String shortTitle, String fullTitle,
@@ -51,7 +70,7 @@ public class Disc implements Serializable {
 		this.shortTitle = shortTitle;
 		this.fullTitle = fullTitle;
 		this.boxArtUrl = boxArtUrl;
-		this.rating = rating;
+		this.avgRating = rating;
 		this.synopsis = synopsis;
 		this.year = year;
 		this.setAvailable(isAvailable);
@@ -98,8 +117,8 @@ public class Disc implements Serializable {
 		return boxArtUrl.replace(TINY_SIZE, LARGE_SIZE);
 	}
 
-	public Double getRating() {
-		return rating;
+	public Double getAvgRating() {
+		return avgRating;
 	}
 
 	public void setFormats(ArrayList<String> formats) {
@@ -126,6 +145,26 @@ public class Disc implements Serializable {
 		return availibilityText;
 	}
 
+
+	/**
+	 * @param userRating the userRating to set
+	 */
+	public void setUserRating(double userRating) {
+		this.userRating = userRating;
+		hasUserRating=true;
+	}
+
+	/**
+	 * @return the userRating
+	 */
+	public Double getUserRating() {
+		return userRating;
+	}
+	
+	public Boolean hasUserRating(){
+		return hasUserRating;
+	}
+	
 	/*
 	 * used by array adapter to show movie title
 	 */
@@ -140,9 +179,14 @@ public class Disc implements Serializable {
 		}
 	}
 
-	
-	public boolean equals(Disc disc) {
-		return (this.id.equals(disc.id));
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Disc){
+			Disc mdisc=(Disc)o;
+			return (this.id.equals(mdisc.id));			
+		}else{
+			return false;
+		}
 	}
 	
 	@Override

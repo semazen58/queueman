@@ -116,6 +116,7 @@ public class NetFlix {
 	public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
 	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
 	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
+	public static final String NF_RATING_NO_INTEREST = "not_interested";
 	
 
 	public NetFlix() {// OAuthConsumer oac, OAuthProvider oap
@@ -920,7 +921,7 @@ public class NetFlix {
 	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
 	 */
 	public int setRating(String id, String rating) {
-		if (!rating.equals("not_interested")){
+		if (!rating.equals(NF_RATING_NO_INTEREST)){
 			int ratingInt=Integer.valueOf(rating);
 			if(ratingInt >5 || ratingInt <1){
 				return NF_ERROR_BAD_INDEX;//
@@ -958,7 +959,7 @@ public class NetFlix {
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			// Your DATA
 			nameValuePairs.add(new BasicNameValuePair("title_ref", id));
-			nameValuePairs.add(new BasicNameValuePair("rating", String.valueOf(rating)));
+			nameValuePairs.add(new BasicNameValuePair("rating", rating));
 
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
