@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
@@ -96,16 +97,18 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		if (action > 0) {
 			switch (action) {
 			case QueueMan.ACTION_MOVE:
-				setContentView(R.layout.add_movie_detail);
+				setContentView(R.layout.add_title_details);
 
 			case QueueMan.ACTION_ADD:
 				// set views
-				setContentView(R.layout.add_movie_detail);
+				setContentView(R.layout.add_title_details);
 				addButton = (Button) findViewById(R.id.add_movie);
 				addButton.setOnClickListener(new clickr());
-				radioOptions = (RadioGroup) findViewById(R.id.add_options);
-				radioAddTop = (RadioButton) findViewById(R.id.radio_top);
-				radioAddInstant = (RadioButton) findViewById(R.id.radio_instant);
+				LinearLayout included = (LinearLayout) findViewById(R.id.options_include);
+				
+				radioOptions = (RadioGroup) included.findViewById(R.id.add_options);
+				radioAddTop = (RadioButton) included.findViewById(R.id.radio_top);
+				radioAddInstant = (RadioButton) included.findViewById(R.id.radio_instant);
 
 				formats = (TextView) findViewById(R.id.Formats);
 
@@ -185,7 +188,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				
 				break;
 			case QueueMan.ACTION_DELETE:
-				setContentView(R.layout.add_movie_detail);
+				setContentView(R.layout.add_title_details);
 			}
 
 		} else {

@@ -136,7 +136,7 @@ public class QueueSearch extends Activity {
 		TextView text = (TextView) dialog.findViewById(R.id.text);
 		text.setText("....");
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
-		image.setImageResource(R.drawable.icon);
+		image.setImageResource(R.drawable.red_icon);
 		// show message
 		dialog.show();
 		Thread t = new Thread() {
