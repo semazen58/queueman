@@ -18,4 +18,5 @@
 			     This program is released under the GPL v3 License. \n\nPlease read the license terms by clicking 'Read License'.
 			     </string>
 <string name="dialog_accept">I agree</string>
+<string name="no_thanks">No Thanks</string>
 </resources>

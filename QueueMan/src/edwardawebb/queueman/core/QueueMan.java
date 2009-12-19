@@ -459,6 +459,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			disc = (Disc) data.getSerializableExtra("Disc");
 			queueType = data.getIntExtra(ACTION_KEY, (int) 0);
 			addNewDisc(disc, queueType);
+			if(mTabHost.getCurrentTab() == TAB_RECOMMEND){
+				NetFlix.recomemendedQueue.delete(disc);
+				redrawQueue();
+			}
 			break;
 		default:
 			break;
