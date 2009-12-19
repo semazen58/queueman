@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="fill_parent"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
   android:orientation="vertical">
   
  <!-- top section  -->
@@ -36,13 +36,7 @@
   android:layout_width="wrap_content"
   android:layout_height="wrap_content"
   android:orientation="horizontal">
-	  <!-- stars and year -->
-	  <LinearLayout
-	  xmlns:android="http://schemas.android.com/apk/res/android"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:orientation="vertical">
-			<TextView android:id="@+id/myear" android:layout_width="wrap_content"
+	  		<TextView android:id="@+id/myear" android:layout_width="wrap_content"
 				android:layout_height="wrap_content" 
 				android:layout_marginTop="10dip"
 				android:textSize="30sp"  
@@ -55,9 +49,7 @@
 			  android:layout_width="wrap_content"
 			  android:layout_height="wrap_content"
 			   style="?android:attr/ratingBarStyleSmall"/>
-	  </LinearLayout>
-	  <!-- /stars and year -->
-	  <!-- rate button -->
+	 <!-- rate button -->
 	  	<Button 
 			android:layout_width="wrap_content" 
 			android:id="@+id/Button01" 
@@ -79,22 +71,29 @@
  		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:paddingLeft="10px">
+		
+		<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
 		<TextView android:id="@+id/synopsis" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" 
 			android:layout_marginLeft="10dip"
 			android:layout_marginTop="10dip"
 			android:text="Unable to load Title Synopsis." />
-			
-		
-
-</ScrollView>
-<TextView 
+			<TextView 
 		   android:id="@+id/Formats"
 		 android:text="Availability: "
 		  android:layout_width="fill_parent"
 			android:layout_marginLeft="10dip"
 		    android:layout_height="wrap_content" />
 <include android:id="@+id/options_include" layout="@layout/add_options" />
+</LinearLayout>
+		
+
+</ScrollView>
+
  <!-- footer --> 
  	<TextView android:id="@+id/netflix_branding" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" android:layout_below="@id/add_options"
