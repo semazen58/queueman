@@ -174,6 +174,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		
 		rateMe= (Button) findViewById(R.id.Button01);
 		rateMe.setText("Rate Title");
+		rateMe.setHeight(20);
 		rateMe.setOnClickListener(this);
 		
 		// set values based on disc
