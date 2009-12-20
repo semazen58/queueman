@@ -36,7 +36,6 @@ public class QueueHandler extends DefaultHandler {
 	private boolean inResultsPerPage = false;
 	private boolean inId = false;
 	private boolean inRating = false;
-	private boolean inTitle = false;
 	private boolean inPosition = false;
 	private boolean inBoxArt = false;
 	private boolean inSynopsis = false;
@@ -55,6 +54,7 @@ public class QueueHandler extends DefaultHandler {
 	private String ftitle;
 	private String synopsis;
 	private String id;
+	private String uniqueID;
 	private String boxArtUrl;
 	private String year;
 	private double rating;
@@ -97,6 +97,10 @@ public class QueueHandler extends DefaultHandler {
 			 */
 		} else if (element.equals("delivery_formats")) {
 			inFormats = true;
+		} else if(element.equals("link") && atts.getValue("title").equals("synopsis")){
+			//very poor way, but only way i could find to compare discs ascross queus.
+			String href=atts.getValue("href");
+			uniqueID=(String) href.subSequence(0,href.lastIndexOf("/") )   ;
 		} else if (element.equals("position")) {
 			inPosition = true;
 		} else if (element.equals("synopsis")) {
@@ -108,7 +112,6 @@ public class QueueHandler extends DefaultHandler {
 		} else if (element.equals("average_rating")) {
 			inRating = true;
 		} else if (element.equals("title")) {
-			inTitle = true;
 			stitle = atts.getValue("short");
 			ftitle = atts.getValue("regular");
 		} else if (element.equals("box_art")) {
@@ -147,13 +150,11 @@ public class QueueHandler extends DefaultHandler {
 			inYear = false;
 		} else if (element.equals("average_rating")) {
 			inRating = false;
-		} else if (element.equals("title")) {
-			inTitle = false;
 		} else if (element.equals("box_art")) {
 			inBoxArt = false;
 		} else if (element.equals(itemElementName)) {
 			inItem = false;
-			tempMovie = new Disc(id, stitle, ftitle, boxArtUrl, rating,
+			tempMovie = new Disc(id,uniqueID, stitle, ftitle, boxArtUrl, rating,
 					synopsis, year, isAvailable);
 			tempMovie.setAvailibilityText(availability);
 		} else if (element.equals("number_of_results")) {
@@ -180,7 +181,7 @@ public class QueueHandler extends DefaultHandler {
 		} else if (inId) {
 			id = chars;
 			// Log.d("QueueHandler","Id: " + id);
-		} else if (inRating) {
+		}  else if (inRating) {
 			rating = Double.valueOf(chars);
 		} else if (inSynopsis) {
 			synopsis = (chars);

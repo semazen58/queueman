@@ -17,6 +17,7 @@
  */
  package edwardawebb.queueman.handlers;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.xml.sax.Attributes;
@@ -31,13 +32,14 @@ import edwardawebb.queueman.classes.NetFlix;
  */
 public class RecommendationsHandler extends DefaultHandler {
 
+	private NetFlix netflix;
+	
 	protected Disc tempMovie;
 
 	private boolean inResultsTotal = false;
 	private boolean inResultsPerPage = false;
 	private boolean inId = false;
 	private boolean inRating = false;
-	private boolean inTitle = false;
 	private boolean inPosition = false;
 	private boolean inBoxArt = false;
 	private boolean inSynopsis = false;
@@ -55,12 +57,14 @@ public class RecommendationsHandler extends DefaultHandler {
 	private String ftitle;
 	private String synopsis;
 	private String id;
+	private String uniqueID;
 	private String boxArtUrl;
 	private String year;
 	private double rating;
 	protected int statusCode = 0;
 	private int subCode = 0;
 	private boolean isAvailable = false;
+	private ArrayList<String> mformats=new ArrayList<String>();
 
 	// element names (set by sub classes)
 	protected String itemElementName="recommendation";
@@ -72,6 +76,10 @@ public class RecommendationsHandler extends DefaultHandler {
 	private String availability;
 	private String discAvailabilityCategoryScheme = "http://api.netflix.com/categories/queue_availability";
 
+	public RecommendationsHandler(NetFlix netflix){
+		this.netflix=netflix;
+	}
+	
 	public void startElement(String uri, String name, String qName,
 			Attributes atts) {
 		// Log.d("QueueHandler",">>>startELement:" + element);
@@ -86,6 +94,10 @@ public class RecommendationsHandler extends DefaultHandler {
 					isAvailable = true;
 				}
 			}
+		} else if(element.equals("link") && atts.getValue("title").equals("synopsis")){
+			//very poor way, but only way i could find to compare discs ascross queus.
+			String href=atts.getValue("href");
+			uniqueID=(String) href.subSequence(0,href.lastIndexOf("/") )   ;
 		} else if (element.equals("availability")) {
 			inAvailability = true;
 			/*
@@ -105,8 +117,7 @@ public class RecommendationsHandler extends DefaultHandler {
 			inYear = true;
 		} else if (element.equals("predicted_rating")) {
 			inRating = true;
-		} else if (element.equals("title")) {
-			inTitle = true;
+		} else if (element.equals("title")) {			
 			stitle = atts.getValue("short");
 			ftitle = atts.getValue("regular");
 		} else if (element.equals("box_art")) {
@@ -123,7 +134,12 @@ public class RecommendationsHandler extends DefaultHandler {
 		} else if (name.equals("sub_code")) {
 			inSubCode = true;
 		}
-		// Log.d("QueueHandler","<<<startELement:" + element);
+		
+		if(inAvailability && inCategory){
+			//
+			mformats.add(atts.getValue("label"));
+		}
+		
 	}
 
 	public void endElement(String uri, String name, String qName)
@@ -143,16 +159,19 @@ public class RecommendationsHandler extends DefaultHandler {
 			inYear = false;
 		} else if (element.equals("predicted_rating")) {
 			inRating = false;
-		} else if (element.equals("title")) {
-			inTitle = false;
-		} else if (element.equals("box_art")) {
+		}else if (element.equals("box_art")) {
 			inBoxArt = false;
 		} else if (element.equals(itemElementName)) {
 			inItem = false;
-			tempMovie = new Disc(id, stitle, ftitle, boxArtUrl, rating,
+			tempMovie = new Disc(id,uniqueID, stitle, ftitle, boxArtUrl, rating,
 					synopsis, year, isAvailable);
 			tempMovie.setAvailibilityText(availability);
-			NetFlix.recomemendedQueue.add(tempMovie);
+			tempMovie.setFormats(mformats);
+			if(!netflix.discQueue.getDiscs().contains(tempMovie)){
+				//no pioitn in showing a title they already got.
+				
+				NetFlix.recomemendedQueue.add(tempMovie);
+			}
 		} else if (element.equals("number_of_results")) {
 			inResultsTotal = false;
 		} else if (element.equals("results_per_page")) {
