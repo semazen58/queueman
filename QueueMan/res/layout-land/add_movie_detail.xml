@@ -26,11 +26,18 @@
 			android:layout_marginLeft="10dip" android:layout_height="wrap_content"
 			android:layout_below="@+id/myear" style="?android:attr/ratingBarStyleSmall" />
 
-
+ 	
+		   <Button 
+			android:layout_width="wrap_content" 
+			android:id="@+id/Button01" 
+			android:layout_height="wrap_content"
+			android:layout_below="@id/RatingBar01"
+			android:layout_alignLeft="@id/RatingBar01"
+			 android:text="@+id/Button01"/>
 
 		<TextView android:id="@+id/Formats" android:text="Availability: "
 			android:layout_width="wrap_content" android:layout_marginLeft="10dip"
-			android:layout_below="@+id/RatingBar01"
+			android:layout_below="@+id/Button01"
 			android:layout_height="wrap_content" />
 
 	</RelativeLayout>

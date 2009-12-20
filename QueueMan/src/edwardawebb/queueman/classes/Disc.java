@@ -51,9 +51,13 @@ public class Disc implements Serializable {
 	private boolean isAvailable;
 	private String availibilityText;
 	private boolean hasUserRating=false;
+	private String uniqueId;
 
 	private ArrayList<String> formats = new ArrayList<String>();
 
+	/*
+	 * searc
+	 */
 	public Disc(String id, String shortTitle, String fullTitle,
 			String boxArtUrl, Double avgRating) {
 		this.id = id;
@@ -63,10 +67,23 @@ public class Disc implements Serializable {
 		this.avgRating = avgRating;
 	}
 
-	public Disc(String id, String shortTitle, String fullTitle,
+	
+	/**
+	 * @param id // varies  by queue type (recomends, search, etc)
+	 * @param uniqueId // same across all ex. http://api.netflix.com/catalog/titles/movies/243547
+	 * @param shortTitle
+	 * @param fullTitle
+	 * @param boxArtUrl
+	 * @param rating
+	 * @param synopsis
+	 * @param year
+	 * @param isAvailable
+	 */
+	public Disc(String id,String uniqueId, String shortTitle, String fullTitle,
 			String boxArtUrl, Double rating, String synopsis, String year,
 			boolean isAvailable) {
 		this.id = id;
+		this.uniqueId=uniqueId;
 		this.shortTitle = shortTitle;
 		this.fullTitle = fullTitle;
 		this.boxArtUrl = boxArtUrl;
@@ -161,6 +178,14 @@ public class Disc implements Serializable {
 		return userRating;
 	}
 	
+	/**
+	 * @return the uniqueId
+	 */
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+
 	public Boolean hasUserRating(){
 		return hasUserRating;
 	}
@@ -183,7 +208,7 @@ public class Disc implements Serializable {
 	public boolean equals(Object o) {
 		if (o instanceof Disc){
 			Disc mdisc=(Disc)o;
-			return (this.id.equals(mdisc.id));			
+			return (this.uniqueId.equals(mdisc.uniqueId));			
 		}else{
 			return false;
 		}
@@ -191,6 +216,6 @@ public class Disc implements Serializable {
 	
 	@Override
 	public int hashCode(){
-		return id.hashCode();
+		return uniqueId.hashCode();
 	}
 }

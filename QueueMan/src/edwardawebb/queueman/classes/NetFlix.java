@@ -377,7 +377,7 @@ public class NetFlix {
 				return 200;
 			QueueUrl = new URL("http://api.netflix.com/users/" + userID
 					+ "/recommendations" + expanders);
-			RecommendationsHandler myHandler = new RecommendationsHandler();
+			RecommendationsHandler myHandler = new RecommendationsHandler(this);
 			Log.d("NetFlix",""+QueueUrl.toString());
 			
 			setSignPost(oathAccessToken, oathAccessTokenSecret);

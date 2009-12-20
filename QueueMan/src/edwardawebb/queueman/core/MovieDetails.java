@@ -101,14 +101,13 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 
 			case QueueMan.ACTION_ADD:
 				// set views
-				setContentView(R.layout.add_title_details);
+				setContentView(R.layout.add_movie_detail);
 				addButton = (Button) findViewById(R.id.add_movie);
 				addButton.setOnClickListener(new clickr());
-				LinearLayout included = (LinearLayout) findViewById(R.id.options_include);
-				
-				radioOptions = (RadioGroup) included.findViewById(R.id.add_options);
-				radioAddTop = (RadioButton) included.findViewById(R.id.radio_top);
-				radioAddInstant = (RadioButton) included.findViewById(R.id.radio_instant);
+							
+				radioOptions = (RadioGroup) findViewById(R.id.add_options);
+				radioAddTop = (RadioButton) findViewById(R.id.radio_top);
+				radioAddInstant = (RadioButton) findViewById(R.id.radio_instant);
 
 				formats = (TextView) findViewById(R.id.Formats);
 
@@ -143,48 +142,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 					}
 				}
 				// formatsText.append("\n" + disc.getAvailibilityText());
-				formats.setText(formatsText);
-
-				//ratings!
-				/*rate=new RatingBar(ctxt);
-				noThanks=new Button(ctxt);
-				
-				noThanks.setBackgroundResource(R.drawable.no_interest_drk);
-				noThanks.setPadding(5,0,0,0);
-				noThanks.setWidth(92);
-				noThanks.setHeight(16);
-				
-				rate.setNumStars(5);
-				rate.setStepSize(0.1f);			
-								
-				RatingBar.OnRatingBarChangeListener l=
-											new RatingBar.OnRatingBarChangeListener() {
-					public void onRatingChanged(RatingBar ratingBar,float rating,boolean fromTouch)	{
-						rates[(Integer)ratingBar.getTag()]=rating;
-						if(fromTouch) {
-							rate.setStepSize(1.0f) ;
-							new SetRating().execute(String.valueOf(disc.getId()),String.valueOf((int)rating));
-						}
-					}
-				};
-				Button.OnClickListener cl=
-					new Button.OnClickListener() {				
-
-						public void onClick(View arg0) {
-							// TODO Auto-generated method stub
-							noThanks.setBackgroundResource(R.drawable.no_interest_lght);
-							rate.setRating(0.0f);
-							rate.setEnabled(false);
-							new SetRating().execute(String.valueOf(disc.getId()),"not_interested");
-							
-						}
-					};
-					
-				
-				noThanks.setOnClickListener(this);	
-				
-				rate.setOnRatingBarChangeListener(this);
-				*/
+				formats.setText(formatsText);				
 				
 				break;
 			case QueueMan.ACTION_DELETE:

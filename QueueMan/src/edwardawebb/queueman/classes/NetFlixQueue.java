@@ -96,10 +96,7 @@ public class NetFlixQueue {
 
 	}
 
-	public void add(Disc movie) {
-		if(discs.contains(movie)){
-			discs.remove(movie);
-		}
+	public void add(Disc movie) {		
 		discs.add(movie);
 	}
 

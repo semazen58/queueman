@@ -2,7 +2,7 @@
 <LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="wrap_content"
-  android:layout_height="fill_parent"
+  android:layout_height="wrap_content"
   android:orientation="vertical">
   
  <!-- top section  -->
@@ -77,7 +77,7 @@
  <!-- synopsis -->
  <ScrollView android:id="@+id/scrollie" 
  		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_height="wrap_content"
 		android:paddingLeft="10px">
 		<TextView android:id="@+id/synopsis" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" 
