@@ -43,12 +43,12 @@
 			android:id="@+id/Button01" 
 			android:layout_height="wrap_content"
 			android:layout_toRightOf="@id/RatingBar01"
-			android:layout_alignTop="@id/RatingBar01"
 			 android:text="@+id/Button01"
 			 android:maxHeight="20px"/>
 				<TextView android:id="@+id/synopsis" android:layout_width="fill_parent"
 					android:layout_height="fill_parent" android:layout_marginTop="10dip"
-					android:layout_below="@id/myear" 
+					android:layout_below="@id/Button01"
+					android:layout_alignLeft="@id/myear" 
 					android:text="blah de blah" />
 
 				<TextView android:id="@+id/netflix_branding"
