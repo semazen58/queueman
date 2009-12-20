@@ -172,6 +172,7 @@ public class RecommendationsHandler extends DefaultHandler {
 				
 				NetFlix.recomemendedQueue.add(tempMovie);
 			}
+			this.mformats.clear();
 		} else if (element.equals("number_of_results")) {
 			inResultsTotal = false;
 		} else if (element.equals("results_per_page")) {
