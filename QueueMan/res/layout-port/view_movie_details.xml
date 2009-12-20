@@ -32,6 +32,13 @@
 		   android:layout_below="@+id/myear"
 		   android:layout_toRightOf="@+id/boxart"
 		   style="?android:attr/ratingBarStyleSmall"/>
+		   <Button 
+			android:layout_width="wrap_content" 
+			android:id="@+id/Button01" 
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/myear"
+			android:layout_alignBottom="@id/RatingBar01"
+			 android:text="@+id/Button01"/>
 	</RelativeLayout>
 	
 
