@@ -52,6 +52,7 @@ import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.NetFlix;
 import edwardawebb.queueman.classes.NetFlixQueue;
 
+
 /**
  * @author Eddie Webb edwardawebb.com
  * @copyright 2009 Edward A. Webb
@@ -103,6 +104,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private static final int SIGNOUT_ID = 3;
 	private static final int SETTINGS_ID = 4;
 	private static final int LICENSE_ID = 5;
+	private static final int HOME_ID = 6;
 	/*
 	 * context menu item codes
 	 */
@@ -479,7 +481,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		menu.add(0, SEARCH_ID, 0, R.string.menu_search)
 			.setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, REFRESH_ID, 0, R.string.menu_refresh)
-			.setIcon(android.R.drawable.ic_menu_recent_history);
+		.setIcon(android.R.drawable.ic_menu_recent_history);
+		menu.add(0, HOME_ID, 0, R.string.menu_at_home)
+		.setIcon(android.R.drawable.ic_menu_send);
 		menu.add(0, SETTINGS_ID, 0, R.string.menu_settings)
 			.setIcon(android.R.drawable.ic_menu_preferences);
 		menu.add(0, LICENSE_ID, 0, R.string.menu_license)
@@ -496,6 +500,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			}else{			
 				loadQueue();
 				}
+			return true;
+		case HOME_ID:
+			FlurryAgent.onEvent("Launching At Home");
+			//load the at home titles if we habent already
+			loadHomeTitles();
+
 			return true;
 		case SEARCH_ID:
 			FlurryAgent.onEvent("Launching Search");
@@ -1112,6 +1122,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				switch (result) {
 				case 200:
 				case 201:
+					break;
 				default:
 					boolean hasAccess = (netflix.getAccessToken()!=null);
 					boolean hasID = (netflix.getUserID()!=null);
@@ -1142,5 +1153,80 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	 }
 
+	 
+
+		protected void loadHomeTitles(){
+			 HashMap<String, String> parameters = new HashMap<String, String>();
+		 		parameters.put("Queue Type:", "Home Titles");
+		 		FlurryAgent.onEvent("loadHomeTitles", parameters);
+		 		// show custom dialog to let them know
+		 		dialog = new Dialog(this);
+		 		dialog.setContentView(R.layout.custom_dialog);
+		 		dialog.setTitle("Loading  at home titles");
+		 		TextView text = (TextView) dialog.findViewById(R.id.text);
+		 		String message = "\nTitles at home...";
+		 		
+		 		text.setText("Patience is a virtue" + message);
+		 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
+		 		image.setImageResource(R.drawable.red_icon);
+		 		// show message
+		 		dialog.show();
+			new DownloadHomeTitles().execute();
+		}
+		/***
+		 * Manage ASync Tasks the Android way
+		 * @author eddie
+		 *
+		 */
+		 private class DownloadHomeTitles extends AsyncTask<Void, Integer, Integer> {
+		     protected Integer doInBackground(Void... arg0) {
+		         int result = 900;
+		       
+				if (QueueMan.netflix.isOnline()) {
+					// get queue will connect to neflix and resave the currentQ
+					// vairable
+					result = QueueMan.netflix.getHomeTitles();
+					switch (result) {
+					case 200:
+					case 201:
+						break;
+					default:
+						boolean hasAccess = (QueueMan.netflix.getAccessToken()!=null);
+						boolean hasID = (QueueMan.netflix.getUserID()!=null);
+						FlurryAgent.onError("ER:91",
+								"Failed to Retrieve Home titles - "
+										+ QueueMan.netflix.lastResponseMessage
+										+ "Has Access: "+ hasAccess
+										+ "Has ID: "+ hasID,
+								"QueueMan");
+					}
+
+				} else {
+					FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
+					result=901;
+				} 	
+		         
+		         return result;
+		     }
+
+		     protected void onProgressUpdate(Integer... progress) {
+		        //dont have indcators yet
+		     }
+
+		     protected void onPostExecute(Integer result) {
+
+					//show grid views of titles.
+					startActivity(new Intent(QueueMan.this,
+							edwardawebb.queueman.core.HomeTitles.class));
+		     }
+
+		 }
+		
+		
+		
+	 
+	 
+	 
+	 
 
 }

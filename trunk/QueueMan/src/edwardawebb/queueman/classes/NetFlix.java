@@ -27,7 +27,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import android.content.SharedPreferences;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -58,7 +57,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import edwardawebb.queueman.apikeys.ApiKeys;
@@ -67,6 +65,7 @@ import edwardawebb.queueman.handlers.AddDiscQueueHandler;
 import edwardawebb.queueman.handlers.AddInstantQueueHandler;
 import edwardawebb.queueman.handlers.DiscETagHandler;
 import edwardawebb.queueman.handlers.DiscQueueHandler;
+import edwardawebb.queueman.handlers.HomeQueueHandler;
 import edwardawebb.queueman.handlers.InstantETagHandler;
 import edwardawebb.queueman.handlers.InstantQueueHandler;
 import edwardawebb.queueman.handlers.MoveQueueHandler;
@@ -100,6 +99,8 @@ public class NetFlix {
 			NetFlixQueue.QUEUE_TYPE_INSTANT);
 	public static NetFlixQueue recomemendedQueue = new NetFlixQueue(
 			NetFlixQueue.QUEUE_TYPE_RECOMMEND);
+	public static NetFlixQueue homeQueue = new NetFlixQueue(
+			NetFlixQueue.QUEUE_TYPE_HOME);
 
 	public static OAuthConsumer oaconsumer;
 	private static OAuthProvider oaprovider;
@@ -428,6 +429,76 @@ public class NetFlix {
 		return result;
 	}
 
+
+	/**
+	 * 
+	 * @param queueType
+	 * @param maxResults
+	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
+	 */
+	public int getHomeTitles() {
+		URL QueueUrl = null;
+		int result = NF_ERROR_BAD_DEFAULT;
+		
+		String expanders = "?expand=synopsis,formats";
+		InputStream xml = null;
+		try {
+			
+			if (!NetFlix.homeQueue.isEmpty())
+				return 200;
+			QueueUrl = new URL("http://api.netflix.com/users/" + userID
+					+ "/at_home" + expanders);
+			HomeQueueHandler myHandler = new HomeQueueHandler();
+			Log.d("NetFlix",""+QueueUrl.toString());
+			
+			setSignPost(oathAccessToken, oathAccessTokenSecret);
+			HttpURLConnection request = (HttpURLConnection) QueueUrl
+					.openConnection();
+
+			NetFlix.oaconsumer.sign(request);
+			request.connect();
+
+			lastResponseMessage = request.getResponseCode() + ": "
+					+ request.getResponseMessage();
+			result = request.getResponseCode();
+			xml = request.getInputStream();
+			
+			
+			 /*BufferedReader in = new BufferedReader(new
+			 InputStreamReader(xml)); String linein = null; while ((linein =
+			 in.readLine()) != null) { Log.d("NetFlixQueue", "" +
+			 linein); }*/
+			 
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser sp;
+			sp = spf.newSAXParser();
+			XMLReader xr = sp.getXMLReader();
+
+			xr.setContentHandler(myHandler);
+			xr.parse(new InputSource(xml));
+
+		} catch (ParserConfigurationException e) {
+			
+			e.printStackTrace();
+		} catch (SAXException e) {
+			
+			e.printStackTrace();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
+		} catch (OAuthMessageSignerException e) {
+			
+			e.printStackTrace();
+			// Log.i("NetFlix", "Unable to Sign request - token invalid")
+		} catch (OAuthExpectationFailedException e) {
+			
+			e.printStackTrace();
+			// Log.i("NetFlix", "Expectation failed")
+		}
+		return result;
+	}
+	
 	/**
 	 * 
 	 * @param queueType
