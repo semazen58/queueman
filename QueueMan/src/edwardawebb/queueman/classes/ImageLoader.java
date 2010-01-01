@@ -64,4 +64,7 @@ public class ImageLoader {
 		}
 		return bitmap;
 	}
+	
+
+	
 }

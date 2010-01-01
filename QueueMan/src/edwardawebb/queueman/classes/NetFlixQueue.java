@@ -45,6 +45,7 @@ public class NetFlixQueue {
 	public static final int QUEUE_TYPE_INSTANT = 3;
 	public static final int QUEUE_TYPE_SEARCH = 4;
 	public static final int QUEUE_TYPE_RECOMMEND = 5;
+	public static final int QUEUE_TYPE_HOME = 6;
 
 	// A linked list gives you random access (implements List) and also
 	// implements Queue
