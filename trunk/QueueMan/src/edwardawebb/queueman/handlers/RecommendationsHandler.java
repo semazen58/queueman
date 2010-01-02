@@ -166,7 +166,8 @@ public class RecommendationsHandler extends DefaultHandler {
 			tempMovie = new Disc(id,uniqueID, stitle, ftitle, boxArtUrl, rating,
 					synopsis, year, isAvailable);
 			tempMovie.setAvailibilityText(availability);
-			tempMovie.setFormats(mformats);
+			tempMovie.setFormats(new ArrayList<String>(mformats));
+			mformats.clear();
 			if(!netflix.discQueue.getDiscs().contains(tempMovie)){
 				//no pioitn in showing a title they already got.
 				
