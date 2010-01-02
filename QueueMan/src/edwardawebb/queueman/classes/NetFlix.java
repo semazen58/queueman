@@ -394,7 +394,7 @@ public class NetFlix {
 			xml = request.getInputStream();
 			
 			
-			 /*BufferedReader in = new BufferedReader(new
+			/* BufferedReader in = new BufferedReader(new
 			 InputStreamReader(xml)); String linein = null; while ((linein =
 			 in.readLine()) != null) { Log.d("NetFlixQueue", "" +
 			 linein); }*/
