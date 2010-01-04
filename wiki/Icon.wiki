@@ -1,6 +1,8 @@
 #summary Vote for QueueMan's Icon
-#labels Featured,UserInterface
+#labels Deprecated,UserInterface
 #sidebar MasterTOC
+= CLosed =
+Alexis' nifty red icon wins out with a minor adjustment.
 
 = Introduction =
 
