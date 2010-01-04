@@ -1,4 +1,5 @@
 #summary Just a collection of screen shots
+#labels Featured
 
 = Activity Screens =
 <img src="http://images.webbmaster.org/QueueMan/recommend_tab_menu.png" width="200" />
