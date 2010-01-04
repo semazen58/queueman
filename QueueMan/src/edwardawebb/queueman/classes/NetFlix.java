@@ -311,7 +311,7 @@ public class NetFlix {
 				myQueueHandler = new DiscQueueHandler();
 				break;
 			}
-			Log.d("netFlix", "" + QueueUrl.toString());
+			//Log.d("netFlix", "" + QueueUrl.toString());
 			setSignPost(oathAccessToken, oathAccessTokenSecret);
 			HttpURLConnection request = (HttpURLConnection) QueueUrl
 					.openConnection();

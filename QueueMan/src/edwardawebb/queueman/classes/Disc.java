@@ -52,6 +52,7 @@ public class Disc implements Serializable {
 	private String availibilityText;
 	private boolean hasUserRating=false;
 	private String uniqueId;
+	private int queueType;//self awareness for adding new titles - not used by existing discs
 
 	private ArrayList<String> formats = new ArrayList<String>();
 
@@ -160,6 +161,22 @@ public class Disc implements Serializable {
 
 	public String getAvailibilityText() {
 		return availibilityText;
+	}
+
+
+	/**
+	 * @return the queueType
+	 */
+	public int getQueueType() {
+		return queueType;
+	}
+
+
+	/**
+	 * @param queueType the queueType to set
+	 */
+	public void setQueueType(int queueType) {
+		this.queueType = queueType;
 	}
 
 
