@@ -21,8 +21,10 @@ import java.util.HashMap;
 
 import android.app.Dialog;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -209,7 +211,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		mTabHost.setOnTabChangedListener(this);
 		// set current defaults
 		queueType = NetFlixQueue.QUEUE_TYPE_DISC;
-		//mTabHost.setCurrentTab(TAB_DISC);
+		mTabHost.setCurrentTab(TAB_DISC);
 	}
 
 	
@@ -262,15 +264,17 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			case SESSION_ACTIVE:
 				//this only occurs if they are coming back from a sub activity, or flipping screen 
 				//just be redraw our current queue
+				Log.d("QueueMan",""+mTabHost.isDrawingCacheEnabled());
+				Log.d("QueueMan",""+mTabHost.isFocusable());
+				Log.d("QueueMan",""+mTabHost.isInTouchMode());
+				Log.d("QueueMan",""+mTabHost.isLayoutRequested());
+				Log.d("QueueMan",""+mTabHost.isShown());
+				if(mTabHost.isLayoutRequested()) {					
+					mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
+				}
 				redrawQueue();
 				break;
 				
-			case SESSION_BACKGROUND:
-				//occurs if user quit queueman, but came back before Android destroyed us
-
-				//load user's preferred tab from preferences, which will redraw everything
-				mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
-				break;
 				
 			case SESSION_TITLE_ADDED:
 				sessionStatus=SESSION_ACTIVE;
@@ -305,7 +309,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		super.onStop();
 		FlurryAgent.onEndSession(this);
 		saveSettings();
-		sessionStatus = SESSION_BACKGROUND;
 	}
 
 	/*
@@ -648,7 +651,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 protected Integer doInBackground(Void... arg0) {
 			 int result=901;
 				
-			if (netflix.isOnline()) {
+			if (isOnline()) {
 				Uri authUrl = netflix.getRequestLoginUri();
 				if (authUrl != null) {
 					//save the created Request Token and secret in case of QM being closed in the middle
@@ -756,7 +759,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			 String rt=arg0[0];
 	    	 int result=901;
 				
-			if (netflix.isOnline()) {
+			if (isOnline()) {
 				boolean accessProvided = netflix
 						.negotiateAccessToken(rt);
 
@@ -856,11 +859,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		parameters.put("Queue Type:", String.valueOf(queueType));
 		parameters.put("Can Instant:", String.valueOf(canWatchInstant));
 		FlurryAgent.onEvent("loadQueue", parameters);
-		// show custom dialog to let them know
-		dialog = new Dialog(this);
-		dialog.setContentView(R.layout.custom_dialog);
-		dialog.setTitle("Downloading Queue");
-		TextView text = (TextView) dialog.findViewById(R.id.text);
 		String message = "";
 		switch(mTabHost.getCurrentTab()){
 			case TAB_DISC:
@@ -898,7 +896,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 protected Integer doInBackground(Void... arg1) {
 			//default error, not connected 901
 			 int result=901;
-			if (netflix.isOnline()) {
+			if (isOnline()) {
 					// get queue will connect to neflix and resave the currentQ
 				// vairable
 				result = netflix.getQueue(queueType, getDownloadCount());
@@ -966,7 +964,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	}
 
 	private void showCustomDialog(String title, String message) {
-		dialog = new Dialog(this);
+		dialog = new Dialog(mTabHost.getContext());
 		dialog.setContentView(R.layout.custom_dialog);
 		dialog.setTitle(title);
 		TextView text = (TextView) dialog.findViewById(R.id.text);
@@ -1009,7 +1007,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 protected Integer doInBackground(Disc... discArr) {
 	    	 int result=901;
 				
-			if (netflix.isOnline()) {
+			if (isOnline()) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
 				Disc disc=discArr[0];
@@ -1127,7 +1125,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		String message = "\nLet's see what Netflix thinks you'll like...";
 		message += "\nRetrieving " + getDownloadCount() + " recommendations - you may adjust this in Settings";
 		
-		text.setText("Patience is a virtue" + message);
+		text.setText(message);
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setImageResource(R.drawable.red_icon);
 		// show message
@@ -1143,7 +1141,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	     protected Integer doInBackground(Void... arg0) {
 	         int result = 900;
 	       
-			if (netflix.isOnline()) {
+			if (isOnline()) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
 				result = netflix.getRecommendations(getDownloadCount());
@@ -1207,11 +1205,15 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 *
 		 */
 		 private class DownloadHomeTitles extends AsyncTask<Void, Integer, Integer> {
-		     protected Integer doInBackground(Void... arg0) {
-		         int result = 900;
+		    protected void onPreExecute(){
+		    	if(!isOnline()) this.cancel(true);
+		    }
+			 protected Integer doInBackground(Void... arg0) {
+		        int result = 900;
 		       
-				if (QueueMan.netflix.isOnline()) {
-					// get queue will connect to neflix and resave the currentQ
+				
+					if(!this.isCancelled()){
+				 // get queue will connect to neflix and resave the currentQ
 					// vairable
 					result = QueueMan.netflix.getHomeTitles();
 					switch (result) {
@@ -1263,7 +1265,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 						return queueDownloadCount;
 				}
 			}
-
+			
+			public boolean isOnline() {
+				ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+				return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+			
+			}
 	 
 	 
 

@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -57,7 +56,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.content.Context;
 import android.net.Uri;
+import android.net.ConnectivityManager;
 import android.util.Log;
 import edwardawebb.queueman.apikeys.ApiKeys;
 import edwardawebb.queueman.core.QueueMan;
@@ -254,28 +255,6 @@ public class NetFlix {
 		return oathAccessTokenSecret;
 	}
 
-	public boolean isOnline() {
-		// there mjst be a cleaner way to check for an internet connection
-		boolean result = true;
-		URL url;
-		HttpURLConnection request;
-		try {
-			url = new URL("http://google.com");
-			request = (HttpURLConnection) url.openConnection();
-			request.connect();
-		} catch (MalformedURLException e1) {
-			
-			e1.printStackTrace();
-			result = false;
-		} catch (IOException e1) {
-			
-			e1.printStackTrace();
-			// Log.i("NetFlix", "Unable to connect!")
-			result = false;
-		}
-
-		return result;
-	}
 
 	/**
 	 * 
