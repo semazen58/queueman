@@ -1,11 +1,17 @@
 #summary Quick intro to !QueueMan features
+#labels Featured
 
 
 =Netflix Queue Manager Feature List=
 
 *With !QueueMan your Android phone becomes a full feature Queue management device!*
+----
+*Rate Any Title*
+  * Whether it is being recommended, searched, or an *at home disc*
+  * Just click 'Rate' button in Title details
 
-Disc Queue 
+
+*Disc Queue *
 
     * View current disc
     * Show Title Details (Year, Rating, Synopsis)
@@ -13,13 +19,30 @@ Disc Queue
     * Removed unwanted titles
     * Shuffle Q order (Up, Down, Top, Bottom) 
 
-Instant Viewing 
+*Instant Viewing *
 
     * View current instant queue
     * Search and Add titles
     * Removed unwanted titles 
 
+*Recommended Titles* (new)
+  * A Request I was happy to implement
+  * Add to disc or instant (as title allows)
+  * or just rate the title (including "not interested")
+
+*Discs at home* (new)
+  * New grid view lists disc out at home (access from menu)
+  * Allows rating while the film is fresh on your mind.
+
+*More Preferences !* (new)
+  * Max # of Queue titles to DL
+  * Max # of Recommendations to DL
+  * Default Tab on STart (Disc, Instant or Recommended)
+
+----
+
 ** Instant viewing is only available to primary account holders. Sub-users will not see this feature.
+**Discs at Home is per user. A master account will not see discs sent to sub-users.
 
 
 Take a look at the ScreenShots page to see some of these choirs in action!
@@ -34,9 +57,9 @@ Take a look at the ScreenShots page to see some of these choirs in action!
 Some ideas i am considering;
 
     * Display Small box art Image on Initial Q List (though this may negatively impact load time)
-    * Ability to rate at home and recently returned movies
-    * Ability to remember / switch users (for sharing the phone I guess)
-    * Additional Info on details screen (Actors, Directors, Similar Titles, 
+     * Ability to remember / switch users (for sharing the phone I guess)
+    * Additional Info on details screen (Actors, Directors, Similar Titles,
+ 
 
 ==Suggesting Features==
 
