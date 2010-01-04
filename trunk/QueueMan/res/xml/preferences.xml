@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceCategory android:title="Queue Options">
+		<ListPreference
+		android:key="titles_to_download_id"
+		android:title="Queue Title Download"
+		android:summary="Click to set maximum number of queue titles to download for queues"
+		android:dialogTitle="Choose Max Downloads"
+		android:entries="@array/queue_counts"
+		android:entryValues="@array/queue_count_values"></ListPreference>
+</PreferenceCategory>
+<PreferenceCategory android:title="Recommendation Options">
+
+	<ListPreference
+		android:key="recommends_to_download_id"
+		android:title="Recommendation Downloads"
+		android:summary="Click to set maximum number of recommended titles to download"
+		android:dialogTitle="Choose Max Downloads"
+		android:entries="@array/queue_counts"
+		android:entryValues="@array/queue_count_values"></ListPreference>
+</PreferenceCategory>
+<PreferenceCategory android:title="Defaults">
+
+	<ListPreference
+		android:key="default_tab_id"
+		android:title="Default Tab"
+		android:summary="Which tab should be the default tab?"
+		android:dialogTitle="Default Tab"
+		android:entries="@array/queue_tabs"
+		android:entryValues="@array/queue_tab_values"></ListPreference>
+</PreferenceCategory>
+
+</PreferenceScreen>
