@@ -923,7 +923,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					break;
 				case 901:
 
-					showCustomDialog("Error", "Hmm... It seems we can;t connect to NetFlix. Try again when you have .");
+					showCustomDialog("Error", "Hmm... It seems we can;t connect to NetFlix. Please try again when you have better service");
 					break;
 				default:
 					//fail - get details
@@ -1267,9 +1267,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			}
 			
 			public boolean isOnline() {
-				ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-				return cm.getActiveNetworkInfo().isConnectedOrConnecting();
-			
+				//ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+				//return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+				return netflix.isConnected();
 			}
 	 
 	 

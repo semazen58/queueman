@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -255,6 +256,27 @@ public class NetFlix {
 		return oathAccessTokenSecret;
 	}
 
+	@SuppressWarnings("finally")
+	public boolean isConnected(){
+		boolean result =false;
+		try{
+			URL url = new URL("http://api.netflix.com/");
+			HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+			urlc.connect();
+			Log.d("QM","isCOnnected: " + urlc.getResponseCode() );
+			if (urlc.getResponseCode() == 200 || urlc.getResponseCode()==403) {
+				result = true;
+			}
+		} catch (MalformedURLException e1) {
+		        // TODO Auto-generated catch block
+		        e1.printStackTrace();
+		} catch (IOException e) {
+		            // TODO Auto-generated catch block
+		        e.printStackTrace();
+		}
+		return result;
+
+	}
 
 	/**
 	 * 
