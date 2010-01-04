@@ -290,6 +290,7 @@ public class NetFlix {
 		if (maxResults.equals(QueueMan.ALL_TITLES_STRING)) {
 			maxResults = "500";
 		}
+		// addtional info to return 
 		String expanders = "?expand=synopsis,formats&max_results=" + maxResults;
 		InputStream xml = null;
 		try {

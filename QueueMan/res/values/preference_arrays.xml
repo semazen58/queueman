@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="queue_counts">
+		<item>5</item>
+		<item>10</item>
+		<item>25</item>
+		<item>50</item>
+		<item>All</item>
+	</string-array>
+	<string-array name="queue_count_values">
+		<item>5</item>
+		<item>10</item>
+		<item>25</item>
+		<item>50</item>
+		<item>All</item>
+	</string-array>
+	<string-array name="queue_tabs">
+		<item>Disc</item>
+		<item>Instant</item>
+		<item>Recommended</item>
+	</string-array>
+	<string-array name="queue_tab_values">
+		<item>0</item>
+		<item>1</item>
+		<item>2</item>
+	</string-array>
+</resources>

@@ -27,6 +27,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -58,6 +59,10 @@ import edwardawebb.queueman.classes.NetFlixQueue;
  * @copyright 2009 Edward A. Webb
  *
  */
+/**
+ * @author eddie
+ *
+ */
 public class QueueMan extends TabActivity implements OnItemClickListener,
 		OnTabChangeListener, OnClickListener {
 
@@ -70,6 +75,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	protected static final String ACCESS_TOKEN_SECRET_KEY = "token_secret_id";
 	protected static final String WATCH_INSTANT_KEY = "can_watch_instant_id";
 	protected static final String TITLE_COUNT_KEY = "titles_to_download_id";
+	protected static final String RECOMMEND_COUNT_KEY = "recommends_to_download_id";
+	protected static final String DEFAULT_TAB_KEY = "default_tab_id";
 	protected static final String RT_KEY = "request_token";
 	protected static final String RTS_KEY = "request_token_secret_id";
 
@@ -79,11 +86,18 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private static String accessToken;
 	private static String userId;
 	private static String accessTokenSecret;
-	private static String downloadCount;
+	/**
+	 * session preferences
+	 */
+	private static String queueDownloadCount;
+	private static String recommendDownloadCount;
+	private static String defaultTab;
+	protected static boolean canWatchInstant;
+	
+	
+	public static NetFlix netflix;
 	// see res/values/download_count_array.xml
 	public static final String ALL_TITLES_STRING = "All";
-	protected static boolean canWatchInstant;
-	public static NetFlix netflix;
 
 	/*
 	 * hopefully will ease the FC issues and confusion around process
@@ -119,6 +133,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * Intent codes
 	 */
 	protected static final int SEARCH_MOVIES = 444;
+	protected static final int EDIT_PREFS = 555; // this will allow us to catch edits and update session prefs.
 	public static final String ACTION_KEY = "QueueMan.Action";
 	public static final int ACTION_MOVE = 301;
 	public static final int ACTION_ADD = 302;
@@ -365,6 +380,11 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	}
 
+	
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onStart()
+	 */
 	public void onStart() {
 		super.onStart();
 		// start analytics session
@@ -378,7 +398,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		}
 		
 		
-		//logic
+		//determine where user is coming from, what our sesion staus is
 		switch(sessionStatus){
 			case SESSION_STARTING:
 				if(isExistingUser()){
@@ -407,6 +427,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			case SESSION_ACTIVE:
 				//this only occurs if they are coming back from a sub activity, or flipping screen 
 				//just be redraw our current queue
+				mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
 				redrawQueue();
 				break;
 				
@@ -423,6 +444,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				//report error.
 				FlurryAgent.onError("ER:99",	"sessionStatus Invalid - method OnStart: "+sessionStatus, "QueueMan");
 		}
+		
+		
 
 
 	}
@@ -432,7 +455,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 	private boolean isExistingUser() {
 		// TODO Auto-generated method stub
-		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		return settings.contains(ACCESS_TOKEN_SECRET_KEY);
 	}
 
@@ -443,29 +466,33 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		saveSettings();
 	}
 
-	// Listen for results from search screen
+	/*
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onActivityResult(int, int, android.content.Intent)
+	 */
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// See which child activity is calling us back.
 		Disc disc=null;
-		int queueType=NetFlixQueue.QUEUE_TYPE_DISC;
-		switch (resultCode) {
+		switch (requestCode) {
 		case SEARCH_MOVIES:
 			//they were searchin and found something they like, A
 			sessionStatus=SESSION_TITLE_ADDED;
 			disc = (Disc) data.getSerializableExtra("Disc");
-			queueType = data.getIntExtra(ACTION_KEY, (int) 0);
+			int queueType = data.getIntExtra(ACTION_KEY, (int) 0);
 			addNewDisc(disc, queueType);
 			break;
 		case QueueSearch.ADD_MOVIES:
 			sessionStatus=SESSION_TITLE_ADDED;
 			disc = (Disc) data.getSerializableExtra("Disc");
-			queueType = data.getIntExtra(ACTION_KEY, (int) 0);
-			addNewDisc(disc, queueType);
+			int queueType2 = data.getIntExtra(ACTION_KEY, (int) 0);
+			addNewDisc(disc, queueType2);
 			if(mTabHost.getCurrentTab() == TAB_RECOMMEND){
 				NetFlix.recomemendedQueue.delete(disc);
 				redrawQueue();
 			}
 			break;
+		case EDIT_PREFS:
+			loadSettings();
 		default:
 			break;
 		}
@@ -525,8 +552,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		case SETTINGS_ID:
 			FlurryAgent.onEvent("Launching Settings");
 			// Start the activity whose result we want to retrieve. The
-			startActivity(new Intent(this,
-					edwardawebb.queueman.core.Settings.class));
+			startActivityForResult(new Intent(this,
+					edwardawebb.queueman.core.EditPreferences.class),EDIT_PREFS);
 
 			return true;
 		case LICENSE_ID:
@@ -703,12 +730,16 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 
 	private void loadSettings() {
-		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		//getSharedPreferences(PREFS_NAME, 0);
 		userId = settings.getString(MEMBER_ID_KEY, "");
 		accessToken = settings.getString(ACCESS_TOKEN_KEY, "");
 		accessTokenSecret = settings.getString(ACCESS_TOKEN_SECRET_KEY, "");
 		canWatchInstant = settings.getBoolean(WATCH_INSTANT_KEY, false);
-		downloadCount = settings.getString(TITLE_COUNT_KEY, "10");
+		queueDownloadCount = settings.getString(TITLE_COUNT_KEY, "10");
+		recommendDownloadCount = settings.getString(RECOMMEND_COUNT_KEY, "20");
+		defaultTab = settings.getString(DEFAULT_TAB_KEY, "0");
+		Log.d("Preferences","qdl:"+queueDownloadCount + "  rdl: " + recommendDownloadCount + "    dt: "+defaultTab + "   user: "+ userId + "     at: " + accessToken);
 
 	}
 
@@ -716,7 +747,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		if(netflix != null && netflix.getUserID() != null){
 			// Save user preferences. We need an Editor object to
 			// make changes. All objects are from android.context.Context
-			SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+			SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 			SharedPreferences.Editor editor = settings.edit();
 			//clear out old request tokens... we have an access token now!
 			editor.clear();
@@ -729,10 +760,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			editor.putString(ACCESS_TOKEN_SECRET_KEY, netflix
 					.getAccessTokenSecret());
 			editor.putBoolean(WATCH_INSTANT_KEY, canWatchInstant);
-			if (downloadCount == null) {
-				downloadCount = "10";
-			}
-			editor.putString(TITLE_COUNT_KEY, downloadCount);
+
+			if(queueDownloadCount==null)queueDownloadCount="10";
+			if(recommendDownloadCount==null)recommendDownloadCount="10";
+			if(defaultTab==null)defaultTab="0";
+			editor.putString(TITLE_COUNT_KEY, queueDownloadCount);
+			editor.putString(RECOMMEND_COUNT_KEY, recommendDownloadCount);
+			editor.putString(DEFAULT_TAB_KEY, defaultTab);
 			// commit
 			editor.commit();
 		}
@@ -897,14 +931,25 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		dialog.setTitle("Downloading Queue");
 		TextView text = (TextView) dialog.findViewById(R.id.text);
 		String message = "";
-		if (downloadCount.equals(ALL_TITLES_STRING)) {
-			message = "\n\nDownloading "
-					+ downloadCount
-					+ " titles. \n*This may take a while*\n You may adjust this value in Settings.";
-		} else {
-			message = "\n\nDownloading titles up to position #" + downloadCount
-					+ ". You may adjust this value in Settings.";
+		switch(mTabHost.getCurrentTab()){
+			case TAB_DISC:
+			case TAB_INSTANT:
+				if (queueDownloadCount.equals(ALL_TITLES_STRING)) {
+					message = "\n\nDownloading "
+							+ queueDownloadCount
+							+ " titles. \n*This may take a while*\n You may adjust this value in Settings.";
+				} else {
+					message = "\n\nDownloading titles up to position #" + queueDownloadCount
+								+ ". You may adjust this value in Settings.";
+				
+				}
+				break;
+			case TAB_RECOMMEND:
+				message = "\n\nDownloading " + recommendDownloadCount + " recommendations.\n"
+				+ ". You may adjust this value in Settings.";
+				break;
 		}
+		
 		text.setText("Patience is a virtue" + message);
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setImageResource(R.drawable.red_icon);
@@ -917,7 +962,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				if (netflix.isOnline()) {
 					// get queue will connect to neflix and resave the currentQ
 					// vairable
-					int result = netflix.getQueue(queueType, downloadCount);
+					int result = netflix.getQueue(queueType, getDownloadCount());
 					switch (result) {
 					case 200:
 					case 201:
@@ -992,10 +1037,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		dialog.show();
 	}
 
-	private void addNewDisc(final Disc disc, final int queueType) {
+	private void addNewDisc(final Disc disc, final int mqueueType) {
 		Thread t = new Thread() {
 			public void run() {
-				int result = netflix.addToQueue(disc, queueType);
+				int result = netflix.addToQueue(disc, mqueueType);
 				switch (result) {
 				case 200:
 				case 201:
@@ -1069,11 +1114,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		t.start();
 	}
 
-	public static void updateDownloadCount(String titleCount) {
-		// TODO Auto-generated method stub
-		downloadCount = titleCount;
-	}
-
+	
 	public void onClick(View v) {
 		if(v == accept){
 			dialog.dismiss();
@@ -1118,7 +1159,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			if (netflix.isOnline()) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
-				result = netflix.getRecommendations(downloadCount);
+				result = netflix.getRecommendations(getDownloadCount());
 				switch (result) {
 				case 200:
 				case 201:
@@ -1224,8 +1265,18 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		
 		
 		
-	 
-	 
+			/**
+			 * @return the downloadCount based on current tab
+			 */
+			public String getDownloadCount() {
+									
+				if(mTabHost.getCurrentTab() == TAB_RECOMMEND){
+						return recommendDownloadCount;						
+				}else{
+						return queueDownloadCount;
+				}
+			}
+
 	 
 	 
 
