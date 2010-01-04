@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+  
+ <!-- top section  -->
+ <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal">
+  <!-- image -->
+  <ImageView android:id="@+id/boxart" android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="20dip"
+			android:layout_marginRight="20dip"
+			android:layout_marginLeft="20dip" 
+			android:src="@drawable/red_icon" />
+  <!-- right top -->
+  <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+  <!--  title -->
+
+<TextView android:id="@+id/mtitle" android:layout_width="wrap_content"
+	android:layout_height="wrap_content" 
+	android:layout_marginTop="10dip"
+	android:textSize="30sp"  android:text="Jumanji" />
+  <!-- year and rating -->
+  <LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal">
+	  		<TextView android:id="@+id/myear" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" 
+				android:layout_marginTop="10dip"
+				android:textSize="30sp"  
+				android:text="1993" />
+			
+				
+			<RatingBar
+			 android:id="@+id/RatingBar01"
+			  android:layout_marginRight="5sp"
+			  android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+			   style="?android:attr/ratingBarStyleSmall"/>
+	 <!-- rate button -->
+	  	<Button 
+			android:layout_width="wrap_content" 
+			android:id="@+id/Button01" 
+			android:layout_height="wrap_content"		
+			 android:text="@+id/Button01"/>
+  </LinearLayout>
+  <!-- /year and rating -->
+  
+  </LinearLayout>
+  <!-- / right top -->
+  </LinearLayout>
+  <!-- / top section -->
+  
+  
+  
+ <!-- body -->
+ <!-- synopsis -->
+ <ScrollView android:id="@+id/scrollie" 
+ 		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:paddingLeft="10px">
+		
+		<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+		<TextView android:id="@+id/synopsis" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:layout_marginLeft="10dip"
+			android:layout_marginTop="10dip"
+			android:text="Unable to load Title Synopsis." />
+			<TextView 
+		   android:id="@+id/Formats"
+		 android:text="Availability: "
+		  android:layout_width="fill_parent"
+			android:layout_marginLeft="10dip"
+		    android:layout_height="wrap_content" />
+<include android:id="@+id/options_include" layout="@layout/add_options" />
+</LinearLayout>
+		
+
+</ScrollView>
+
+ <!-- footer --> 
+ 	<TextView android:id="@+id/netflix_branding" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:gravity="bottom"
+			android:layout_marginTop="10dip"
+			android:textSize="10sp"  android:text="Delivered by Netflix" />
+</LinearLayout>
