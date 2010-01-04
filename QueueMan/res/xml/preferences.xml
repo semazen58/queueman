@@ -5,7 +5,7 @@
 		<ListPreference
 		android:key="titles_to_download_id"
 		android:title="Queue Title Download"
-		android:summary="Click to set maximum number of queue titles to download for queues"
+		android:summary="Set maximum number of titles to download for queues (disc, instant)"
 		android:dialogTitle="Choose Max Downloads"
 		android:entries="@array/queue_counts"
 		android:entryValues="@array/queue_count_values"></ListPreference>
@@ -15,7 +15,7 @@
 	<ListPreference
 		android:key="recommends_to_download_id"
 		android:title="Recommendation Downloads"
-		android:summary="Click to set maximum number of recommended titles to download"
+		android:summary="Set maximum number of recommendations to download"
 		android:dialogTitle="Choose Max Downloads"
 		android:entries="@array/queue_counts"
 		android:entryValues="@array/queue_count_values"></ListPreference>
