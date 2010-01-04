@@ -1,4 +1,5 @@
 #summary Promote QUeueman elsewhere
+#labels Featured
 #sidebar MasterTOC
 
 = !QueueMan  Just loves the Spotlight =
@@ -13,7 +14,8 @@ Please rank !QueueMan at [http://www.netflix.com/AppDisplay?id=2167&st=at&pn=1&l
 ==Yeah, some people complain, and that helps us get better, but praise is nice too!==
 ----
 
-
+ ====Much more reliable than PhoneFlicks====
+ --Thanks _Drew_, I have put much more effort into stability recently.
 
  ====Best netflix app on the market! "Netflix reccomends" category is great but needs to be   expanded by genre and by separating the disc and instant movies====
  --I'm working on it _James_, thanks.
