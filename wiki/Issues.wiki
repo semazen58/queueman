@@ -1,5 +1,4 @@
 #summary Landing page for Issues Tab
-#labels Featured
 = Submitting Issues =
 
 *Before submitting any issues, please [http://code.google.com/p/queueman/issues/advsearch search existing] issues.*
