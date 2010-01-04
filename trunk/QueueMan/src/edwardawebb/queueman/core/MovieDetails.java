@@ -164,9 +164,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		avgRatingBar = (RatingBar) findViewById(R.id.RatingBar01);
 		avgRatingBar.setNumStars(5);
 		if(disc.hasUserRating()){
-
-			avgRatingBar.setRating(disc.getUserRating().floatValue());
-			
+			avgRatingBar.setRating(disc.getUserRating().floatValue());			
 		}else{
 			avgRatingBar.setRating(disc.getAvgRating().floatValue());
 		}
