@@ -779,7 +779,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		// send user to netflix
 
 		// show custom dialog to let them know
-		showCustomDialog("Verifing with Netflix", "Patience..Loading");
+		showCustomDialog("Verifing with Netflix", "This is a one time process - but it may be slow on some conenctions as we direct you to Netflix.");
 
 		netflix = new NetFlix();
 		Log.d("QueueMan", "Netflix Instantiated:" + netflix.toString());
@@ -1255,7 +1255,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		     }
 
 		     protected void onPostExecute(Integer result) {
-
+		    	 dialog.dismiss();
 					//show grid views of titles.
 					startActivity(new Intent(QueueMan.this,
 							edwardawebb.queueman.core.HomeTitles.class));
