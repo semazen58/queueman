@@ -22,7 +22,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.NetFlix;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
@@ -52,11 +51,12 @@ public class DiscETagHandler extends DefaultHandler {
 	
 	//we only get an etag from  users disc queue
 	@Override	
-	public void characters(char ch[], int start, int length) {
+	public void characters(char ch[], int start, int length) throws SAXException {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
 			NetFlix.discQueue.setETag(eTag);
+			//throw new SAXException("ETag Updated");
 		}
 	}
 

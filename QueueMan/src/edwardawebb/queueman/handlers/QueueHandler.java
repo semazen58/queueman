@@ -32,8 +32,6 @@ public class QueueHandler extends DefaultHandler {
 
 	protected Disc tempMovie;
 
-	private boolean inResultsTotal = false;
-	private boolean inResultsPerPage = false;
 	private boolean inId = false;
 	private boolean inRating = false;
 	private boolean inPosition = false;
@@ -46,6 +44,10 @@ public class QueueHandler extends DefaultHandler {
 	private boolean inItem = false;
 	private boolean inStatus = false;
 	private boolean inSubCode = false;
+	private boolean inNumResults = false;
+	private boolean inStartIndex = false;
+	private boolean inResultsPerPage = false;
+	private boolean inMessage = false; //in case or error
 
 	// temp variables
 	private String eTag;
@@ -61,6 +63,10 @@ public class QueueHandler extends DefaultHandler {
 	protected int statusCode = 0;
 	private int subCode = 0;
 	private boolean isAvailable = false;
+	protected int numResults = 0;
+	protected int startIndex=0;
+	protected int resultsPerPage=0;
+	private String message = "";
 
 	// element names (set by sub classes)
 	protected String itemElementName;
@@ -109,6 +115,8 @@ public class QueueHandler extends DefaultHandler {
 			inId = true;
 		} else if (element.equals("release_year")) {
 			inYear = true;
+		} else if (element.equals("number_of_results")) {
+			inNumResults = true;
 		} else if (element.equals("average_rating")) {
 			inRating = true;
 		} else if (element.equals("title")) {
@@ -119,14 +127,16 @@ public class QueueHandler extends DefaultHandler {
 			boxArtUrl = atts.getValue("small");
 		} else if (element.equals(itemElementName)) {
 			inItem = true;
-		} else if (element.equals("number_of_results")) {
-			inResultsTotal = true;
+		} else if (element.equals("start_index")) {
+			inStartIndex = true;
 		} else if (element.equals("results_per_page")) {
 			inResultsPerPage = true;
 		} else if (name.equals("status_code")) {
 			inStatus = true;
 		} else if (name.equals("sub_code")) {
 			inSubCode = true;
+		}else if (name.equals("message")) {
+			inMessage = true;
 		}
 		// Log.d("QueueHandler","<<<startELement:" + element);
 	}
@@ -148,6 +158,8 @@ public class QueueHandler extends DefaultHandler {
 			inId = false;
 		} else if (element.equals("release_year")) {
 			inYear = false;
+		} else if (element.equals("number_of_results")) {
+			inNumResults = false;
 		} else if (element.equals("average_rating")) {
 			inRating = false;
 		} else if (element.equals("box_art")) {
@@ -157,14 +169,16 @@ public class QueueHandler extends DefaultHandler {
 			tempMovie = new Disc(id,uniqueID, stitle, ftitle, boxArtUrl, rating,
 					synopsis, year, isAvailable);
 			tempMovie.setAvailibilityText(availability);
-		} else if (element.equals("number_of_results")) {
-			inResultsTotal = false;
+		} else if (element.equals("start_index")) {
+			inStartIndex = false;
 		} else if (element.equals("results_per_page")) {
 			inResultsPerPage = false;
 		} else if (name.equals("status_code")) {
 			inStatus = false;
 		} else if (name.equals("sub_code")) {
 			inSubCode = false;
+		}else if (name.equals("message")) {
+			inMessage = false;
 		}
 		// Log.d("QueueHandler","<<<endELement:" + element);
 
@@ -187,11 +201,19 @@ public class QueueHandler extends DefaultHandler {
 			synopsis = (chars);
 		} else if (inYear) {
 			year = chars;
+		} else if (inNumResults) {
+			numResults = Integer.valueOf(chars);
+		} else if (inStartIndex) {
+			startIndex = Integer.valueOf(chars);
+		} else if (inResultsPerPage) {
+			resultsPerPage = Integer.valueOf(chars);
 		} else if (inStatus) {
 			statusCode = Integer.valueOf(chars);
 		} else if (inSubCode) {
 			subCode = Integer.valueOf(chars);
 
+		} else if (inMessage) {
+			message= chars;
 		}
 		// Log.d("QueueHandler","<<<characters:" );
 
@@ -217,6 +239,13 @@ public class QueueHandler extends DefaultHandler {
 	public void setDiscAvailabilityCategoryScheme(
 			String discAvailabilityCategoryScheme) {
 		this.discAvailabilityCategoryScheme = discAvailabilityCategoryScheme;
+	}
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+		return message;
 	}
 
 }

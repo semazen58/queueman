@@ -73,4 +73,10 @@ public class InstantQueueHandler extends QueueHandler {
 
 	
 
+	@Override
+	public void endDocument(){
+		
+		NetFlix.instantQueue.setTotalTitles(super.numResults);
+	}
+	
 }
