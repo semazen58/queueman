@@ -1292,10 +1292,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 		image.setImageResource(R.drawable.red_icon);
 		 		// show message
 		 		dialog.show();*/
-		 		Toast t = new Toast(mListView.getContext());
+		 		Toast t = Toast.makeText(mListView.getContext()
+		 				,"Please wait - at home titles loading"
+		 				,Toast.LENGTH_LONG);
 		 		t.setGravity(Gravity.CENTER|Gravity.CENTER, 0, 0);
-		 		t.setText("Please wait - at home titles loading");
-		 		t.setDuration(Toast.LENGTH_LONG);
 		 		t.show();
 		 		new DownloadHomeTitles().execute();
 		}
