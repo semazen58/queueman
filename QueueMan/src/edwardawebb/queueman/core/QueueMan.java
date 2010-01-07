@@ -32,6 +32,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -1280,7 +1281,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 		parameters.put("Queue Type:", "Home Titles");
 		 		FlurryAgent.onEvent("loadHomeTitles", parameters);
 		 		// show custom dialog to let them know
-		 		dialog = new Dialog(this);
+		 /*		dialog = new Dialog(this);
 		 		dialog.setContentView(R.layout.custom_dialog);
 		 		dialog.setTitle("Loading  at home titles");
 		 		TextView text = (TextView) dialog.findViewById(R.id.text);
@@ -1290,8 +1291,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		 		image.setImageResource(R.drawable.red_icon);
 		 		// show message
-		 		dialog.show();
-			new DownloadHomeTitles().execute();
+		 		dialog.show();*/
+		 		Toast t = new Toast(mListView.getContext());
+		 		t.setGravity(Gravity.CENTER|Gravity.CENTER, 0, 0);
+		 		t.setText("Please wait - at home titles loading");
+		 		t.setDuration(Toast.LENGTH_LONG);
+		 		t.show();
+		 		new DownloadHomeTitles().execute();
 		}
 		/***
 		 * Manage ASync Tasks the Android way
