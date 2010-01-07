@@ -243,6 +243,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					netflix.createUser(userId, accessToken, accessTokenSecret);
 					//load user's preferred tab from preferences
 					mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
+					if(Integer.valueOf(defaultTab) == TAB_DISC) loadQueue() ;// this is missed by "onTabChange" since it is Disc -> Disc, and not really a change
 					//retrieve and display current tab's queue
 					//loadQueue();
 				}else{
@@ -325,7 +326,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				sessionStatus=SESSION_TITLE_ADDED;
 				disc = (Disc) data.getSerializableExtra("Disc");
 				disc.setQueueType(data.getIntExtra(ACTION_KEY, (int) 0));
-				new AddTitle().execute(disc);
+				new AddTitleTask().execute(disc);
 			}else{
 				//user cancelled search, just let it slide
 			}
@@ -340,7 +341,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					NetFlix.recomemendedQueue.delete(disc);
 					redrawQueue();
 				}
-				new AddTitle().execute(disc);
+				new AddTitleTask().execute(disc);
 			}
 			break;
 		case EDIT_PREFS:
@@ -481,11 +482,11 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		switch (mTabHost.getCurrentTab()) {
 		case TAB_DISC:
 			disc = NetFlix.discQueue.getDiscs().get((int) info.id);
-			lastPosition = NetFlix.discQueue.getDiscs().size() + 1;
+			lastPosition = (NetFlix.discQueue.getTotalTitles());
 			break;
 		case TAB_INSTANT:
 			disc = NetFlix.instantQueue.getDiscs().get((int) info.id);
-			lastPosition = NetFlix.instantQueue.getDiscs().size() + 1;
+			lastPosition = NetFlix.instantQueue.getTotalTitles();
 			break;
 		}
 		final int menuItemId = item.getItemId();
@@ -502,9 +503,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		parameters.put("Movie Item Position", String.valueOf(menuItemId));
 		parameters.put("Queue Type", String.valueOf(queueType));
 		FlurryAgent.onEvent("handleDiscUpdate", parameters);
-		showCustomDialog("Updating Title", "Wait for it, wait for it...");
 
 		int mip = 0;
+		int newPosition = 0;
+		
 		switch (queueType) {
 		case NetFlixQueue.QUEUE_TYPE_DISC:
 			mip = NetFlix.discQueue.positionOf(disc);
@@ -522,59 +524,147 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					Toast.LENGTH_LONG).show();
 			return;
 		}
+		switch (menuItemId) {
+					/*case MOVE_ID:
+						// call move
+						// notify("Dev note","I cant help you with "+l.getItemAtPosition(position));
+						Intent intent = new Intent(QueueMan.this,
+								edwardawebb.queueman.core.MovieDetails.class);
+						Bundle b = new Bundle();
+						// b.pu
+						b.putInt(ACTION_KEY, ACTION_MOVE);
+						b.putSerializable("Disc", disc);
+			
+						intent.putExtras(b);
+						startActivity(intent);
+			
+							break;*/
+			case MOVE_TOP_ID:
+				newPosition=1;
+				break;
+			case MOVE_BOTTOM_ID:
+				newPosition = lastPosition;
+				break;
+			case MOVE_UP_ID:
+				newPosition = mip - 1;
+				break;
+			case MOVE_DOWN_ID:
+				newPosition = mip + 1;
+				break;
+			case DELETE_ID:
+				// call delete confirm
+				new DiscDeleteTask().execute(disc);
+				break;
+			default:
+		}
+		//if a new pos. was specified, update using disc, old and new
+		if(newPosition>0) new DiscMoveTask().execute(disc, mip, newPosition, queueType);
+	}
+	
+	/***
+	 * DiscMoveTask class spawns a BG thread to handle the movement or current discs in instant and disc q
+	 * @author eddie
+	 *
+	 */
+	 private class DiscMoveTask extends AsyncTask<Object, Integer, Integer> {
+	     protected void onPreExecute(){
+	    	 showCustomDialog("Moving Title", "Attempting to reorder queue...");
+	     }
+		 
+	     /*
+	      * object array ( Disc, position, newPosition, queueType )
+	      */
+		 protected Integer doInBackground(Object... oArr) {
+	    	 int result=901;
+	    	
+				
+			if (isOnline()) {
+				result=netflix.moveInQueue((Disc)oArr[0],(Integer)oArr[1],(Integer)oArr[2],(Integer)oArr[3]);
+			} else {
+				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
+			} 	
+	         
+	         return result;
+	     }
 
-		final int movieItemPosition = mip;
-		Thread t = new Thread() {
-			public void run() {
-				int result = 0;
-				switch (menuItemId) {
-				case MOVE_ID:
-					// call move
-					// notify("Dev note","I cant help you with "+l.getItemAtPosition(position));
-					Intent intent = new Intent(QueueMan.this,
-							edwardawebb.queueman.core.MovieDetails.class);
-					Bundle b = new Bundle();
-					// b.pu
-					b.putInt(ACTION_KEY, ACTION_MOVE);
-					b.putSerializable("Disc", disc);
+	     protected void onProgressUpdate(Integer... progress) {
+	        //dont have indcators yet
+	     }
 
-					intent.putExtras(b);
-					startActivity(intent);
+	     protected void onPostExecute(Integer result) {
 
-					break;
-				case MOVE_TOP_ID:
-					result = netflix.moveInQueue(disc, movieItemPosition, 1);
-					break;
-				case MOVE_BOTTOM_ID:
-					result = netflix.moveInQueue(disc, movieItemPosition,
-							lastPosition);
-					break;
-				case MOVE_UP_ID:
-					result = netflix.moveInQueue(disc, movieItemPosition,
-							movieItemPosition - 1);
-					break;
-				case MOVE_DOWN_ID:
-					result = netflix.moveInQueue(disc, movieItemPosition,
-							movieItemPosition + 1);
-					break;
-				case DELETE_ID:
-					// call delete confirm
-					result = netflix.deleteFromQueue(disc, queueType);
-					break;
-				default:
-				}
-				switch (result) {
+	    	 dialog.dismiss();
+	        switch (result) {
 				case 200:
 				case 201:
-					mHandler.post(mRetrieveQueue);
+					
+					redrawQueue();
+					break;
+				case  NetFlix.MOVED_OUTSIDE_CURRENT_VIEW:
+					Toast.makeText(mTabHost.getCurrentTabView().getContext(),"Success - This disc was moved beyond the # of titles shown, hence *this title will no longer be visible in the current range*"  , Toast.LENGTH_LONG);
+					redrawQueue();
+					break;
 				default:
-
+					FlurryAgent.onError("ER:73",
+							"Failed to Update title - "
+							+ netflix.lastResponseMessage,
+							"QueueMan");
+						
 				}
-			}
+	     }
 
-		};
-		t.start();
-	}
+	 }
+
+		/***
+		 * DiscDeleteTask class spawns a BG thread to handle the movement or current discs in instant and disc q
+		 * @author eddie
+		 *
+		 */
+		 private class DiscDeleteTask extends AsyncTask<Disc, Integer, Integer> {
+		     protected void onPreExecute(){
+	    	 showCustomDialog("Removing Title", "I like to purge-it, purge-it.\nI like to purge-it, purge-it.\n  Purge-it!!");
+		     }
+			 
+		     /*
+		      * object array ( Disc, position, newPosition, queueType )
+		      */
+			 protected Integer doInBackground(Disc... oArr) {
+		    	 int result=901;
+		    	
+					
+				if (isOnline()) {
+					result=netflix.deleteFromQueue(oArr[0], queueType);
+				} else {
+					FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
+				} 	
+		         
+		         return result;
+		     }
+
+		     protected void onProgressUpdate(Integer... progress) {
+		        //dont have indcators yet
+		     }
+
+		     protected void onPostExecute(Integer result) {
+
+		    	 dialog.dismiss();
+		        switch (result) {
+					case 200:
+					case 201:
+						redrawQueue();
+						break;
+					default:
+						FlurryAgent.onError("ER:73",
+								"Failed to Update title - "
+								+ netflix.lastResponseMessage,
+								"QueueMan");
+							showCustomDialog("Error - Please Report", "Although we are connected, I was unable to remove that title.\n Reason COde:"+netflix.lastResponseMessage);
+			        
+					}
+		     }
+
+		 }
+
 
 	/**
 	 * helpers
@@ -694,7 +784,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				QueueMan.this.finish();
 				break;
 			case 21:// error getting token, booo
-				showCustomDialog("Error", "Snap! I was unable to negotiate a Request Token with Netflix (Step 1 of 3). \n Please restart the application and report if error repeates");
+				showCustomDialog("Error - Please Report", "Snap! I was unable to negotiate a Request Token with Netflix (Step 1 of 3). \n Please restart the application and report if error repeates");
 				break;
 			default:
 				showCustomDialog("Error", "Unable to Connect to the internet, please check connection and try again.");
@@ -731,7 +821,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		if (settings.contains(RT_KEY)){
 			netflix = new NetFlix(settings.getString(RT_KEY, ""),settings.getString(RTS_KEY, ""));
 		}else{
-			showCustomDialog("Error", "I could not load your Rquest Token - please close out and try to link with Netflix again");
+			showCustomDialog("Error  - Please Report", "I could not load your Rquest Token - please close out and try to link with Netflix again");
 		}
 	}
 
@@ -797,7 +887,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				break;
 			default:
 				// error getting token, booo
-				showCustomDialog("Error", "Snap! I was unable to negotiate an Access Token with Netflix. \n Please restart the application and report if error repeates");
+				showCustomDialog("Error  - Please Report", "Snap! I was unable to negotiate an Access Token with Netflix. \n Please restart the application and report if error repeates");
 				
 			}
 	     }
@@ -935,7 +1025,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 						+ "Has Access: "+ hasAccess
 						+ "Has ID: "+ hasID,
 						"QueueMan");
-					showCustomDialog("Error", "Although we are connected, I was unable to load your queue. Perhaps an issue with Netflix API.\n If this error continues, please report (see \"About\" for details)");
+					showCustomDialog("Error  - Please Report", "Although we are connected, I was unable to load your queue. Perhaps an issue with Netflix API.\n If this error continues, please report (see \"About\" for details)");
 	        }
 	     }
 
@@ -999,7 +1089,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * @author eddie
 	 *
 	 */
-	 private class AddTitle extends AsyncTask<Disc, Integer, Integer> {
+	 private class AddTitleTask extends AsyncTask<Disc, Integer, Integer> {
 	     protected void onPreExecute(){
 	    	 showCustomDialog("Adding Title", "Just a sec as I try to add this title to your queue");
 	     }
@@ -1012,26 +1102,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				// vairable
 				Disc disc=discArr[0];
 				result = netflix.addToQueue(disc,disc.getQueueType());
-				switch (result) {
-				case 200:
-				case 201:
-					// title added
-					break;
-				case 620:
-					// added to SAVED queue
-					FlurryAgent
-							.onError(
-									"Error:620",
-									"The chosen title is a saved title, and nto movable",
-									"QueueMan");
-					break;
-				default:
-					FlurryAgent.onError("ER:45",
-							"AddNewDisc: Unkown response. SubCode: " + result
-									+ " Http:" + netflix.lastResponseMessage,
-							"QueueMan");
-				}
-
+			
 			} else {
 				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
 			} 	
@@ -1044,8 +1115,31 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	     }
 
 	     protected void onPostExecute(Integer result) {
-	        dialog.dismiss();
-	        redrawQueue();
+
+	    	 dialog.dismiss();
+	    	 switch (result) {
+				case 200:
+				case 201:
+					redrawQueue();
+					break;
+
+				case 620:
+					// added to SAVED queue
+					Toast.makeText(mListView.getContext(), "Title Saved - This title is not currently available, but was added to your Saved queue", Toast.LENGTH_LONG).show();
+					FlurryAgent
+							.onError(
+									"Error:620",
+									"The chosen title is a saved title, and nto movable",
+									"QueueMan");
+					break;
+				default:
+					FlurryAgent.onError("ER:45",
+							"AddNewDisc: Unkown response. SubCode: " + result
+									+ " Http:" + netflix.lastResponseMessage,
+							"QueueMan");
+						showCustomDialog("Error - Please Report", "Unable to add new title!\n Reason COde:"+netflix.lastResponseMessage + "\n\n hit 'Back' to continue");
+		        
+				}
 	     }
 
 	 }

@@ -60,10 +60,11 @@ public class HomeTitles extends Activity implements OnItemClickListener {
 	    gridview.setAdapter(new ImageAdapter(this,NetFlix.homeQueue.getDiscs()));
 	    gridview.setOnItemClickListener(this);
 	    if(NetFlix.homeQueue.getDiscs().size()<1){
-	    	Toast.makeText(this, "No Titles at Home", Toast.LENGTH_LONG);
+	    	Toast.makeText(this, "No Titles at Home", Toast.LENGTH_LONG).show();
 	    }else{
-	    	noTitles.setText(NetFlix.homeQueue.getDiscs().size() + " title(s) at home or in transit.\nPlease wait as titles load.");
-	    	//noTitles.setVisibility(View.INVISIBLE);
+	    	//noTitles.setText(NetFlix.homeQueue.getDiscs().size() + " title(s) at home or in transit.\nPlease wait as titles load.");
+	    	noTitles.setText("");
+	    	Toast.makeText(this, NetFlix.homeQueue.getDiscs().size()+" titles loading, give it a sec..", Toast.LENGTH_LONG).show();
 	    }
 	    	
 	}

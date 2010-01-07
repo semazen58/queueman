@@ -53,9 +53,10 @@ public class DiscQueueHandler extends QueueHandler {
 	@Override
 	public void endElement(String uri, String name, String qName)throws SAXException {
 		super.endElement(uri, name, qName);
-		if (name.trim().equals("etag")){
+		String value=name.trim();
+		if (value.equals("etag")){
 			inETag = false;			
-		}else if(name.trim().equals("queue_item")){			
+		}else if(value.equals("queue_item")){		
 			NetFlix.discQueue.add(super.tempMovie);
 		}
 	}
@@ -71,6 +72,13 @@ public class DiscQueueHandler extends QueueHandler {
 		}
 	}
 
+	@Override
+	public void endDocument(){
+		//these let us know for which range our etag is valid, needed for move to bottom top
+		NetFlix.discQueue.setTotalTitles(super.numResults);
+		NetFlix.discQueue.setStartIndex(super.startIndex);
+		NetFlix.discQueue.setPerPage(resultsPerPage);
+	}
 	
 
 }

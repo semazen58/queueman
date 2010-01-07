@@ -53,6 +53,7 @@ public class Disc implements Serializable {
 	private boolean hasUserRating=false;
 	private String uniqueId;
 	private int queueType;//self awareness for adding new titles - not used by existing discs
+	private int position; // @ TODO need to use this for all discs, will allow us to restore showing of movies moved to bvottom
 
 	private ArrayList<String> formats = new ArrayList<String>();
 

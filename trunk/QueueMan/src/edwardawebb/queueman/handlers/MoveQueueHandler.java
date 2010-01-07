@@ -32,6 +32,7 @@ public class MoveQueueHandler extends DefaultHandler {
 	
 	private boolean inETag=false;
 	private boolean inStatus=false;
+	private boolean inMessage=false;
 	
 	private int oldPosition;
 	private boolean inPosition=false;
@@ -39,6 +40,7 @@ public class MoveQueueHandler extends DefaultHandler {
 	protected int statusCode=0;
 	private int subCode=0;
 	private boolean inSubCode;
+	private String message="";
 
 	public MoveQueueHandler(int oldPosition) {
 		this.oldPosition=oldPosition;
@@ -55,7 +57,9 @@ public class MoveQueueHandler extends DefaultHandler {
         	inStatus=true;
         }else if (name.equals("sub_code")){
         	inSubCode=true;
-        }
+        }else if (name.equals("message")) {
+			inMessage = true;
+		}
 	}
 
 	//we pnly want to update the local q when downlaoing disc q.
@@ -73,7 +77,9 @@ public class MoveQueueHandler extends DefaultHandler {
         	inStatus=false;
         }else if (name.equals("sub_code")){
         	inSubCode=false;
-        }
+        }else if (name.equals("message")) {
+			inMessage = false;
+		}
 	}
 
 	public void characters(char ch[], int start, int length) {
@@ -87,6 +93,8 @@ public class MoveQueueHandler extends DefaultHandler {
 			statusCode=Integer.parseInt(chars);
 		}else if(inSubCode){
 			subCode=Integer.parseInt(chars);
+		}else if (inMessage) {
+			message= chars;
 		}
 	}
 	/**
@@ -105,6 +113,12 @@ public class MoveQueueHandler extends DefaultHandler {
 		return this.statusCode;
 	}
 
-	
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+		return message;
+	}
 
 }

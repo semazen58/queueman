@@ -41,11 +41,33 @@ public class NetFlixQueue {
 	private NetFlix netflix;
 	private int id;
 	private String etag;
-	public static final int QUEUE_TYPE_DISC = 2;
-	public static final int QUEUE_TYPE_INSTANT = 3;
-	public static final int QUEUE_TYPE_SEARCH = 4;
-	public static final int QUEUE_TYPE_RECOMMEND = 5;
-	public static final int QUEUE_TYPE_HOME = 6;
+	//etag is only valid in current range, for move top/bottom we need to know where working out of bounds
+	private int startIndex=0;
+	private int perPage=0; 
+	
+	private int totalTitles=0; // total returned results
+	
+	/**
+	 * @return the totalTitles
+	 */
+	public int getTotalTitles() {
+		return totalTitles;
+	}
+
+	/**
+	 * @param totalTitles the totalTitles to set
+	 */
+	public void setTotalTitles(int totalTitles) {
+		this.totalTitles = totalTitles;
+	}
+
+	public static final int QUEUE_TYPE_DISC = 0;
+	public static final int QUEUE_TYPE_INSTANT = 1;
+	public static final int QUEUE_TYPE_SEARCH = 2;
+	public static final int QUEUE_TYPE_RECOMMEND = 3;
+	public static final int QUEUE_TYPE_HOME = 4;
+	
+	public static final String[] queueTypeText = {"disc","instant","search","recommended","at_home"};
 
 	// A linked list gives you random access (implements List) and also
 	// implements Queue
@@ -146,5 +168,33 @@ public class NetFlixQueue {
 		discs.clear();
 
 	}
+	/**
+	 * @return the startIndex
+	 */
+	public int getStartIndex() {
+		return startIndex;
+	}
+
+	/**
+	 * @param startIndex the startIndex to set
+	 */
+	public void setStartIndex(int startIndex) {
+		this.startIndex = startIndex;
+	}
+
+	/**
+	 * @return the perPage
+	 */
+	public int getPerPage() {
+		return perPage;
+	}
+
+	/**
+	 * @param perPage the perPage to set
+	 */
+	public void setPerPage(int perPage) {
+		this.perPage = perPage;
+	}
+
 	
 }

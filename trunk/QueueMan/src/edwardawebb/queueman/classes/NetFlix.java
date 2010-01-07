@@ -57,9 +57,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.content.Context;
 import android.net.Uri;
-import android.net.ConnectivityManager;
 import android.util.Log;
 import edwardawebb.queueman.apikeys.ApiKeys;
 import edwardawebb.queueman.core.QueueMan;
@@ -120,6 +118,7 @@ public class NetFlix {
 	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
 	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
 	public static final String NF_RATING_NO_INTEREST = "not_interested";
+	public static final int MOVED_OUTSIDE_CURRENT_VIEW = 299; // result code used when disc is moved outside our current range (and we need ot remove it)
 	
 
 	public NetFlix() {// OAuthConsumer oac, OAuthProvider oap
@@ -307,7 +306,7 @@ public class NetFlix {
 				if (!NetFlix.discQueue.isEmpty())
 					return 200;
 				QueueUrl = new URL("http://api.netflix.com/users/" + userID
-						+ "/queues/disc" + expanders);
+						+ "/queues/disc/available" + expanders);
 
 				myQueueHandler = new DiscQueueHandler();
 				break;
@@ -565,11 +564,17 @@ public class NetFlix {
 		return result;
 	}
 
-	public boolean getNewETag(int queueType) {
+	
+	public boolean getNewETag(int queueType){
+		return getNewETag(queueType,1);
+	}
+	
+	public boolean getNewETag(int queueType, int discPosition) {
 		URL QueueUrl = null;
 		DefaultHandler myQueueHandler = null;
 		boolean result = false;
-		String expanders = "?max_results=1";
+		//start index is 0 based, so step the true position down one
+		String expanders = "?max_results="+ 1   + "&start_index="+ (discPosition-1);
 		InputStream xml = null;
 		try {
 			switch (queueType) {
@@ -585,7 +590,7 @@ public class NetFlix {
 				myQueueHandler = new DiscETagHandler();
 				break;
 			}
-			setSignPost(oathAccessToken, oathAccessTokenSecret);
+			 setSignPost(oathAccessToken, oathAccessTokenSecret);
 			HttpURLConnection request = (HttpURLConnection) QueueUrl
 					.openConnection();
 
@@ -604,6 +609,9 @@ public class NetFlix {
 				XMLReader xr = sp.getXMLReader();
 
 				xr.setContentHandler(myQueueHandler);
+				//our custom handler will throw an exception when he gets what he want, interupting the full parse
+			 ErrorProcessor errors = new ErrorProcessor(); 
+			 xr.setErrorHandler(errors);
 				xr.parse(new InputSource(xml));
 				result = true;
 			}
@@ -792,7 +800,10 @@ public class NetFlix {
 			xr.parse(new InputSource(xml));
 
 			result = myHandler.getSubCode();
-
+			if( result >= 300 ){
+				//we may have an error from netflix, check it
+				lastResponseMessage+="  NF: " + myHandler.getMessage();
+			}
 		} catch (IOException e) {
 			
 			e.printStackTrace();
@@ -818,12 +829,16 @@ public class NetFlix {
 	 * Disc q only 1 based index
 	 * 
 	 * @param disc
+	 * @param oldPosition
 	 * @param newPosition
+	 * @param queueType
 	 * @return subcode, statuscode, or httpresponse code (NF_ERROR_BAD_DEFAULT on exception)
 	 */
-	public int moveInQueue(Disc disc, int oldPosition, int newPosition) {
+	public int moveInQueue(Disc disc, int oldPosition, int newPosition, int queueType) {
 
 		int result = NF_ERROR_BAD_DEFAULT;
+		
+		//getNewETag(queueType,newPosition);
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
@@ -838,8 +853,8 @@ public class NetFlix {
 		InputStream xml = null;
 		try {
 
-			URL url = new URL(disc.getId());
-
+			URL url = new URL("http://api.netflix.com/users/" + NetFlix.userID + "/queues/" + NetFlixQueue.queueTypeText[queueType]);
+			Log.d("NetFlix","Moving: " + url.toString());
 			HttpClient httpclient = new DefaultHttpClient();
 			// Your URL
 			HttpPost httppost = new HttpPost(url.toString());
@@ -863,16 +878,15 @@ public class NetFlix {
 			response = httpclient.execute(httppost);
 
 			xml = response.getEntity().getContent();
-
-			lastResponseMessage = response.getStatusLine().getStatusCode()
-					+ ": " + response.getStatusLine().getReasonPhrase();
-
-			/*
-			 * BufferedReader in = new BufferedReader(new
-			 * InputStreamReader(xml)); String linein = null; while ((linein =
-			 * in.readLine()) != null) { Log.d("NetFlix", "MovieMovie: " +
-			 * linein); }
-			 */
+			
+			
+			result = response.getStatusLine().getStatusCode();
+			
+			 /* BufferedReader in = new BufferedReader(new
+			  InputStreamReader(xml)); String linein = null; while ((linein =
+			  in.readLine()) != null) { Log.d("NetFlix", "Move Movie: " +
+			  linein); }*/
+			 
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp;
 			sp = spf.newSAXParser();
@@ -881,9 +895,23 @@ public class NetFlix {
 			MoveQueueHandler myHandler = new MoveQueueHandler(oldPosition);
 			xr.setContentHandler(myHandler);
 			xr.parse(new InputSource(xml));
+			lastResponseMessage = response.getStatusLine().getStatusCode()
+					+ ": " + response.getStatusLine().getReasonPhrase();
+			
 			// result=response.getStatusLine().getStatusCode();
 			result = myHandler.getSubCode();
-
+			if( result >= 300 ){
+				//we may have an error from netflix, check it
+				lastResponseMessage+="  NF: " + myHandler.getMessage();
+			}else{
+				if(queueType == NetFlixQueue.QUEUE_TYPE_DISC
+						&& newPosition > (discQueue.getStartIndex()+discQueue.getPerPage())){
+					// a disc queue and we have moved past our current viewing 
+					// so we will remove it from viewing to prevnt confusion and removing mishpas (position will be lost)
+					discQueue.delete(disc);
+					result= MOVED_OUTSIDE_CURRENT_VIEW;
+				}
+			}
 		} catch (IOException e) {
 			
 			e.printStackTrace();
