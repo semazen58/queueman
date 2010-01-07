@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="horizontal">
+
+
+	<TextView android:text="120" android:id="@+id/position"
+		android:layout_width="24px" android:layout_height="wrap_content"
+		android:textSize="20sp" android:layout_marginLeft="5sp"
+		android:layout_marginTop="8sp"></TextView>
+	<LinearLayout android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:orientation="vertical"
+		android:layout_marginLeft="15sp">
+		<TextView android:text="@+id/title" android:id="@+id/title"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:textSize="28sp" 
+			></TextView>
+
+		<RatingBar android:id="@+id/queueRating"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:layout_marginLeft="10sp" android:layout_marginBottom="8sp"
+			android:layout_column="1" style="?android:attr/ratingBarStyleSmall"></RatingBar>
+		
+	</LinearLayout>
+</LinearLayout>
