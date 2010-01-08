@@ -333,7 +333,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			}
 			break;
 		case QueueSearch.ADD_MOVIES:
-			if(resultCode < 0){
+			if(resultCode > 0){
 				sessionStatus=SESSION_TITLE_ADDED;
 				disc = (Disc) data.getSerializableExtra("Disc");
 				int qt=data.getIntExtra(ACTION_KEY, (int) 0);
@@ -428,6 +428,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				edwardawebb.queueman.core.MovieDetails.class);
 		Bundle b = new Bundle();
 		
+		try{
 		switch (mTabHost.getCurrentTab()) {
 		case TAB_INSTANT:
 			disc = NetFlix.instantQueue.getDiscs().get(position);
@@ -439,6 +440,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			disc = NetFlix.recomemendedQueue.getDiscs().get(position);
 			intent.putExtra(QueueMan.ACTION_KEY, QueueMan.ACTION_ADD);
 			break;
+		}
+		}catch(NullPointerException npe){
+			//most likely the queue was not done loading and the user tappedn the screen
+			FlurryAgent.onError("NA", "NPE onListItem click", "QueueMan");
 		}
 		//@TODO
 		netflix.getTitleState(disc.getId());
@@ -1182,8 +1187,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 	 private class AddTitleTask extends AsyncTask<Disc, Integer, Integer> {
 	     protected void onPreExecute(){
-	    	 showCustomDialog("Adding Title", "Just a sec as I try to add this title to your queue");
-	     }
+	    	 Toast.makeText(QueueMan.this, "Just a sec as I try to add this title to your queue",Toast.LENGTH_LONG).show();
+	    	 Toast.makeText(QueueMan.this, "Just a sec as I try to add this title to your queue",Toast.LENGTH_LONG).show();
+		    }
 		 
 		 protected Integer doInBackground(Disc... discArr) {
 	    	 int result=901;
@@ -1211,11 +1217,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	    	 switch (result) {
 				case 200:
 				case 201:
+					Toast.makeText(mListView.getContext(), ""+netflix.lastNFResponseMessage, Toast.LENGTH_LONG).show();
 					redrawQueue();
 					break;
 
 				case 620:
-					// added to SAVED queue
+					// added to SAVED queue - double post lolonger message
+					Toast.makeText(mListView.getContext(), "Title Saved - This title is not currently available, but was added to your Saved queue", Toast.LENGTH_LONG).show();
 					Toast.makeText(mListView.getContext(), "Title Saved - This title is not currently available, but was added to your Saved queue", Toast.LENGTH_LONG).show();
 					FlurryAgent
 							.onError(

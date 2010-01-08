@@ -110,6 +110,7 @@ public class NetFlix {
 	private static String oathAccessTokenSecret;
 	private static String resultStatus;
 	public String lastResponseMessage = "none";
+	public String lastNFResponseMessage = "";
 	
 	
 	
@@ -729,11 +730,6 @@ public class NetFlix {
 		try {
 
 			// Construct data
-			/*
-			 * Log.d("NetFlix", "title_ref=" + URLEncoder.encode(disc.getId(),
-			 * "UTF-8")); Log.d("NetFlix", "etag=" +
-			 * URLEncoder.encode(NetFlixQueue.getETag(), "UTF-8"));
-			 */
 			URL url = null;
 			switch (queueType) {
 			case NetFlixQueue.QUEUE_TYPE_DISC:
@@ -774,12 +770,15 @@ public class NetFlix {
 					+ ": " + response.getStatusLine().getReasonPhrase();
 
 			/*
-			 * Log.d("NetFlix", "" +
-			 * response.getEntity().getContentType().toString()); BufferedReader
-			 * in = new BufferedReader(new InputStreamReader(xml)); String
-			 * linein = null; while ((linein = in.readLine()) != null) {
-			 * Log.d("NetFlix", "AddMovie: " + linein); }
+			  Log.d("NetFlix", "" +
+			  response.getEntity().getContentType().toString()); BufferedReader
+			  in = new BufferedReader(new InputStreamReader(xml)); String
+			  linein = null; while ((linein = in.readLine()) != null) {
+			  Log.d("NetFlix", "AddMovie: " + linein); }
+			 if(true) return 200;
+			 //^ avoids the parser since we consumed xml for debug
 			 */
+			 
 			// Log.i("NetFlix", "Parsing XML Response")
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp;
@@ -800,9 +799,12 @@ public class NetFlix {
 			xr.parse(new InputSource(xml));
 
 			result = myHandler.getSubCode();
-			if( result >= 300 ){
+			if( myHandler.getMessage() != null){
 				//we may have an error from netflix, check it
 				lastResponseMessage+="  NF: " + myHandler.getMessage();
+				lastNFResponseMessage = myHandler.getMessage();
+			}else{
+				lastNFResponseMessage= "No Message";
 			}
 		} catch (IOException e) {
 			
