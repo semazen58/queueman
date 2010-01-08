@@ -497,6 +497,70 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	}
 
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		// convert to list item click
+		if (arg0 == mListView) {
+			onListItemClick((ListView) arg0, arg1, arg2, arg3);
+		}
+	
+	}
+
+
+	public void onTabChanged(String tabId) {
+		//this may get called when setting up layout, so only listen if user's session is active
+		if(sessionStatus==SESSION_ACTIVE){
+			FlurryAgent.onEvent("onTabChanged");
+			if (mTabHost.getCurrentTab() == TAB_INSTANT) {
+				if (canWatchInstant) {
+					queueType = NetFlixQueue.QUEUE_TYPE_INSTANT;
+					loadQueue();
+				} else {
+					showCustomDialog(
+							"Restricted",
+							"According to Netflix this user does not have \"Watch Instantly\" rights\nPress 'Back' to return to your Disc Queue");
+					mTabHost.setCurrentTab(TAB_DISC);
+				}
+			} else if (mTabHost.getCurrentTab() == TAB_DISC) {
+				queueType = NetFlixQueue.QUEUE_TYPE_DISC;
+				loadQueue();
+			} else if (mTabHost.getCurrentTab() == TAB_RECOMMEND) {
+				queueType = NetFlixQueue.QUEUE_TYPE_RECOMMEND;
+				loadRecommendations();
+			}
+		}
+	}
+
+
+	/*	protected void upgradePreBetaUser() {
+		// show custom dialog to let them know
+		showCustomDialog("New Instant Features",
+				"Checking if you have an instant Queue..  \n (A one time operation)");
+		Thread t = new Thread() {
+			public void run() {
+				canWatchInstant = netflix.getWatchInstant();
+				saveSettings();
+				mHandler.post(mRetrieveQueue1st);
+			}
+		};
+		t.start();
+	}*/
+	
+	
+	public void onClick(View v) {
+		if(v == accept){
+			dialog.dismiss();
+			retrieveRequestToken();
+		}else if(v == decline){
+			this.finish();
+		}else if(v == about){
+			sessionStatus=SESSION_EULA_READ;
+			startActivity( new Intent(this,
+					edwardawebb.queueman.core.ViewLicense.class));
+		}
+		
+	}
+
+
 	protected void handleDiscUpdate(final int menuItemId, final Disc disc,
 			final int lastPosition) {
 		HashMap<String, String> parameters = new HashMap<String, String>();
@@ -602,7 +666,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					redrawQueue();
 					break;
 				case  NetFlix.MOVED_OUTSIDE_CURRENT_VIEW:
-					Toast.makeText(mTabHost.getCurrentTabView().getContext(),"Success - This disc was moved beyond the # of titles shown, hence *this title will no longer be visible in the current range*"  , Toast.LENGTH_LONG);
+					//horiible, but this is a long message show back to back toasts allow the user to finish reading
+					Toast.makeText(mTabHost.getCurrentTabView().getContext(),"Success - This disc was moved beyond the # of titles shown, hence *this title will no longer be visible in the current range*"  , Toast.LENGTH_LONG).show();
+					Toast.makeText(mTabHost.getCurrentTabView().getContext(),"Success - This disc was moved beyond the # of titles shown, hence *this title will no longer be visible in the current range*"  , Toast.LENGTH_LONG).show();
 					redrawQueue();
 					break;
 				default:
@@ -721,7 +787,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		// send user to netflix
 
 		// show custom dialog to let them know
-		showCustomDialog("Verifing with Netflix", "This is a one time process - but it may be slow on some conenctions as we direct you to Netflix.");
+		showCustomDialog(R.string.pass_to_netflix_title, R.string.pass_to_netflix_text);
 
 		netflix = new NetFlix();
 		Log.d("QueueMan", "Netflix Instantiated:" + netflix.toString());
@@ -782,6 +848,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			switch (result) {
 			case 200:
 				// got token !  - close queman and pass to browser
+				Toast.makeText(QueueMan.this, "Just a moment now", Toast.LENGTH_LONG).show();
 				QueueMan.this.finish();
 				break;
 			case 21:// error getting token, booo
@@ -1054,6 +1121,29 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		// Log.i("NetApi","User Data Destroyed")
 	}
 
+	
+	/**
+	 * 
+	 * @param title - the string id to use as a titel
+	 * @param message - ditto
+	 */
+	private void showCustomDialog(int title, int message ){
+		dialog = new Dialog(mTabHost.getContext());
+		dialog.setContentView(R.layout.custom_dialog);
+		dialog.setTitle(title);
+		TextView text = (TextView) dialog.findViewById(R.id.text);
+		text.setText(message);
+		ImageView image = (ImageView) dialog.findViewById(R.id.image);
+		image.setImageResource(R.drawable.red_icon);
+
+		dialog.show();
+	}
+	
+	/**
+	 * 
+	 * @param title the string to use as a title
+	 * @param message ditto
+	 */
 	private void showCustomDialog(String title, String message) {
 		dialog = new Dialog(mTabHost.getContext());
 		dialog.setContentView(R.layout.custom_dialog);
@@ -1147,67 +1237,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	
 
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// convert to list item click
-		if (arg0 == mListView) {
-			onListItemClick((ListView) arg0, arg1, arg2, arg3);
-		}
-
-	}
-
-	public void onTabChanged(String tabId) {
-		//this may get called when setting up layout, so only listen if user's session is active
-		if(sessionStatus==SESSION_ACTIVE){
-			FlurryAgent.onEvent("onTabChanged");
-			if (mTabHost.getCurrentTab() == TAB_INSTANT) {
-				if (canWatchInstant) {
-					queueType = NetFlixQueue.QUEUE_TYPE_INSTANT;
-					loadQueue();
-				} else {
-					showCustomDialog(
-							"Restricted",
-							"According to Netflix this user does not have \"Watch Instantly\" rights\nPress 'Back' to return to your Disc Queue");
-					mTabHost.setCurrentTab(TAB_DISC);
-				}
-			} else if (mTabHost.getCurrentTab() == TAB_DISC) {
-				queueType = NetFlixQueue.QUEUE_TYPE_DISC;
-				loadQueue();
-			} else if (mTabHost.getCurrentTab() == TAB_RECOMMEND) {
-				queueType = NetFlixQueue.QUEUE_TYPE_RECOMMEND;
-				loadRecommendations();
-			}
-		}
-	}
-
-/*	protected void upgradePreBetaUser() {
-		// show custom dialog to let them know
-		showCustomDialog("New Instant Features",
-				"Checking if you have an instant Queue..  \n (A one time operation)");
-		Thread t = new Thread() {
-			public void run() {
-				canWatchInstant = netflix.getWatchInstant();
-				saveSettings();
-				mHandler.post(mRetrieveQueue1st);
-			}
-		};
-		t.start();
-	}*/
-
-	
-	public void onClick(View v) {
-		if(v == accept){
-			dialog.dismiss();
-			retrieveRequestToken();
-		}else if(v == decline){
-			this.finish();
-		}else if(v == about){
-			sessionStatus=SESSION_EULA_READ;
-			startActivity( new Intent(this,
-					edwardawebb.queueman.core.ViewLicense.class));
-		}
-		
-	}
-	
 	protected void loadRecommendations(){
 		HashMap<String, String> parameters = new HashMap<String, String>();
 		parameters.put("Queue Type:", "Recommendations");
@@ -1372,6 +1401,4 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				return netflix.isConnected();
 			}
 	 
-	 
-
 }

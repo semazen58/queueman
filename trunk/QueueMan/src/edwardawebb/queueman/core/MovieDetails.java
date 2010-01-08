@@ -362,6 +362,17 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 			// TODO Auto-generated method stub
 			return result;
 		}
+		
+		protected void onPostExecute(Integer result){
+			switch(result){
+			case 200:
+			case 201:
+				//successful rating
+			case 422:
+				//already rated
+				Toast.makeText(MovieDetails.this, "Title Rated!", Toast.LENGTH_SHORT).show();
+			}
+		}
 		 
 	 }
 		 

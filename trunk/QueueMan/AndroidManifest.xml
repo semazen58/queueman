@@ -30,5 +30,5 @@
 		<activity android:name=".ViewLicense" android:label="QueueMan EULA" >
 		</activity>
 </application>
-	<uses-sdk android:minSdkVersion="3" android:maxSdkVersion="6" />
+	<uses-sdk android:minSdkVersion="3" android:maxSdkVersion="7" />
 </manifest> 

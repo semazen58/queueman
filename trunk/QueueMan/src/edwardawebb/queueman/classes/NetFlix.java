@@ -1072,7 +1072,7 @@ public class NetFlix {
 			xml = response.getEntity().getContent();
 			lastResponseMessage = response.getStatusLine().getStatusCode()
 					+ ": " + response.getStatusLine().getReasonPhrase();
-
+			result=response.getStatusLine().getStatusCode();
 			
 			 Log.d("NetFlix", "" +
 			 response.getEntity().getContentType().toString()); BufferedReader
