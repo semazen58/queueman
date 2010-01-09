@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/active_rating_layout"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+<RatingBar android:id="@+id/ActiveRatingBar" 
+android:layout_width="wrap_content" 
+android:layout_height="wrap_content"
+android:layout_centerInParent="true"/>
+<Button android:background="@drawable/no_interest_drk"
+android:paddingLeft="24px"
+android:layout_below="@id/ActiveRatingBar"
+android:layout_centerHorizontal="true"
+android:layout_marginTop="45dp"
+android:layout_marginBottom="50dp"
+android:paddingRight="5dp"
+android:text="@string/no_thanks" android:id="@+id/no_thanks" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+
+</RelativeLayout>
