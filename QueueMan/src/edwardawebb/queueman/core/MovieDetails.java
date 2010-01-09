@@ -97,8 +97,8 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 
 		if (action > 0) {
 			switch (action) {
-			case QueueMan.ACTION_MOVE:
-				setContentView(R.layout.add_title_details);
+			/*case QueueMan.ACTION_MOVE:
+				setContentView(R.layout.add_title_details);*/
 
 			case QueueMan.ACTION_ADD:
 				// set views
@@ -119,14 +119,14 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				loadBoxArt(disc.getBoxArtUrlMedium());
 				// we may need to trim this is searching, or moving to allow
 				// room for buttons
-				String snippet = null;
+				/*String snippet = null;
 				if (disc.getSynopsis().length() > 250) {
 					snippet = disc.getSynopsis().substring(0, 250) + "...";
 				} else {
 					snippet = disc.getSynopsis();
-				}
+				}*/
 				synopsis = (TextView) findViewById(R.id.synopsis);
-				synopsis.setText(Html.fromHtml(snippet));
+				synopsis.setText(Html.fromHtml(disc.getSynopsis()));
 
 				// availability
 				StringBuilder formatsText = new StringBuilder();
@@ -147,8 +147,8 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				formats.setText(formatsText);				
 				
 				break;
-			case QueueMan.ACTION_DELETE:
-				setContentView(R.layout.add_title_details);
+			/*case QueueMan.ACTION_DELETE:
+				setContentView(R.layout.add_title_details);*/
 			}
 
 		} else {
