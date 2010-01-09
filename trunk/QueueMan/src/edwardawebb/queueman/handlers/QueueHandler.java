@@ -242,7 +242,7 @@ public class QueueHandler extends DefaultHandler {
 	}
 
 	/**
-	 * @return the message
+	 * @return the message returned by Netflix
 	 */
 	public String getMessage() {
 		return message;
