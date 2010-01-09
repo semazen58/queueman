@@ -41,6 +41,7 @@ public class NetFlixQueue {
 	private NetFlix netflix;
 	private int id;
 	private String etag;
+	private boolean isDownloaded = false; //have we actually retrieved from NF, or just added titles
 	//etag is only valid in current range, for move top/bottom we need to know where working out of bounds
 	private int startIndex=0;
 	private int perPage=0; 
@@ -165,6 +166,20 @@ public class NetFlixQueue {
 
 	public String getETag() {
 		return this.etag;
+	}
+
+	/**
+	 * @param isDownloaded the isDownloaded to set
+	 */
+	public void setDownloaded(boolean isDownloaded) {
+		this.isDownloaded = isDownloaded;
+	}
+
+	/**
+	 * @return the isDownloaded
+	 */
+	public boolean isDownloaded() {
+		return isDownloaded;
 	}
 
 	public void purge() {

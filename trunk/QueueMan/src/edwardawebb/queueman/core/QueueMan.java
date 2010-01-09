@@ -972,10 +972,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	protected void redrawQueue() {
 		// just in casedialog.dismiss();
-		dialog.dismiss();
-		dialog.dismiss();
-		dialog.dismiss();
-        
+		
 		switch (mTabHost.getCurrentTab()) {
 		case TAB_DISC:
 			mListView = (ListView) findViewById(R.id.discqueue);
@@ -1083,6 +1080,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				case 200:
 				case 201:
 					//success load - redraw queue
+					redrawQueue();
+					break;
+				case NetFlix.SUCCESS_FROM_CACHE:
+					//do nothing..?
 					redrawQueue();
 					break;
 				case 901:
@@ -1281,21 +1282,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
 				result = netflix.getRecommendations(getDownloadCount());
-				switch (result) {
-				case 200:
-				case 201:
-					break;
-				default:
-					boolean hasAccess = (netflix.getAccessToken()!=null);
-					boolean hasID = (netflix.getUserID()!=null);
-					FlurryAgent.onError("ER:91",
-							"Failed to Retrieve Recommendations - "
-									+ netflix.lastResponseMessage
-									+ "Has Access: "+ hasAccess
-									+ "Has ID: "+ hasID,
-							"QueueMan");
-				}
-
+				
 			} else {
 				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
 				result=901;
@@ -1309,8 +1296,24 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	     }
 
 	     protected void onPostExecute(Integer result) {
-	        dialog.dismiss();
-	        redrawQueue();
+	       dialog.dismiss();
+	       switch (result) {
+			case 200:
+			case 201:
+				 redrawQueue();
+				 break;
+			default:
+				Toast.makeText(QueueMan.this, "Sorry, we had an error, please refresh", Toast.LENGTH_LONG).show();
+				boolean hasAccess = (netflix.getAccessToken()!=null);
+				boolean hasID = (netflix.getUserID()!=null);
+				FlurryAgent.onError("ER:91",
+						"Failed to Retrieve Recommendations - "
+								+ netflix.lastResponseMessage
+								+ "Has Access: "+ hasAccess
+								+ "Has ID: "+ hasID,
+						"QueueMan");
+			}
+
 	     }
 
 	 }
