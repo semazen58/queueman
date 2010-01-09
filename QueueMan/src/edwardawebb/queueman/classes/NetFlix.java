@@ -122,6 +122,7 @@ public class NetFlix {
 	public static final int MOVED_OUTSIDE_CURRENT_VIEW = 299; // result code used when disc is moved outside our current range (and we need ot remove it)
 	public static final int BOTTOM = 500;
 	public static final int TOP=1;
+	public static final int SUCCESS_FROM_CACHE = 255;
 	
 
 	public NetFlix() {// OAuthConsumer oac, OAuthProvider oap
@@ -299,15 +300,15 @@ public class NetFlix {
 		try {
 			switch (queueType) {
 			case NetFlixQueue.QUEUE_TYPE_INSTANT:
-				if (!NetFlix.instantQueue.isEmpty())
-					return 200;
+				if (!NetFlix.instantQueue.isEmpty() && instantQueue.isDownloaded())
+					return SUCCESS_FROM_CACHE;
 				QueueUrl = new URL("http://api.netflix.com/users/" + userID
 						+ "/queues/instant" + expanders);
 				myQueueHandler = new InstantQueueHandler();
 				break;
 			case NetFlixQueue.QUEUE_TYPE_DISC:
-				if (!NetFlix.discQueue.isEmpty())
-					return 200;
+				if (!NetFlix.discQueue.isEmpty() && discQueue.isDownloaded())
+					return SUCCESS_FROM_CACHE;
 				QueueUrl = new URL("http://api.netflix.com/users/" + userID
 						+ "/queues/disc/available" + expanders);
 
@@ -325,13 +326,24 @@ public class NetFlix {
 			lastResponseMessage = request.getResponseCode() + ": "
 					+ request.getResponseMessage();
 			result = request.getResponseCode();
+			
+			if(result==200){
+				switch (queueType) {
+				case NetFlixQueue.QUEUE_TYPE_INSTANT:
+					instantQueue.setDownloaded(true);
+					break;
+				case NetFlixQueue.QUEUE_TYPE_DISC:
+					discQueue.setDownloaded(true);
+					break;
+				}
+			}
 			xml = request.getInputStream();
-			/*
-			 * BufferedReader in = new BufferedReader(new
-			 * InputStreamReader(xml)); String linein = null; while ((linein =
-			 * in.readLine()) != null) { Log.d("NetFlix", "GetQueue: " +
-			 * linein); }
-			 */
+			
+			  /*BufferedReader in = new BufferedReader(new
+			  InputStreamReader(xml)); String linein = null; while ((linein =
+			  in.readLine()) != null) { Log.d("NetFlix", "GetQueue: " +
+			  linein); }*/
+			 
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp;
 			sp = spf.newSAXParser();
@@ -339,7 +351,17 @@ public class NetFlix {
 
 			xr.setContentHandler(myQueueHandler);
 			xr.parse(new InputSource(xml));
-
+			
+			
+			if( myQueueHandler.getMessage() != null){
+				//we may have an error from netflix, check it
+				lastResponseMessage+="  NF: " + myQueueHandler.getMessage();
+				lastNFResponseMessage = myQueueHandler.getMessage();
+			}else{
+				lastNFResponseMessage= "No Message";
+			}
+			
+			
 		} catch (ParserConfigurationException e) {
 			
 			e.printStackTrace();
@@ -588,7 +610,7 @@ public class NetFlix {
 				break;
 			case NetFlixQueue.QUEUE_TYPE_DISC:
 				QueueUrl = new URL("http://api.netflix.com/users/" + userID
-						+ "/queues/disc" + expanders);
+						+ "/queues/disc/available" + expanders);
 
 				myQueueHandler = new DiscETagHandler();
 				break;
@@ -715,7 +737,6 @@ public class NetFlix {
 	 */
 	public int addToQueue(Disc disc, int queueType) {
 		
-		
 		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
@@ -738,12 +759,14 @@ public class NetFlix {
 			int queueSize=0;
 			switch (queueType) {
 			case NetFlixQueue.QUEUE_TYPE_DISC:
-				queueSize=NetFlix.discQueue.getDiscs().size();
+				queueSize=NetFlix.discQueue.getTotalTitles();
+				if(queueSize==0) getNewETag(queueType);
 				// @ TODO This is for issue 41
-				if(queueSize == 0) getQueue(queueType, "10");
-				if(disc.getPosition()> NetFlix.discQueue.getDiscs().size()) {
-					disc.setPosition(NetFlix.discQueue.getDiscs().size());
+				if(disc.getPosition()> NetFlix.discQueue.getTotalTitles()) {
+					disc.setPosition(NetFlix.discQueue.getTotalTitles());
 				}
+				// @ TODO   Move this to instnat once it works
+				
 				
 				url = new URL("http://api.netflix.com/users/" + userID
 						+ "/queues/disc" + expanders);

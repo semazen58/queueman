@@ -29,23 +29,29 @@ import edwardawebb.queueman.classes.NetFlix;
 public class DiscETagHandler extends DefaultHandler {
 
 	private boolean inETag=false;
+	private boolean inNumResults=false;
 	//temp variables
 	private String eTag;
+	protected int numResults = 0;
 
 	
 	
 		
 	public void startElement(String uri, String name, String qName,	Attributes atts) {
-		if (name.trim().equals("etag")){
+		if (name.equals("etag")){
 			inETag = true;			
+		}else if (name.equals("number_of_results")) {
+			inNumResults = true;
 		}
 	}
 
 	//we pnly want to update the local q when downlaoing disc q.
 	@Override
 	public void endElement(String uri, String name, String qName)throws SAXException {
-		if (name.trim().equals("etag")){
+		if (name.equals("etag")){
 			inETag = false;			
+		}else if (name.equals("number_of_results")) {
+			inNumResults = false;
 		}
 	}
 	
@@ -57,7 +63,10 @@ public class DiscETagHandler extends DefaultHandler {
 			eTag=chars;
 			NetFlix.discQueue.setETag(eTag);
 			//throw new SAXException("ETag Updated");
-		}
+		}else if (inNumResults) {
+			numResults = Integer.valueOf(chars);
+			NetFlix.discQueue.setTotalTitles(numResults);
+		} 
 	}
 
 }
