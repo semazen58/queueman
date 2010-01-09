@@ -65,6 +65,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 	private RelativeLayout searchOptions;
 	private RadioGroup radioOptions;
 	private RadioButton radioAddTop;
+	private RadioButton radioAddBottom;
 	private RadioButton radioAddInstant;
 	private RatingBar avgRatingBar;
 	private TextView formats;
@@ -107,6 +108,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 							
 				radioOptions = (RadioGroup) findViewById(R.id.add_options);
 				radioAddTop = (RadioButton) findViewById(R.id.radio_top);
+				radioAddBottom = (RadioButton) findViewById(R.id.radio_bottom);
 				radioAddInstant = (RadioButton) findViewById(R.id.radio_instant);
 
 				formats = (TextView) findViewById(R.id.Formats);
@@ -259,6 +261,9 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				} else if (MovieDetails.this.radioAddInstant.isChecked()) {
 					passBack(NetFlixQueue.QUEUE_TYPE_INSTANT);
 					// toast no worky
+				} else if (MovieDetails.this.radioAddBottom.isChecked()) {
+					passBack(NetFlixQueue.QUEUE_TYPE_DISC,NetFlix.BOTTOM);
+					// toast no worky
 				} else {
 					MovieDetails.this.radioAddTop.setChecked(true);
 					passBack(NetFlixQueue.QUEUE_TYPE_DISC);
@@ -311,13 +316,16 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		
 		dialog.show();
 	}
+	public void passBack(int queueTypeDisc){
+		passBack(queueTypeDisc, NetFlix.TOP);
+	}
 	
-	public void passBack(final int queueTypeDisc) {
+	public void passBack(final int queueTypeDisc, final int position) {
 		// TODO Auto-generated method stub
 		Thread t = new Thread() {
 			public void run() {
 				Bundle b = new Bundle();
-
+				disc.setPosition(position);
 				b.putSerializable("Disc", disc);
 
 				Intent resultIntent = new Intent();

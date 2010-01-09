@@ -155,6 +155,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private static final int TAB_DISC = 0;
 	private static final int TAB_INSTANT = 1;
 	private static final int TAB_RECOMMEND = 2;
+	protected static final String POSITION_KEY = null;
 	private static int queueType = NetFlixQueue.QUEUE_TYPE_DISC;
 
 
@@ -1220,7 +1221,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					Toast.makeText(mListView.getContext(), ""+netflix.lastNFResponseMessage, Toast.LENGTH_LONG).show();
 					redrawQueue();
 					break;
-
+				case 412:
+					//title already exists! cant add
+					Toast.makeText(mListView.getContext(), ""+netflix.lastNFResponseMessage, Toast.LENGTH_LONG).show();
+					break;
 				case 620:
 					// added to SAVED queue - double post lolonger message
 					Toast.makeText(mListView.getContext(), "Title Saved - This title is not currently available, but was added to your Saved queue", Toast.LENGTH_LONG).show();

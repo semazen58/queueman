@@ -236,4 +236,20 @@ public class Disc implements Serializable {
 	public int hashCode(){
 		return uniqueId.hashCode();
 	}
+
+
+	/**
+	 * @param position the position to set
+	 */
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+
+	/**
+	 * @return the position
+	 */
+	public int getPosition() {
+		return position;
+	}
 }
