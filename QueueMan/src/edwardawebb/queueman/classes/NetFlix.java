@@ -120,6 +120,8 @@ public class NetFlix {
 	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
 	public static final String NF_RATING_NO_INTEREST = "not_interested";
 	public static final int MOVED_OUTSIDE_CURRENT_VIEW = 299; // result code used when disc is moved outside our current range (and we need ot remove it)
+	public static final int BOTTOM = 500;
+	public static final int TOP=1;
 	
 
 	public NetFlix() {// OAuthConsumer oac, OAuthProvider oap
@@ -755,7 +757,7 @@ public class NetFlix {
 			// Your DATA
 			nameValuePairs
 					.add(new BasicNameValuePair("title_ref", disc.getId()));
-			nameValuePairs.add(new BasicNameValuePair("position", "1"));
+			nameValuePairs.add(new BasicNameValuePair("position", ""+disc.getPosition()));
 			nameValuePairs.add(new BasicNameValuePair("etag", eTag));
 
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));

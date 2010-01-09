@@ -133,11 +133,14 @@ public class NetFlixQueue {
 		if(discs.contains(movie)){
 			discs.remove(movie);
 		}
-		if (position >= 1) {
+		if (position >= 1 && position <= this.discs.size()) {
 			discs.add(position - 1, movie);
-		} else {
+		} else if (position < 1 ) {
 			FlurryAgent.onError("outOfBounds",
 					"Add: The provided Position was too low", "NetFlixQueue");
+		} else if ( position == 500){
+			//;eddie was lazy, moze to the end.(for new move to bootom feature)
+			discs.add(movie);
 		}
 	}
 
