@@ -714,6 +714,8 @@ public class NetFlix {
 	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
 	 */
 	public int addToQueue(Disc disc, int queueType) {
+		
+		
 		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
@@ -733,11 +735,21 @@ public class NetFlix {
 
 			// Construct data
 			URL url = null;
+			int queueSize=0;
 			switch (queueType) {
 			case NetFlixQueue.QUEUE_TYPE_DISC:
+				queueSize=NetFlix.discQueue.getDiscs().size();
+				// @ TODO This is for issue 41
+				if(queueSize == 0) getQueue(queueType, "10");
+				if(disc.getPosition()> NetFlix.discQueue.getDiscs().size()) {
+					disc.setPosition(NetFlix.discQueue.getDiscs().size());
+				}
+				
 				url = new URL("http://api.netflix.com/users/" + userID
 						+ "/queues/disc" + expanders);
 				eTag = NetFlix.discQueue.getETag();
+				//prevent an OOB erro with NF
+				
 				break;
 			case NetFlixQueue.QUEUE_TYPE_INSTANT:
 				url = new URL("http://api.netflix.com/users/" + userID
