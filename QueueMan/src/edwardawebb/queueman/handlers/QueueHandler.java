@@ -220,15 +220,17 @@ public class QueueHandler extends DefaultHandler {
 	}
 
 	/**
-	 * Get netflix api subcode
+	 * Get netflix api subcode, if set, otherwise keep current value
 	 * 
 	 * @return statusCode if subCode not set
 	 */
-	public int getSubCode() {
+	public int getSubCode(int currentCode) {
 		if (this.subCode != 0) {
 			return this.subCode;
-		} else {
+		} else if(this.statusCode != 0) {
 			return this.statusCode;
+		}else{
+			return currentCode;
 		}
 	}
 

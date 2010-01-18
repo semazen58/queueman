@@ -99,13 +99,16 @@ public class MoveQueueHandler extends DefaultHandler {
 	}
 	/**
 	 * Get netflix api subcode
+	 * @param currentCode if not values set in XML
 	 * @return statusCode if subCode not set
 	 */
-	public int getSubCode(){
+	public int getSubCode(int currentCode){
 		if(this.subCode!=0){
 			return this.subCode;
-		}else{
+		}else if(this.statusCode != 0){
 			return this.statusCode;
+		}else{
+			return currentCode;
 		}
 	}
 
