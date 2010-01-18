@@ -201,7 +201,11 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
+		//@ TODO DEBUGGIN ONLY - DONT LOG
+		FlurryAgent.setLogEnabled(false);
+		
+		//start logigng
 		FlurryAgent.onStartSession(this, FLURRY_APP_KEY);
 		// prepare and display view and tabs
 		setContentView(R.layout.queue_man);
@@ -646,7 +650,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	      * object array ( Disc, position, newPosition, queueType )
 	      */
 		 protected Integer doInBackground(Object... oArr) {
-	    	 int result=901;
+	    	 int result=36;
 	    	
 				
 			if (isOnline()) {
@@ -666,6 +670,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	    	 dialog.dismiss();
 	        switch (result) {
+	            case 36:
+	        	//not online
+	            	break;
 				case 200:
 				case 201:
 					
@@ -679,7 +686,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					break;
 				default:
 					FlurryAgent.onError("ER:73",
-							"Failed to Update title - "
+							"Failed to MOve title - "
 							+ netflix.lastResponseMessage,
 							"QueueMan");
 						
@@ -728,7 +735,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 						break;
 					default:
 						FlurryAgent.onError("ER:73",
-								"Failed to Update title - "
+								"Failed to Delete title - "
 								+ netflix.lastResponseMessage,
 								"QueueMan");
 							showCustomDialog("Error - Please Report", "Although we are connected, I was unable to remove that title.\n Reason COde:"+netflix.lastResponseMessage);
@@ -1056,7 +1063,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 
 		 protected Integer doInBackground(Void... arg1) {
 			//default error, not connected 901
-			 int result=901;
+			 int result=36;
 			if (isOnline()) {
 					// get queue will connect to neflix and resave the currentQ
 				// vairable
@@ -1077,6 +1084,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	     protected void onPostExecute(Integer result) {
 	    	 dialog.dismiss();
 		     switch (result) {
+		     	case 36:
+					showCustomDialog("Error", "Hmm... It seems we can;t connect to NetFlix. Please try again when you have better service");
+					break;
 				case 200:
 				case 201:
 					//success load - redraw queue
@@ -1086,9 +1096,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					//do nothing..?
 					redrawQueue();
 					break;
-				case 901:
+				case NetFlix.NF_ERROR_BAD_DEFAULT:
 
-					showCustomDialog("Error", "Hmm... It seems we can;t connect to NetFlix. Please try again when you have better service");
+					FlurryAgent.onError("ER:900",
+							"Failed to Retrieve Queue - "
+							+ netflix.lastResponseMessage,
+							"QueueMan");
+						showCustomDialog("Error", "" + netflix.lastNFResponseMessage);
 					break;
 				default:
 					//fail - get details
@@ -1194,7 +1208,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		    }
 		 
 		 protected Integer doInBackground(Disc... discArr) {
-	    	 int result=901;
+	    	 int result=36;
 				
 			if (isOnline()) {
 				// get queue will connect to neflix and resave the currentQ
@@ -1217,12 +1231,16 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	    	 dialog.dismiss();
 	    	 switch (result) {
+	    	 	case 36:
+	    	 		//not online
+	    	 		break;
 				case 200:
 				case 201:
 					Toast.makeText(mListView.getContext(), ""+netflix.lastNFResponseMessage, Toast.LENGTH_LONG).show();
 					redrawQueue();
 					break;
 				case 412:
+				case 710:
 					//title already exists! cant add
 					Toast.makeText(mListView.getContext(), ""+netflix.lastNFResponseMessage, Toast.LENGTH_LONG).show();
 					break;
