@@ -1205,11 +1205,18 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	     protected void onPreExecute(){
 	    	 Toast.makeText(QueueMan.this, "Just a sec as I try to add this title to your queue",Toast.LENGTH_LONG).show();
 	    	 Toast.makeText(QueueMan.this, "Just a sec as I try to add this title to your queue",Toast.LENGTH_LONG).show();
-		    }
+	    	}
 		 
 		 protected Integer doInBackground(Disc... discArr) {
-	    	 int result=36;
-				
+	    	int result=36;
+	    	HashMap<String, String> parameters = new HashMap<String, String>();
+	 		parameters.put("Queue Type:", NetFlixQueue.queueTypeText[queueType]);
+	 		parameters.put("User ID:", ""+userId);
+			parameters.put("Disc ID:", ""+discArr[0].getId() );
+			parameters.put("Position:", ""+discArr[0].getPosition());
+			parameters.put("Availability:", ""+ discArr[0].isAvailable() + ", " + discArr[0].getAvailibilityText());
+			FlurryAgent.onEvent("AddTitleTask", parameters);
+ 		
 			if (isOnline()) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
