@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -843,6 +844,21 @@ public class NetFlix {
 			}else{
 				lastNFResponseMessage= "No Message";
 			}
+			
+			//extra code to catch 502
+			
+			if(response.getStatusLine().getStatusCode() == 502){
+				HashMap<String, String> parameters = new HashMap<String, String>();
+				parameters.put("Queue Type:", ""+NetFlixQueue.queueTypeText[queueType]);
+				parameters.put("User ID:", ""+userID);
+				parameters.put("Disc ID:", ""+disc.getId() );
+				parameters.put("Position:", ""+disc.getPosition());
+				parameters.put("Availability:", ""+ disc.isAvailable() + ", " + disc.getAvailibilityText());
+				parameters.put("NF Message:", ""+ myHandler.getMessage());
+				FlurryAgent.onEvent("AddToQueue-502", parameters);
+			}
+			
+			
 		} catch (IOException e) {
 			
 			reportError(e);
