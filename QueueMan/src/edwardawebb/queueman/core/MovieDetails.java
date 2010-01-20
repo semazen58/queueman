@@ -312,7 +312,6 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		rate.setNumStars(5);
 		rate.setStepSize(1.0f);
 		rate.setOnRatingBarChangeListener(this);
-		rate.
 		noThanks.setOnClickListener(this);
 		
 		dialog.show();
