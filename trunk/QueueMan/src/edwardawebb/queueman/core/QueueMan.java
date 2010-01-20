@@ -203,7 +203,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		super.onCreate(savedInstanceState);
 		
 		//@ TODO DEBUGGIN ONLY - DONT LOG
-		FlurryAgent.setLogEnabled(false);
+		//FlurryAgent.setLogEnabled(false);
 		
 		//start logigng
 		FlurryAgent.onStartSession(this, FLURRY_APP_KEY);
@@ -1209,14 +1209,17 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 
 		 protected Integer doInBackground(Disc... discArr) {
 	    	int result=36;
-	    	HashMap<String, String> parameters = new HashMap<String, String>();
-	 		parameters.put("Queue Type:", NetFlixQueue.queueTypeText[queueType]);
-	 		parameters.put("User ID:", ""+userId);
-			parameters.put("Disc ID:", ""+discArr[0].getId() );
-			parameters.put("Position:", ""+discArr[0].getPosition());
-			parameters.put("Availability:", ""+ discArr[0].isAvailable() + ", " + discArr[0].getAvailibilityText());
-			FlurryAgent.onEvent("AddTitleTask", parameters);
- 		
+	    	try{
+		    	HashMap<String, String> parameters = new HashMap<String, String>();
+		 		parameters.put("Queue Type:", NetFlixQueue.queueTypeText[queueType]);
+		 		parameters.put("User ID:", ""+userId);
+				parameters.put("Disc ID:", ""+discArr[0].getId() );
+				parameters.put("Position:", ""+discArr[0].getPosition());
+				parameters.put("Availability:", ""+ discArr[0].isAvailable() + ", " + discArr[0].getAvailibilityText());
+				FlurryAgent.onEvent("AddTitleTask", parameters);
+			 }catch(Exception e){
+				 // empty disc, or bad values - just prevent FC
+			 }
 			if (isOnline()) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
@@ -1240,6 +1243,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	    	 switch (result) {
 	    	 	case 36:
 	    	 		//not online
+	    	 		Toast.makeText(mListView.getContext(), "Unable to connect - Please check your connection, or try again", Toast.LENGTH_LONG).show();
+					
 	    	 		break;
 				case 200:
 				case 201:
