@@ -1113,9 +1113,7 @@ public class NetFlix {
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		postConsumer.setTokenWithSecret(oathAccessToken, oathAccessTokenSecret);
-		OAuthProvider postProvider = new DefaultOAuthProvider(postConsumer,
-				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
-				AUTHORIZE_WEBSITE_URL);
+		
 		// postProvider.setOAuth10a(false);
 		InputStream xml = null;
 		try {

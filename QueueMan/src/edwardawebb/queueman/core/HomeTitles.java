@@ -63,7 +63,7 @@ public class HomeTitles extends Activity implements OnItemClickListener {
 	    	Toast.makeText(this, "No Titles at Home", Toast.LENGTH_LONG).show();
 	    }else{
 	    	//noTitles.setText(NetFlix.homeQueue.getDiscs().size() + " title(s) at home or in transit.\nPlease wait as titles load.");
-	    	noTitles.setText("");
+	    	noTitles.setText(R.string.at_home_click);
 	    	Toast.makeText(this, NetFlix.homeQueue.getDiscs().size()+" titles loading, give it a sec..", Toast.LENGTH_LONG).show();
 	    }
 	    	
