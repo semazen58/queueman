@@ -21,7 +21,7 @@
 			android:layout_marginLeft="10dip" android:textSize="26sp"
 			android:layout_below="@id/boxart" android:text="1993" />
 
-		<RatingBar android:id="@+id/RatingBar01"
+		<RatingBar android:id="@+id/DetailRatingBar01"
 			android:layout_marginRight="5dp" android:layout_width="wrap_content"
 			android:layout_marginLeft="10dip" android:layout_height="wrap_content"
 			android:layout_below="@+id/myear" style="?android:attr/ratingBarStyleSmall" />
@@ -33,8 +33,8 @@
 			android:layout_height="35dp"
 			android:height="35dp"
 			android:textSize="15dp"
-			android:layout_below="@id/RatingBar01"
-			android:layout_alignLeft="@id/RatingBar01"
+			android:layout_below="@id/DetailRatingBar01"
+			android:layout_alignLeft="@id/DetailRatingBar01"
 			 android:text="@+id/Button01"/>
 
 	/>

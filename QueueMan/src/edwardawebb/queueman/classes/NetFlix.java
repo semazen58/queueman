@@ -17,10 +17,8 @@
  */
 package edwardawebb.queueman.classes;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -58,10 +56,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.flurry.android.FlurryAgent;
-
 import android.net.Uri;
 import android.util.Log;
+
+import com.flurry.android.FlurryAgent;
+
 import edwardawebb.queueman.apikeys.ApiKeys;
 import edwardawebb.queueman.core.QueueMan;
 import edwardawebb.queueman.handlers.AddDiscQueueHandler;
@@ -139,7 +138,7 @@ public class NetFlix {
 				AUTHORIZE_WEBSITE_URL);
 
 		// oaprovider.setOAuth10a(false);
-
+		
 		// need to call authenticate before this is usable
 	}
 	public NetFlix(String requestToken,String requestTokenSecret) {// OAuthConsumer oac, OAuthProvider oap
@@ -154,7 +153,7 @@ public class NetFlix {
 
 		NetFlix.oaconsumer.setTokenWithSecret(requestToken, requestTokenSecret);
 		// oaprovider.setOAuth10a(false);
-
+		
 		// need to call authenticate before this is usable
 	}
 
@@ -327,16 +326,7 @@ public class NetFlix {
 					+ request.getResponseMessage();
 			result = request.getResponseCode();
 			
-			if(result==200){
-				switch (queueType) {
-				case NetFlixQueue.QUEUE_TYPE_INSTANT:
-					instantQueue.setDownloaded(true);
-					break;
-				case NetFlixQueue.QUEUE_TYPE_DISC:
-					discQueue.setDownloaded(true);
-					break;
-				}
-			}
+			
 			xml = request.getInputStream();
 			
 			/*  BufferedReader in = new BufferedReader(new
@@ -361,6 +351,23 @@ public class NetFlix {
 			}else{
 				lastNFResponseMessage= "No Message";
 			}
+			if(result==200){
+				switch (queueType) {
+				case NetFlixQueue.QUEUE_TYPE_INSTANT:
+					instantQueue.setDownloaded(true);
+					break;
+				case NetFlixQueue.QUEUE_TYPE_DISC:
+					discQueue.setDownloaded(true);
+					break;
+				}
+			}else if(result == 502){
+					HashMap<String, String> parameters = new HashMap<String, String>();
+					parameters.put("Queue Type:", ""+NetFlixQueue.queueTypeText[queueType]);
+					parameters.put("HTTP Result:", ""+ lastResponseMessage);
+					parameters.put("User ID:", ""+userID);
+					parameters.put("NF Message:", ""+ myQueueHandler.getMessage());
+					FlurryAgent.onEvent("getQueue502", parameters);
+				}
 			
 			
 		} catch (ParserConfigurationException e) {
@@ -737,7 +744,7 @@ public class NetFlix {
 	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
 	 */
 	public int addToQueue(Disc disc, int queueType) {
-		
+		lastResponseMessage="";
 		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
@@ -847,16 +854,7 @@ public class NetFlix {
 			
 			//extra code to catch 502
 			
-			if(response.getStatusLine().getStatusCode() == 502){
-				HashMap<String, String> parameters = new HashMap<String, String>();
-				parameters.put("Queue Type:", ""+NetFlixQueue.queueTypeText[queueType]);
-				parameters.put("User ID:", ""+userID);
-				parameters.put("Disc ID:", ""+disc.getId() );
-				parameters.put("Position:", ""+disc.getPosition());
-				parameters.put("Availability:", ""+ disc.isAvailable() + ", " + disc.getAvailibilityText());
-				parameters.put("NF Message:", ""+ myHandler.getMessage());
-				FlurryAgent.onEvent("AddToQueue-502", parameters);
-			}
+		
 			
 			
 		} catch (IOException e) {
@@ -875,6 +873,17 @@ public class NetFlix {
 		} catch (SAXException e) {
 			
 			reportError(e);
+		}finally{
+			if(result == 502){
+				HashMap<String, String> parameters = new HashMap<String, String>();
+				parameters.put("Queue Type:", ""+NetFlixQueue.queueTypeText[queueType]);
+				parameters.put("HTTP Result:", ""+ lastResponseMessage);
+				parameters.put("User ID:", ""+userID);
+				parameters.put("Disc ID:", ""+disc.getId() );
+				parameters.put("Position:", ""+disc.getPosition());
+				parameters.put("Availability:", ""+ disc.isAvailable() + ", " + disc.getAvailibilityText());
+				FlurryAgent.onEvent("AddToQueue502", parameters);
+			}
 		}
 		return result;
 	}
@@ -1152,25 +1161,26 @@ public class NetFlix {
 					+ ": " + response.getStatusLine().getReasonPhrase();
 			result=response.getStatusLine().getStatusCode();
 			
-			 Log.d("NetFlix", "" +
+			/* Log.d("NetFlix", "" +
 			 response.getEntity().getContentType().toString()); BufferedReader
 			 in = new BufferedReader(new InputStreamReader(xml)); String
 			 linein = null; while ((linein = in.readLine()) != null) {
-			 Log.d("NetFlix", "SetRating: " + linein); }
+			 Log.d("NetFlix", "SetRating: " + linein); }*/
 			 
 			// Log.i("NetFlix", "Parsing XML Response")
-			/*SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp;
 
 			sp = spf.newSAXParser();
 
 			XMLReader xr = sp.getXMLReader();
-			QueueHandler myHandler =  new AddInstantQueueHandler();
+			QueueHandler myHandler =  new QueueHandler();
 			
 			xr.setContentHandler(myHandler);
 			xr.parse(new InputSource(xml));
 
-			result = myHandler.getSubCode();*/
+			lastNFResponseMessage = "NF: "+myHandler.getMessage();
+			result = myHandler.getSubCode(result);
 
 		} catch (IOException e) {
 			
@@ -1181,6 +1191,12 @@ public class NetFlix {
 			reportError(e);
 		} catch (OAuthExpectationFailedException e) {
 			
+			reportError(e);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			reportError(e);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
 			reportError(e);
 		} 
 		return result;

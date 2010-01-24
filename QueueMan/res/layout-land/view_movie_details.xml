@@ -31,7 +31,7 @@
 					android:textSize="20sp" android:text="1993" 
 					android:layout_alignParentTop="true"/>
 
-				<RatingBar android:id="@+id/RatingBar01"
+				<RatingBar android:id="@+id/DetailRatingBar01"
 					android:layout_marginLeft="10sp" android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:layout_toRightOf="@+id/myear"
 					android:layout_alignParentTop="true"
@@ -42,7 +42,7 @@
 			android:layout_width="wrap_content" 
 			android:id="@+id/Button01" 
 			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/RatingBar01"
+			android:layout_toRightOf="@id/DetailRatingBar01"
 			 android:text="@+id/Button01"
 			 android:maxHeight="20px"/>
 				<TextView android:id="@+id/synopsis" android:layout_width="fill_parent"

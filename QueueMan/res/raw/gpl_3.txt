@@ -2,10 +2,12 @@
 		
 Android application for Netflix subscribers.
 Copyright (C) 2009 Edward A. Webb
-Version: 0.9.7.1 Beta
 
 	Comments? Issues?  
 Please visit <http://code.google.com/p/queueman>
+
+	Now the Legal Stuff
+        ------
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

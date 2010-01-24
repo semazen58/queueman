@@ -21,4 +21,5 @@
 <string name="no_thanks">Not Interested</string>
 <string name="menu_at_home">At Home</string>
 <string name="at_home_click">Click a cover to see more detail</string>
+<string name="rate_button_rerate">Re-Rate</string>
 </resources>

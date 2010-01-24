@@ -8,12 +8,13 @@
 <RatingBar android:id="@+id/ActiveRatingBar" 
 android:layout_width="wrap_content" 
 android:layout_height="wrap_content"
-android:layout_centerInParent="true"/>
+android:layout_marginTop="45dp"
+android:layout_centerHorizontal="true"/>
 <Button android:background="@drawable/no_interest_drk"
 android:paddingLeft="24px"
 android:layout_below="@id/ActiveRatingBar"
 android:layout_centerHorizontal="true"
-android:layout_marginTop="85dp"
+android:layout_marginTop="45dp"
 android:layout_marginBottom="20dp"
 android:paddingRight="7dp"
 android:text="@string/no_thanks" android:id="@+id/no_thanks" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>

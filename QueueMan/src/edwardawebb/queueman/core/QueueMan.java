@@ -147,7 +147,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	/*
 	 * Flurry analytics
 	 */
-	static final String FLURRY_APP_KEY = "J27WUUEP8M8HU61YVJMD";
+	public static final String FLURRY_APP_KEY = "J27WUUEP8M8HU61YVJMD";
 
 	/*
 	 * ints for knowning which tab
@@ -519,7 +519,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	public void onTabChanged(String tabId) {
 		//this may get called when setting up layout, so only listen if user's session is active
 		if(sessionStatus==SESSION_ACTIVE){
-			FlurryAgent.onEvent("onTabChanged");
+			HashMap<String, String> parameters = new HashMap<String, String>();
+			parameters.put("CurrentTab", mTabHost.getCurrentTabTag());
+			parameters.put("New Tab", tabId);
+			FlurryAgent.onEvent("onTabChanged",parameters);
 			if (mTabHost.getCurrentTab() == TAB_INSTANT) {
 				if (canWatchInstant) {
 					queueType = NetFlixQueue.QUEUE_TYPE_INSTANT;
@@ -573,12 +576,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	protected void handleDiscUpdate(final int menuItemId, final Disc disc,
 			final int lastPosition) {
-		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put("Menu Id", String.valueOf(menuItemId));
-		parameters.put("Movie Item Position", String.valueOf(menuItemId));
-		parameters.put("Queue Type", String.valueOf(queueType));
-		FlurryAgent.onEvent("handleDiscUpdate", parameters);
-
+		
 		int mip = 0;
 		int newPosition = 0;
 		
@@ -629,11 +627,25 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			case DELETE_ID:
 				// call delete confirm
 				new DiscDeleteTask().execute(disc);
+
+				HashMap<String, String> parameters = new HashMap<String, String>();
+				parameters.put("Menu Id", String.valueOf(menuItemId));
+				parameters.put("Queue Type", NetFlixQueue.queueTypeText[queueType]);
+				FlurryAgent.onEvent("handleDiscUpdate-delete", parameters);
 				break;
 			default:
 		}
 		//if a new pos. was specified, update using disc, old and new
-		if(newPosition>0) new DiscMoveTask().execute(disc, mip, newPosition, queueType);
+		if(newPosition>0){
+			new DiscMoveTask().execute(disc, mip, newPosition, queueType);
+			
+			HashMap<String, String> parameters = new HashMap<String, String>();
+			parameters.put("Menu Id", String.valueOf(menuItemId));
+			parameters.put("Current Item Position", ""+String.valueOf(disc.getPosition()));
+			parameters.put("New Item Position", String.valueOf(newPosition));
+			parameters.put("Queue Type", NetFlixQueue.queueTypeText[queueType]);
+			FlurryAgent.onEvent("handleDiscUpdate-move", parameters);
+		}
 	}
 	
 	/***
@@ -1024,7 +1036,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 	protected void loadQueue() {
 		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put("Queue Type:", String.valueOf(queueType));
+		parameters.put("Queue Type:", NetFlixQueue.queueTypeText[queueType]);
 		parameters.put("Can Instant:", String.valueOf(canWatchInstant));
 		FlurryAgent.onEvent("loadQueue", parameters);
 		String message = "";
@@ -1268,7 +1280,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					break;
 				default:
 					FlurryAgent.onError("ER:45",
-							"AddNewDisc: Unkown response. SubCode: " + result
+							"AddNewDisc: Unkown response. Result: " + result
 									+ " Http:" + netflix.lastResponseMessage,
 							"QueueMan");
 						showCustomDialog("Error - Please Report", "Unable to add new title!\n Reason COde:"+netflix.lastResponseMessage + "\n\n hit 'Back' to continue");
@@ -1306,7 +1318,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 	 private class DownloadRecommendations extends AsyncTask<Void, Integer, Integer> {
 	     protected Integer doInBackground(Void... arg0) {
-	         int result = 900;
+	         int result = 36;
 	       
 			if (isOnline()) {
 				// get queue will connect to neflix and resave the currentQ
@@ -1338,7 +1350,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				boolean hasID = (netflix.getUserID()!=null);
 				FlurryAgent.onError("ER:91",
 						"Failed to Retrieve Recommendations - "
-								+ netflix.lastResponseMessage
+								+ result
 								+ "Has Access: "+ hasAccess
 								+ "Has ID: "+ hasID,
 						"QueueMan");
