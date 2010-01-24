@@ -8,9 +8,11 @@ Welcome to !QueueMan's Wiki.  You may search above, use the TOC to the left. Imp
 = Important Messages =
 
 == Eclair Compatibility ==
-Unfortunately !QueueMan's lazy developer hasn't gotten around to installing the 2.0 SDK and making the changes necessary for a version compatible with the latest SDK release.
+QueueMan is now *logically* on board with the Eclair SDK (2.0, 2.01, 2.1). (Visually some devices may not look nice - see below)
 
-Please be patient as he gets around to it, or try coaxing him with sweets or other incentives.
 
-*Update* 
-!QueueMan seems to running on the 2.0 SDK just fine on my local emulator. Looking into the reports this may be an issue with a specific device (all confirmed reports are using motorola Droid)
+
+== Fancy Screen Compatibility ==
+Fancy phones like Droid and Nexus One don't play very nice with any of the rating bars. I am not sure what the dilly is.  Please stay tuned as I am working actively to fix this!
+
+(If your some Android Layout Guru - well c'mon help out! )
