@@ -26,7 +26,7 @@
 			android:layout_height="35dp"
 			android:height="35dp"/>
 	
-	<RatingBar android:id="@+id/RatingBar01"
+	<RatingBar android:id="@+id/DetailRatingBar01"
 			android:layout_marginRight="20sp" android:layout_width="wrap_content"
 			android:layout_height="wrap_content" android:layout_below="@+id/Button01"
 			android:layout_toRightOf="@+id/boxart" style="?android:attr/ratingBarStyleSmall" />

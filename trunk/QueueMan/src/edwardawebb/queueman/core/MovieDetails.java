@@ -163,19 +163,25 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		title = (TextView) findViewById(R.id.mtitle);
 		year = (TextView) findViewById(R.id.myear);
 
-		avgRatingBar = (RatingBar) findViewById(R.id.RatingBar01);
+		//rating button
+		rateMe= (Button) findViewById(R.id.Button01);
+		rateMe.setText("Rate Title");
+		//rateMe.setHeight(20);
+		rateMe.setOnClickListener(this);
+		
+		//current rating indicator
+		avgRatingBar = (RatingBar) findViewById(R.id.DetailRatingBar01);
 		avgRatingBar.setNumStars(5);
+		avgRatingBar.setIsIndicator(true);
 		if(disc.hasUserRating()){
-			avgRatingBar.setRating(disc.getUserRating().floatValue());			
+			avgRatingBar.setRating(disc.getUserRating().floatValue());
+			rateMe.setText(R.string.rate_button_rerate);
+			
 		}else{
 			avgRatingBar.setRating(disc.getAvgRating().floatValue());
 		}
 		avgRatingBar.setFocusable(false);
 		
-		rateMe= (Button) findViewById(R.id.Button01);
-		rateMe.setText("Rate Title");
-		//rateMe.setHeight(20);
-		rateMe.setOnClickListener(this);
 		
 		// set values based on disc
 		title.setText(disc.getFullTitle());
@@ -373,12 +379,21 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		
 		protected void onPostExecute(Integer result){
 			switch(result){
-			case 200:
-			case 201:
-				//successful rating
-			case 422:
-				//already rated
-				Toast.makeText(MovieDetails.this, "Title Rated!", Toast.LENGTH_SHORT).show();
+				case 200:
+				case 201:
+					//successful rating
+					//continue
+				case 422:
+					//already rated
+					Toast.makeText(MovieDetails.this, "Title Rated!", Toast.LENGTH_SHORT).show();
+	
+					rateMe.setText(R.string.rate_button_rerate);
+					break;
+				default:
+					FlurryAgent.onError("SetRatings-Failed", "Error:"+result + " | HTTP: " + QueueMan.netflix.lastResponseMessage + " | " + QueueMan.netflix.lastNFResponseMessage, "QueueMan");
+					Toast.makeText(MovieDetails.this, "Oops: " + QueueMan.netflix.lastResponseMessage, Toast.LENGTH_SHORT).show();
+					
+					
 			}
 		}
 		 

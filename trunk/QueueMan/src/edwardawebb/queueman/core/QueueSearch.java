@@ -17,6 +17,8 @@
  */
 package edwardawebb.queueman.core;
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -149,8 +151,18 @@ public class QueueSearch extends Activity {
 		t.start();
 	}
 
+	/**
+	 * Call movie details for clicked title
+	 * @param selection disc to display
+	 */
 	private void showDetails(Disc selection) {
-		// TODO Auto-generated method stub
+		//
+		HashMap<String, String> parameters = new HashMap<String, String>();
+		parameters.put("Disc Id", String.valueOf(selection.getId()));
+		parameters.put("Title", String.valueOf(selection.getFullTitle()));
+		FlurryAgent.onEvent("ViewSearchedTitle", parameters);
+		
+		
 		// notify("Dev note","I cant help you with "+l.getItemAtPosition(position));
 		Intent intent = new Intent(this,
 				edwardawebb.queueman.core.MovieDetails.class);
@@ -168,6 +180,7 @@ public class QueueSearch extends Activity {
 		// See which child activity is calling us back.
 		switch (resultCode) {
 		case ADD_MOVIES:
+			FlurryAgent.onEvent("AddSearchedTitle");
 			QueueSearch.this.setResult(QueueMan.SEARCH_MOVIES, data);
 			finish();
 			break;
