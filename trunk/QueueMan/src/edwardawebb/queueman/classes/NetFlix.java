@@ -760,10 +760,10 @@ public class NetFlix {
 		NetFlixQueue queue = null;
 		URL QueueUrl = null;
 		String eTag = null;
+		URL url = null;
 		try {
 
 			// Construct data
-			URL url = null;
 			int queueSize=0;
 			switch (queueType) {
 			case NetFlixQueue.QUEUE_TYPE_DISC:
@@ -882,6 +882,7 @@ public class NetFlix {
 				parameters.put("Disc ID:", ""+disc.getId() );
 				parameters.put("Position:", ""+disc.getPosition());
 				parameters.put("Availability:", ""+ disc.isAvailable() + ", " + disc.getAvailibilityText());
+				parameters.put("URL:", ""+ url);
 				FlurryAgent.onEvent("AddToQueue502", parameters);
 			}
 		}
