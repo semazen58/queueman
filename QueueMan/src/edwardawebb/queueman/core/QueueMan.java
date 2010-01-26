@@ -132,6 +132,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private static final int MOVE_BOTTOM_ID = 14;
 	private static final int MOVE_UP_ID = 15;
 	private static final int MOVE_DOWN_ID = 16;
+	private static final int FILTER_ID = 17;
+	private static final int NEXT_PAGE_ID = 18;
 
 	/*
 	 * Intent codes
@@ -170,6 +172,14 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	private ListView mListView;
 
+	
+	/*
+	 * Knowing where we are, ie pagination
+	 */
+	private int recommendStart=0;
+	//see sessionn variables for rec. download count
+	private int currentItemNumber=0;
+	
 	/*
 	 * handler for thread callbacks
 	 *  @deprecated
@@ -428,6 +438,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		case REFRESH_ID:
 			netflix.purgeQueue(queueType);
 			if(queueType == NetFlixQueue.QUEUE_TYPE_RECOMMEND){
+				recommendStart=0;
 				loadRecommendations();
 			}else{			
 				loadQueue();
@@ -529,7 +540,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			menu.add(0, MOVE_UP_ID, Menu.FIRST + 2, "Move Up");
 			menu.add(0, MOVE_DOWN_ID, Menu.FIRST + 3, "Move Down");
 			menu.add(0, DELETE_ID, Menu.FIRST + 5, "Delete this Movie");
-		}
+		} else if (mTabHost.getCurrentTab() == TAB_RECOMMEND) {
+			menu.add(0, FILTER_ID, Menu.FIRST, "Filter Instant only");
+			menu.add(0, NEXT_PAGE_ID, Menu.FIRST+1, "See Next " + getDownloadCount() + " titles.");
+		} 
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -546,6 +560,18 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			disc = NetFlix.instantQueue.getDiscs().get((int) info.id);
 			lastPosition = NetFlix.instantQueue.getTotalTitles();
 			break;
+			
+		case TAB_RECOMMEND:
+			if (item.getItemId() == FILTER_ID){
+				//only thing we do here is filter
+				netflix.filterOnInstant();
+				redrawQueue();
+			}else if (item.getItemId() == NEXT_PAGE_ID){
+				//pager is automatically incremented, just grab more
+				loadRecommendations();
+			}
+			return true;
+			
 		}
 		final int menuItemId = item.getItemId();
 		handleDiscUpdate(menuItemId, disc, lastPosition);
@@ -1370,7 +1396,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			if (isOnline()) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
-				result = netflix.getRecommendations(getDownloadCount());
+				result = netflix.getRecommendations(recommendStart,getDownloadCount());
 				
 			} else {
 				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
@@ -1389,6 +1415,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	       switch (result) {
 			case 200:
 			case 201:
+				//increment starindeex, so they can see next set
+				recommendStart+=Integer.valueOf(getDownloadCount());
 				 redrawQueue();
 				 break;
 			default:
