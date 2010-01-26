@@ -58,14 +58,10 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 	 */
 	private static Dialog dialog;
 	private Button addButton;
-	private Button cancelButton;
 	private TextView title;
 	private TextView year;
-	private TextView rating;
 	private ImageView boxart;
 	private TextView synopsis;
-	private RelativeLayout searchOptions;
-	private RadioGroup radioOptions;
 	private RadioButton radioAddTop;
 	private RadioButton radioAddBottom;
 	private RadioButton radioAddInstant;
@@ -74,7 +70,6 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 	
 	private Button rateMe;
 	private Button noThanks;
-	private RatingBar rate;
 
 	private Bitmap bitmap;
 	private int action;
@@ -108,7 +103,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				addButton = (Button) findViewById(R.id.add_movie);
 				addButton.setOnClickListener(new clickr());
 							
-				radioOptions = (RadioGroup) findViewById(R.id.add_options);
+				//radioOptions = (RadioGroup) findViewById(R.id.add_options);
 				radioAddTop = (RadioButton) findViewById(R.id.radio_top);
 				radioAddBottom = (RadioButton) findViewById(R.id.radio_bottom);
 				radioAddInstant = (RadioButton) findViewById(R.id.radio_instant);
@@ -167,8 +162,6 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		
 		//current rating indicator
 		avgRatingBar = (RatingBar) findViewById(R.id.DetailRatingBar01);
-		avgRatingBar.setNumStars(5);
-		avgRatingBar.setIsIndicator(true);
 		if(disc.hasUserRating()){
 			avgRatingBar.setRating(disc.getUserRating().floatValue());
 			rateMe.setText(R.string.rate_button_rerate);
@@ -176,7 +169,6 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		}else{
 			avgRatingBar.setRating(disc.getAvgRating().floatValue());
 		}
-		avgRatingBar.setFocusable(false);
 		
 		
 		// set values based on disc
@@ -343,9 +335,10 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 	public void onRatingChanged(RatingBar arg0, float arg1, boolean arg2) {
 		// TODO Auto-generated method stub
 		dialog.dismiss();
-		new SetRatings().execute(disc.getId(), String.valueOf((int)arg0.getRating()));
-		avgRatingBar.setRating(arg0.getRating());
-
+		disc.setUserRating(arg0.getRating());
+		new SetRatings().execute(disc);
+		avgRatingBar.setRating(arg0.getRating());	
+		
 	}
 
 	public void onClick(View view) {
@@ -355,18 +348,19 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		}else if(view==noThanks){
 			dialog.dismiss();
 			avgRatingBar.setRating(0.0f);
-			new SetRatings().execute(disc.getId(), NetFlix.NF_RATING_NO_INTEREST);
+			disc.setUserRating(0);
+			new SetRatings().execute(disc);
 		}
 	}
 
 	
-	 private class SetRatings extends AsyncTask<String, Integer, Integer> {
+	 private class SetRatings extends AsyncTask<Disc, Integer, Integer> {
 
 		@Override
-		protected Integer doInBackground(String... idRatingPair) {
+		protected Integer doInBackground(Disc... modifiedDisc) {
 			int result;
 
-			result=QueueMan.netflix.setRating(idRatingPair[0], idRatingPair[1]);
+			result=QueueMan.netflix.setRating(modifiedDisc[0]);
 			// TODO Auto-generated method stub
 			return result;
 		}
@@ -380,7 +374,6 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				case 422:
 					//already rated
 					Toast.makeText(MovieDetails.this, "Title Rated!", Toast.LENGTH_SHORT).show();
-	
 					rateMe.setText(R.string.rate_button_rerate);
 					break;
 				default:

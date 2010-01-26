@@ -172,6 +172,7 @@ public class RecommendationsHandler extends DefaultHandler {
 			tempMovie.setAvailibilityText(availability);
 			tempMovie.setFormats(new ArrayList<String>(mformats));
 			tempMovie.setAvailableInstant(new Boolean(isInstant));
+			tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_RECOMMEND);
 			mformats.clear();
 			isInstant=false;
 			if(!netflix.discQueue.getDiscs().contains(tempMovie)){

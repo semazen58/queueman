@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="edwardawebb.queueman.core" 
-	android:versionCode="38" android:versionName="0.9.9"
+	android:versionCode="39" android:versionName="0.9.9Alpha"
 	>
 	<uses-permission android:name="android.permission.INTERNET" />
 	
 	
 	<application android:icon="@drawable/red_icon" android:label="@string/app_name" 
-	
 	
 	
 	
@@ -23,10 +22,7 @@
 	
 	
 	
-	
-	
-	>
-		<activity android:name=".QueueMan" android:label="@string/app_name" 
+	>		<activity android:name=".QueueMan" android:label="@string/app_name" 
 		android:launchMode="singleTop"  android:theme="@android:style/Theme.NoTitleBar">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
@@ -50,5 +46,5 @@
 		<activity android:name=".ViewLicense" android:label="QueueMan EULA" >
 		</activity>
 </application>
-	<uses-sdk  android:minSdkVersion="3" android:maxSdkVersion="7" />
+	<uses-sdk  android:minSdkVersion="4" android:maxSdkVersion="7" />
 </manifest> 

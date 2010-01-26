@@ -1114,17 +1114,11 @@ public class NetFlix {
 	
 	/**
 	 * Post a rating to specificed title
-	 * @param disc
-	 * @param queueType
+	 * @param modifiedDisc
 	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
 	 */
-	public int setRating(String id, String rating) {
-		if (!rating.equals(NF_RATING_NO_INTEREST)){
-			int ratingInt=Integer.valueOf(rating);
-			if(ratingInt >5 || ratingInt <1){
-				return NF_ERROR_BAD_INDEX;//
-			}			
-		}
+	public int setRating(Disc modifiedDisc) {
+		
 		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
@@ -1152,9 +1146,10 @@ public class NetFlix {
 			postConsumer.setTokenWithSecret(oathAccessToken,
 					oathAccessTokenSecret);
 
+			String rating = (modifiedDisc.getUserRating() == 0) ? NF_RATING_NO_INTEREST : String.valueOf(modifiedDisc.getUserRating().intValue()); 
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			// Your DATA
-			nameValuePairs.add(new BasicNameValuePair("title_ref", id));
+			nameValuePairs.add(new BasicNameValuePair("title_ref", modifiedDisc.getId()));
 			nameValuePairs.add(new BasicNameValuePair("rating", rating));
 
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -1187,6 +1182,21 @@ public class NetFlix {
 			xr.setContentHandler(myHandler);
 			xr.parse(new InputSource(xml));
 
+			if(result == 201 || result == 422){
+				switch(modifiedDisc.getQueueType()){
+					//could be rating froms earch, recommends, instant, discm, or at home
+				case NetFlixQueue.QUEUE_TYPE_RECOMMEND:
+					((Disc)recomemendedQueue.getDiscs().get(recomemendedQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
+					break;
+				case NetFlixQueue.QUEUE_TYPE_INSTANT:
+					((Disc)instantQueue.getDiscs().get(instantQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
+					break;
+				case NetFlixQueue.QUEUE_TYPE_DISC:
+					((Disc)discQueue.getDiscs().get(discQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
+					break;
+				}
+			}
+			
 			lastNFResponseMessage = "NF: "+myHandler.getMessage();
 			result = myHandler.getSubCode(result);
 

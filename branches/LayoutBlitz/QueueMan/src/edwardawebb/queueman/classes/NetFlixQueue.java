@@ -149,6 +149,12 @@ public class NetFlixQueue {
 		}
 	}
 
+	
+	public int indexOf(Disc movie) {
+		return discs.indexOf(movie);
+	}
+	
+	
 	/**
 	 * Returns Queue Position of title (1 based)
 	 * 
