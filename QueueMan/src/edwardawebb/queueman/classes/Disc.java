@@ -186,8 +186,10 @@ public class Disc implements Serializable {
 	 * @param userRating the userRating to set
 	 */
 	public void setUserRating(double userRating) {
-		this.userRating = userRating;
-		hasUserRating=true;
+		if(userRating <=5 && userRating >=0 ){
+			this.userRating = userRating;		
+			hasUserRating=true;
+		}
 	}
 
 	/**
