@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="pass_to_netflix_title">Verifing with Netflix</string>
+<string name="pass_to_netflix_text">This is a one time process - but it may be slow on some connections as we direct you to Netflix.</string>
+
+</resources>
