@@ -23,8 +23,11 @@
 package edwardawebb.queueman.classes;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import android.util.Log;
 
 import com.flurry.android.FlurryAgent;
 
@@ -215,5 +218,23 @@ public class NetFlixQueue {
 		this.perPage = perPage;
 	}
 
-	
+	public void filterInstantOnly(){
+		List<Disc> purges = new LinkedList<Disc>();
+		
+		for (Iterator<Disc> iterator = discs.iterator(); iterator.hasNext();) {
+			Disc disc = (Disc) iterator.next();
+			if(!disc.isAvailableInstant()) {
+				purges.add(disc);
+			}
+		}
+		
+		for (Iterator<Disc> iterator = purges.iterator(); iterator.hasNext();) {
+			Disc disc = (Disc) iterator.next();
+			if(discs.remove(disc)){
+					Log.d("NetFlix", "Disc removed");
+			}
+		}
+		
+		
+	}
 }

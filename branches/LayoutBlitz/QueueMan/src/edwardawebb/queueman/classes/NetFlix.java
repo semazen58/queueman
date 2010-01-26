@@ -27,6 +27,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -400,18 +401,22 @@ public class NetFlix {
 	 * @param maxResults
 	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
 	 */
-	public int getRecommendations(String maxResults) {
+	public int getRecommendations(int startIndex,String maxResults) {
 		URL QueueUrl = null;
 		int result = NF_ERROR_BAD_DEFAULT;
 		if (maxResults.equals(QueueMan.ALL_TITLES_STRING)) {
 			maxResults = "500";
 		}
-		String expanders = "?expand=synopsis,formats&max_results=" + maxResults;
+		String expanders = "?expand=synopsis,formats&start_index=" + startIndex + "&max_results=" + maxResults;
 		InputStream xml = null;
 		try {
-			
-			if (!NetFlix.recomemendedQueue.isEmpty())
+			// we're either rotating/task jumping OR we're starting/paging
+			if (!NetFlix.recomemendedQueue.isEmpty() && startIndex == recomemendedQueue.getStartIndex()){
 				return 200;
+			}else{
+				recomemendedQueue.purge();
+			}
+				
 			QueueUrl = new URL("http://api.netflix.com/users/" + userID
 					+ "/recommendations" + expanders);
 			RecommendationsHandler myHandler = new RecommendationsHandler(this);
@@ -430,7 +435,7 @@ public class NetFlix {
 			xml = request.getInputStream();
 			
 			
-			/* BufferedReader in = new BufferedReader(new
+		/*BufferedReader in = new BufferedReader(new
 			 InputStreamReader(xml)); String linein = null; while ((linein =
 			 in.readLine()) != null) { Log.d("NetFlixQueue", "" +
 			 linein); }*/
@@ -1286,4 +1291,10 @@ public class NetFlix {
 		FlurryAgent.onError("NetFlix Exception", e.getLocalizedMessage()+" Or maybe:" + e.getMessage(), e.toString());
 	}
 	
+	/**
+	 * trims recommended queue to instant titles
+	 */
+	public void filterOnInstant(){
+		recomemendedQueue.filterInstantOnly();
+	}
 }
