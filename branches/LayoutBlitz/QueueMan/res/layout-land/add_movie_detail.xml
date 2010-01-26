@@ -26,58 +26,50 @@
 			android:layout_marginLeft="10dip" android:layout_height="wrap_content"
 			android:layout_below="@+id/myear" style="?android:attr/ratingBarStyleSmall" />
 
- 	
-		   <Button 
-			android:layout_width="wrap_content" 
-			android:id="@+id/Button01" 
-			android:layout_height="35dp"
-			android:height="35dp"
-			android:textSize="15dp"
-			android:layout_below="@id/DetailRatingBar01"
-			android:layout_alignLeft="@id/DetailRatingBar01"
-			 android:text="@+id/Button01"/>
 
-	/>
+		<Button android:layout_width="wrap_content" android:id="@+id/RateMe"
+			android:layout_height="35dp" android:height="35dp" android:textSize="15dp"
+			android:layout_below="@id/DetailRatingBar01"
+			android:layout_alignLeft="@id/DetailRatingBar01" android:text="Rate Me" />
+
+		/>
 
 	</RelativeLayout>
 
-	<ScrollView android:layout_width="wrap_content"
-		 android:id="@+id/ScrollView01"
-		android:layout_toRightOf="@id/leftsection" 
-		android:layout_below="@id/mtitle"
-			android:layout_height="wrap_content">
+	<ScrollView android:layout_width="wrap_content" android:id="@+id/ScrollView01"
+		android:layout_toRightOf="@id/leftsection" android:layout_below="@id/mtitle"
+		android:layout_height="wrap_content">
 		<RelativeLayout android:id="@+id/rightsection"
 			android:layout_width="wrap_content" android:layout_height="fill_parent">
 			<TextView android:id="@+id/synopsis" android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:layout_marginTop="4dip"
-				android:layout_marginRight="10dip" android:text="Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   " />
-	<TextView android:id="@+id/Formats" android:text="Availability: "
-			android:layout_width="wrap_content" android:layout_marginLeft="10dip"
-			android:layout_below="@+id/synopsis"
-			android:layout_height="wrap_content" />
+				android:layout_marginRight="10dip"
+				android:text="Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   Unable to load Title Synopsis   " />
+			<TextView android:id="@+id/Formats" android:text="Availability: "
+				android:layout_width="wrap_content" android:layout_marginLeft="10dip"
+				android:layout_below="@+id/synopsis" android:layout_height="wrap_content" />
 			<RadioGroup android:id="@+id/add_options"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
 				android:layout_below="@id/Formats">
 
-				
+
 				<RadioButton android:id="@+id/radio_instant"
 					android:layout_width="wrap_content" android:layout_height="40sp"
-					android:text="Add to Instant Queue" />
+					android:text="@string/add_options_instant_top" />
 				<RadioButton android:id="@+id/radio_top"
 					android:layout_width="wrap_content" android:layout_height="40sp"
-					android:text="Add to Top of Disc Queue" />
+					android:text="@string/add_options_top" />
 
 				<RadioButton android:id="@+id/radio_bottom"
 					android:layout_width="wrap_content" android:layout_height="40sp"
-					android:text="Add to Bottom of Disc Queue" />
+					android:text="@string/add_options_bottom" />
 
 			</RadioGroup>
 			<Button android:id="@+id/add_movie" android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:layout_centerHorizontal="true" android:layout_toRightOf="@id/add_options"
-				android:layout_below="@id/Formats"
-				android:layout_marginBottom="5sp" android:layout_marginTop="5sp"
-				android:text="Add" />
+				android:layout_below="@id/Formats" android:layout_marginBottom="5sp"
+				android:layout_marginTop="5sp" android:text="Add" />
 			<TextView android:id="@+id/netflix_branding"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
 				android:layout_below="@id/add_options" android:gravity="bottom"

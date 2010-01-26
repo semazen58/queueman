@@ -26,6 +26,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.classes.NetFlixQueue;
 
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
@@ -75,6 +76,8 @@ public class RecommendationsHandler extends DefaultHandler {
 
 	private String availability;
 	private String discAvailabilityCategoryScheme = "http://api.netflix.com/categories/queue_availability";
+
+	private boolean isInstant;
 
 	public RecommendationsHandler(NetFlix netflix){
 		this.netflix=netflix;
@@ -138,6 +141,7 @@ public class RecommendationsHandler extends DefaultHandler {
 		if(inAvailability && inCategory){
 			//
 			mformats.add(atts.getValue("label"));
+			if(atts.getValue("label").equals(NetFlixQueue.INSTANT_LABEL)) isInstant=true;
 		}
 		
 	}
@@ -167,6 +171,7 @@ public class RecommendationsHandler extends DefaultHandler {
 					synopsis, year, isAvailable);
 			tempMovie.setAvailibilityText(availability);
 			tempMovie.setFormats(new ArrayList<String>(mformats));
+			tempMovie.setAvailableInstant(isInstant);
 			mformats.clear();
 			if(!netflix.discQueue.getDiscs().contains(tempMovie)){
 				//no pioitn in showing a title they already got.

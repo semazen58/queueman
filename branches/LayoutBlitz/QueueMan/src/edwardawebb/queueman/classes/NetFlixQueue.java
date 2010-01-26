@@ -67,6 +67,7 @@ public class NetFlixQueue {
 	public static final int QUEUE_TYPE_SEARCH = 2;
 	public static final int QUEUE_TYPE_RECOMMEND = 3;
 	public static final int QUEUE_TYPE_HOME = 4;
+	public static final String INSTANT_LABEL="instant";
 	
 	public static final String[] queueTypeText = {"disc","instant","search","recommended","at_home"};
 

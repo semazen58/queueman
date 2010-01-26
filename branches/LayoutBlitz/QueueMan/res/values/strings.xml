@@ -22,4 +22,7 @@
 <string name="menu_at_home">At Home</string>
 <string name="at_home_click">Click a cover to see more detail</string>
 <string name="rate_button_rerate">Re-Rate</string>
+<string name="add_options_top">Add to Top of Queue</string>
+<string name="add_options_bottom">Add to Bottom of Queue</string>
+<string name="add_options_instant_top">Add to Instant Queue</string>
 </resources>
