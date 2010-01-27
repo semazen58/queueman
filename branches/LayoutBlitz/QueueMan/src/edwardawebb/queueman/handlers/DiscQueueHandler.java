@@ -58,7 +58,7 @@ public class DiscQueueHandler extends QueueHandler {
 		if (value.equals("etag")){
 			inETag = false;			
 		}else if(value.equals("queue_item")){	
-			super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_DISC-);	
+			super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_DISC);	
 			NetFlix.discQueue.add(super.tempMovie);
 		}
 	}

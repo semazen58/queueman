@@ -21,10 +21,8 @@ import java.util.HashMap;
 
 import android.app.Dialog;
 import android.app.TabActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,6 +34,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -301,7 +300,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		//@ TODO DEBUGGIN ONLY - DONT LOG
 		//@ TODO DEBUGGIN ONLY - DONT LOG
 		//@ TODO DEBUGGIN ONLY - DONT LOG
-		FlurryAgent.setLogEnabled(false);
+		//FlurryAgent.setLogEnabled(false);
 		
 		//start logigng
 		FlurryAgent.onStartSession(this, FLURRY_APP_KEY);
@@ -316,6 +315,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		// set current defaults
 		queueType = NetFlixQueue.QUEUE_TYPE_DISC;
 		mTabHost.setCurrentTab(TAB_DISC);
+		
 	}
 
 	
@@ -641,18 +641,24 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				if (canWatchInstant) {
 					queueType = NetFlixQueue.QUEUE_TYPE_INSTANT;
 					loadQueue();
+					//((ViewStub) findViewById(R.id.stub_paginate)).setVisibility(View.GONE);
 				} else {
 					showCustomDialog(
 							"Restricted",
 							"According to Netflix this user does not have \"Watch Instantly\" rights\nPress 'Back' to return to your Disc Queue");
 					mTabHost.setCurrentTab(TAB_DISC);
+					
 				}
 			} else if (mTabHost.getCurrentTab() == TAB_DISC) {
 				queueType = NetFlixQueue.QUEUE_TYPE_DISC;
 				loadQueue();
+				//((ViewStub) findViewById(R.id.stub_paginate)).setVisibility(View.GONE);
+
 			} else if (mTabHost.getCurrentTab() == TAB_RECOMMEND) {
+				
 				queueType = NetFlixQueue.QUEUE_TYPE_RECOMMEND;
 				loadRecommendations();
+				
 			}
 		}
 	}
