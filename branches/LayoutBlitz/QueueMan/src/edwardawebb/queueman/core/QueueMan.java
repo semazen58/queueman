@@ -785,7 +785,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	    	 int result=36;
 	    	
 				
-			if (isOnline()) {
+			if (netflix.getNewETag(queueType)) {
 				result=netflix.moveInQueue((Disc)oArr[0],(Integer)oArr[1],(Integer)oArr[2],(Integer)oArr[3]);
 			} else {
 				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
@@ -809,6 +809,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				case 201:
 					
 					redrawQueue();
+					break;
+					
+				case 502:
+					//yeah! its happening here too now - Arrgggh!
+					Toast.makeText(mTabHost.getCurrentTabView().getContext(),"I blew it! - You may have a poor connection "  , Toast.LENGTH_LONG).show();
+					Toast.makeText(mTabHost.getCurrentTabView().getContext(),"But just in case, this issue has been reported - Sorry"  , Toast.LENGTH_LONG).show();
+					
 					break;
 				case  NetFlix.MOVED_OUTSIDE_CURRENT_VIEW:
 					//horiible, but this is a long message show back to back toasts allow the user to finish reading
@@ -844,7 +851,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		    	 int result=901;
 		    	
 					
-				if (isOnline()) {
+				if (netflix.getNewETag(queueType)) {
 					result=netflix.deleteFromQueue(oArr[0], queueType);
 				} else {
 					FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
@@ -1352,10 +1359,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			 }catch(Exception e){
 				 // empty disc, or bad values - just prevent FC
 			 }
-			if (isOnline()) {
+			Disc disc=discArr[0];
+			if (netflix.getNewETag(disc.getQueueType())) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
-				Disc disc=discArr[0];
 				result = netflix.addToQueue(disc,disc.getQueueType());
 			
 			} else {
