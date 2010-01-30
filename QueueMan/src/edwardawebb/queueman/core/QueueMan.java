@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -168,7 +169,15 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private Button accept;
 	private Button decline;
 	private Button about;
-
+/*
+ * Navigation bar
+ */
+	private View navigationPanel;
+	private Button btnFilterInstant;
+	private Button btnNextPage;
+	
+	
+	
 	private ListView mListView;
 
 	
@@ -211,101 +220,14 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//@ TODO DEBUGGIN ONLY - DONT LOG
+	
 		//@ TODO DEBUGGIN ONLY - DONT LOG
 		//FlurryAgent.setLogEnabled(false);
 		
 		//start logigng
 		FlurryAgent.onStartSession(this, FLURRY_APP_KEY);
 		// prepare and display view and tabs
-		setContentView(R.layout.queue_man);
+		setContentView(R.layout.main_tabs_screen);
 		mTabHost = getTabHost();
 		mListView = (ListView) findViewById(R.id.discqueue);
 		mTabHost.addTab(mTabHost.newTabSpec("discqueue").setIndicator("Netflix\nDiscs",getResources().getDrawable(R.drawable.cd)).setContent(R.id.discqueue));
@@ -450,6 +372,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			break;
 		case EDIT_PREFS:
 			loadSettings();
+			//because rec. has paging based on max dl, we need to get up to snuff with settings 
+			//if # did not change Netflix class will use same q
+			if(mTabHost.getCurrentTab() == TAB_RECOMMEND) loadRecommendations();
+			
 		default:
 		}
 	}
@@ -477,14 +403,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		case REFRESH_ID:
-			netflix.purgeQueue(queueType);
-			if(queueType == NetFlixQueue.QUEUE_TYPE_RECOMMEND){
-				recommendStart=0;
-				loadRecommendations();
-			}else{			
-				loadQueue();
-				}
-			return true;
+			return refreshCurrentQueue();
 		case HOME_ID:
 			FlurryAgent.onEvent("Launching At Home");
 			//load the at home titles if we habent already
@@ -524,6 +443,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		super.onMenuItemSelected(featureId, item);
 		return true;
 	}
+
+	
+
 
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
@@ -582,8 +504,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			menu.add(0, MOVE_DOWN_ID, Menu.FIRST + 3, "Move Down");
 			menu.add(0, DELETE_ID, Menu.FIRST + 5, "Delete this Movie");
 		} else if (mTabHost.getCurrentTab() == TAB_RECOMMEND) {
-			menu.add(0, FILTER_ID, Menu.FIRST, "Filter Instant only");
-			menu.add(0, NEXT_PAGE_ID, Menu.FIRST+1, "See Next " + getDownloadCount() + " titles.");
+			//menu.add(0, FILTER_ID, Menu.FIRST, "Filter Instant only");
+			//menu.add(0, NEXT_PAGE_ID, Menu.FIRST+1, "See Next " + getDownloadCount() + " titles.");
 		} 
 	}
 
@@ -603,15 +525,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			break;
 			
 		case TAB_RECOMMEND:
-			if (item.getItemId() == FILTER_ID){
-				//only thing we do here is filter
-				netflix.filterOnInstant();
-				redrawQueue();
-			}else if (item.getItemId() == NEXT_PAGE_ID){
-				//pager is automatically incremented, just grab more
-				loadRecommendations();
-			}
-			return true;
+			
 			
 		}
 		final int menuItemId = item.getItemId();
@@ -637,6 +551,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			parameters.put("CurrentTab", mTabHost.getCurrentTabTag());
 			parameters.put("New Tab", tabId);
 			FlurryAgent.onEvent("onTabChanged",parameters);
+			
+			//hide navigation paenl as it is not yet avaible on all fields.
+			if(navigationPanel != null)navigationPanel.setVisibility(View.GONE);
+			
 			if (mTabHost.getCurrentTab() == TAB_INSTANT) {
 				if (canWatchInstant) {
 					queueType = NetFlixQueue.QUEUE_TYPE_INSTANT;
@@ -658,7 +576,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				
 				queueType = NetFlixQueue.QUEUE_TYPE_RECOMMEND;
 				loadRecommendations();
-				
 			}
 		}
 	}
@@ -689,7 +606,16 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			sessionStatus=SESSION_EULA_READ;
 			startActivity( new Intent(this,
 					edwardawebb.queueman.core.ViewLicense.class));
+		}else if(v == btnFilterInstant){
+			//only thing we do here is filter
+			netflix.filterOnInstant();
+			redrawQueue();
+		}else if (v == btnNextPage){
+			//increment starindeex, so they can see next set
+			recommendStart+=Integer.valueOf(getDownloadCount());
+			loadRecommendations();
 		}
+	
 		
 	}
 
@@ -1469,10 +1395,47 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	       switch (result) {
 			case 200:
 			case 201:
-				//increment starindeex, so they can see next set
-				recommendStart+=Integer.valueOf(getDownloadCount());
-				 redrawQueue();
-				 break;
+			case NetFlix.NF_ERROR_NO_MORE:
+					
+				redrawQueue();
+				//show navigation panel (instant filter, next)
+				
+	            if (navigationPanel == null) {
+	            	navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
+					//provide some references
+	            	btnFilterInstant = (Button) navigationPanel.findViewById(R.id.filter_instant);
+					btnNextPage = (Button) navigationPanel.findViewById(R.id.next_page);
+					//register for clika
+					btnFilterInstant.setOnClickListener(QueueMan.this);
+					 //the btnNextPage has two uses, so it is set depenind on end of results switch below              
+	            } 
+	            //although inflate makes view visible, on subsequent trips will need to show it.
+	            navigationPanel.setVisibility(View.VISIBLE);
+				
+				//if this is the end of the line, prevent them asking fo more
+				if(Integer.valueOf(recommendStart) + Integer.valueOf(recommendDownloadCount) >= NetFlix.recomemendedQueue.getTotalTitles()){
+					Toast.makeText(QueueMan.this, "That's it! only " + NetFlix.recomemendedQueue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
+					Toast.makeText(QueueMan.this, "You can use Refresh from the menu to start over", Toast.LENGTH_LONG).show();
+					btnNextPage.setText("Start Over");
+					
+					// we al so make the "next XX' a "start over" button instead
+					btnNextPage.setOnClickListener(new View.OnClickListener() {
+		                    public void onClick(View v) {
+		                        refreshCurrentQueue();
+		                    }
+		                });
+
+				}else{
+					//format next to "grab next XX titles"
+				String resultsTextFormat = getBaseContext().getResources().getString(R.string.nav_next_page);
+				String resultsText = String.format(resultsTextFormat,Integer.valueOf(getDownloadCount()));
+				btnNextPage.setText(resultsText);
+				btnNextPage.setOnClickListener(QueueMan.this);	
+				}
+				
+				
+				 break;				 
+				
 			default:
 				Toast.makeText(QueueMan.this, "Sorry, we had an error, please refresh", Toast.LENGTH_LONG).show();
 				boolean hasAccess = (netflix.getAccessToken()!=null);
@@ -1569,22 +1532,39 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		
 		
 		
-			/**
-			 * @return the downloadCount based on current tab
-			 */
-			public String getDownloadCount() {
-									
-				if(mTabHost.getCurrentTab() == TAB_RECOMMEND){
-						return recommendDownloadCount;						
-				}else{
-						return queueDownloadCount;
-				}
+	/**
+	 * @return the downloadCount based on current tab
+	 */
+	public String getDownloadCount() {
+							
+		if(mTabHost.getCurrentTab() == TAB_RECOMMEND){
+				return recommendDownloadCount;						
+		}else{
+				return queueDownloadCount;
+		}
+	}
+	
+	public boolean isOnline() {
+		//ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		//return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+		return netflix.isConnected();
+	}
+	
+	
+	/**
+	 * Uses current tab to purgew cucrrent queue and request new one
+	 * @return
+	 */
+	private boolean refreshCurrentQueue() {
+		netflix.purgeQueue(queueType);
+		if(queueType == NetFlixQueue.QUEUE_TYPE_RECOMMEND){
+			recommendStart=0;
+			loadRecommendations();
+		}else{			
+			loadQueue();
 			}
-			
-			public boolean isOnline() {
-				//ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-				//return cm.getActiveNetworkInfo().isConnectedOrConnecting();
-				return netflix.isConnected();
-			}
+		return true;
+	}
+
 	 
 }

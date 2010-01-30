@@ -2,27 +2,40 @@
 <resources>
     <string name="app_name">QueueMan</string>
     <string name="menu_search">Search NetFlix</string>
+    <!-- Menu Options -->
 <string name="menu_refresh">Refresh Queue</string>
 <string name="menu_signout">Switch User</string>
 <string name="menu_settings">Settings</string>
+<string name="menu_license">About..</string>
+<string name="menu_at_home">At Home</string>
+
+<!--  Tab Labels -->
 <string name="tab_disc">Netflix\nDiscs</string>
 <string name="tab_instant">Netflix\nInstant</string>
 
+<!-- Settings Text -->
 <string name="download_count_prompt">Choose Title Count</string>
-<string name="message_added_title">Your title will be added in a wink ;)</string>
-<string name="red">0xFF0000FF</string>
+
 <string name="app_name_powered">QueueMan - delivered by Netflix</string>
-<string name="noinstant">Sorry, but according to Netflix this user is not authorized for Instant Viewing</string>
-<string name="menu_license">About..</string>
+<!--  Dialog Messages -->
 <string name="dialog_license_start">QueueMan\nCopyright (C) 2009 Edward A. Webb\n
 			     This program is released under the GPL v3 License. \n\nPlease read the license terms by clicking \'Read License\'.
 			     </string>
 <string name="dialog_accept">I agree</string>
 <string name="no_thanks">Not Interested</string>
-<string name="menu_at_home">At Home</string>
+<string name="message_added_title">Your title will be added in a wink ;)</string>
+<string name="noinstant">Sorry, but according to Netflix this user is not authorized for Instant Viewing</string>
+
+
 <string name="at_home_click">Click a cover to see more detail</string>
 <string name="rate_button_rerate">Re-Rate</string>
+<!-- Options for adding titles -->
 <string name="add_options_top">Add to Top of Queue</string>
 <string name="add_options_bottom">Add to Bottom of Queue</string>
 <string name="add_options_instant_top">Add to Instant Queue</string>
+<!-- Navigation Text -->
+<string name="nav_filter_instant">Filter Instant Only</string>
+<string name="nav_next_page">Grab Next %1$d Titles -></string>
+<!-- Colors -->
+<string name="red">0xFF0000FF</string>
 </resources>
