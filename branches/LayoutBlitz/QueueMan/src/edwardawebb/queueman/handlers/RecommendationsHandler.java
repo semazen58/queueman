@@ -24,6 +24,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Log;
 import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.NetFlix;
 import edwardawebb.queueman.classes.NetFlixQueue;
@@ -40,6 +41,7 @@ public class RecommendationsHandler extends DefaultHandler {
 	private boolean inResultsTotal = false;
 	private boolean inResultsPerPage = false;
 	private boolean inId = false;
+	private boolean inMessage = false;
 	private boolean inRating = false;
 	private boolean inPosition = false;
 	private boolean inBoxArt = false;
@@ -58,6 +60,9 @@ public class RecommendationsHandler extends DefaultHandler {
 	private String ftitle;
 	private String synopsis;
 	private String id;
+	private String message;
+	private int totalResults;
+	
 	private String uniqueID;
 	private String boxArtUrl;
 	private String year;
@@ -82,10 +87,14 @@ public class RecommendationsHandler extends DefaultHandler {
 	public RecommendationsHandler(NetFlix netflix){
 		this.netflix=netflix;
 	}
-	
+	public void endDocument() {
+		// Log.d("AddDiscQueueHandler","Reading results XML")
+		netflix.recomemendedQueue.setTotalTitles(totalResults);
+	}
+
 	public void startElement(String uri, String name, String qName,
 			Attributes atts) {
-		// Log.d("QueueHandler",">>>startELement:" + element);
+		Log.d("RecommendationHandler",">>>startELement:" + name);
 		String element = name.trim();
 		if (element.equals("category")) {
 			inCategory = true;
@@ -173,6 +182,7 @@ public class RecommendationsHandler extends DefaultHandler {
 			tempMovie.setFormats(new ArrayList<String>(mformats));
 			tempMovie.setAvailableInstant(new Boolean(isInstant));
 			tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_RECOMMEND);
+			
 			mformats.clear();
 			isInstant=false;
 			if(!netflix.discQueue.getDiscs().contains(tempMovie)){
@@ -202,7 +212,11 @@ public class RecommendationsHandler extends DefaultHandler {
 		if (inId) {
 			id = chars;
 			// Log.d("QueueHandler","Id: " + id);
-		} else if (inRating) {
+		} else if (inMessage) {
+			message = chars;
+		} else if (inResultsTotal) {
+			totalResults = Integer.valueOf(chars);
+		}  else if (inRating) {
 			rating = Double.valueOf(chars);
 		} else if (inSynopsis) {
 			synopsis = (chars);
@@ -239,5 +253,10 @@ public class RecommendationsHandler extends DefaultHandler {
 			String discAvailabilityCategoryScheme) {
 		this.discAvailabilityCategoryScheme = discAvailabilityCategoryScheme;
 	}
+	
+	public String getMessage() {
+		return message;
+	}
+
 
 }

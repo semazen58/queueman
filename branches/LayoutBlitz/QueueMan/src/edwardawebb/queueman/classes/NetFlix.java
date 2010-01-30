@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -124,7 +125,7 @@ public class NetFlix {
 	
 	public static final int NF_ERROR_BAD_DEFAULT=900; // defaukl return code
 	public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
-	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
+	public static final int NF_ERROR_NO_MORE=903; // asking for higher start then total results
 	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
 	public static final String NF_RATING_NO_INTEREST = "not_interested";
 	public static final int MOVED_OUTSIDE_CURRENT_VIEW = 299; // result code used when disc is moved outside our current range (and we need ot remove it)
@@ -151,7 +152,7 @@ public class NetFlix {
 		// maybe pass in authentication info
 		// NetFlix.oaconsumer = oac;
 		// NetFlix.oaprovider = oap;
-		NetFlix.oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
+		NetFlix.oaconsumer =  new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		NetFlix.oaprovider = new DefaultOAuthProvider(oaconsumer,
 				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
@@ -410,12 +411,16 @@ public class NetFlix {
 		if (maxResults.equals(QueueMan.ALL_TITLES_STRING)) {
 			maxResults = "500";
 		}
+		
+		
 		String expanders = "?expand=synopsis,formats&start_index=" + startIndex + "&max_results=" + maxResults;
 		InputStream xml = null;
 		try {
 			// we're either rotating/task jumping OR we're starting/paging
 			if (!NetFlix.recomemendedQueue.isEmpty() && startIndex == recomemendedQueue.getStartIndex()){
 				return 200;
+			}else if(recomemendedQueue.getTotalTitles() < startIndex){
+				return NF_ERROR_NO_MORE;
 			}else{
 				recomemendedQueue.purge();
 			}
@@ -762,10 +767,6 @@ public class NetFlix {
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		postConsumer.setTokenWithSecret(oathAccessToken, oathAccessTokenSecret);
-		OAuthProvider postProvider = new DefaultOAuthProvider(postConsumer,
-				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
-				AUTHORIZE_WEBSITE_URL);
-		// postProvider.setOAuth10a(false);
 
 		String expanders = "?expand=synopsis,formats";
 		InputStream xml = null;
@@ -924,13 +925,7 @@ public class NetFlix {
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		postConsumer.setTokenWithSecret(oathAccessToken, oathAccessTokenSecret);
 		
-
-		/*
-		 * OAuthProvider postProvider = new DefaultOAuthProvider(postConsumer,
-		 * REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
-		 * AUTHORIZE_WEBSITE_URL);
-		 */
-		// postProvider.setOAuth10a(false);
+		
 
 		InputStream xml = null;
 		URL url = null;
@@ -941,9 +936,7 @@ public class NetFlix {
 			HttpClient httpclient = new DefaultHttpClient();
 			// Your URL
 			HttpPost httppost = new HttpPost(url.toString());
-			postConsumer.setTokenWithSecret(oathAccessToken,
-					oathAccessTokenSecret);
-
+			
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 			// Your DATA
 			nameValuePairs
