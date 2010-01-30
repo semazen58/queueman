@@ -143,7 +143,7 @@ public class QueueSearch extends Activity {
 		dialog.show();
 		Thread t = new Thread() {
 			public void run() {
-				results = NetFlix.getSearchResults(searchTerm.trim());
+				results = QueueMan.netflix.getSearchResults(searchTerm.trim());
 				mHandler.post(displayResults);
 
 			}

@@ -40,14 +40,14 @@
  	
 		   <Button 
 			android:layout_width="wrap_content" 
-			android:id="@+id/Button01" 
+			android:id="@+id/RateMe" 
 			android:layout_height="wrap_content"
 			android:layout_toRightOf="@id/DetailRatingBar01"
-			 android:text="@+id/Button01"
+			 android:text="Rate Me"
 			 android:maxHeight="20px"/>
 				<TextView android:id="@+id/synopsis" android:layout_width="fill_parent"
 					android:layout_height="fill_parent" android:layout_marginTop="10dip"
-					android:layout_below="@id/Button01"
+					android:layout_below="@id/RateMe"
 					android:layout_alignLeft="@id/myear" 
 					android:text="blah de blah" />
 

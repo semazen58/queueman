@@ -23,8 +23,11 @@
 package edwardawebb.queueman.classes;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import android.util.Log;
 
 import com.flurry.android.FlurryAgent;
 
@@ -67,6 +70,7 @@ public class NetFlixQueue {
 	public static final int QUEUE_TYPE_SEARCH = 2;
 	public static final int QUEUE_TYPE_RECOMMEND = 3;
 	public static final int QUEUE_TYPE_HOME = 4;
+	public static final String INSTANT_LABEL="instant";
 	
 	public static final String[] queueTypeText = {"disc","instant","search","recommended","at_home"};
 
@@ -145,6 +149,12 @@ public class NetFlixQueue {
 		}
 	}
 
+	
+	public int indexOf(Disc movie) {
+		return discs.indexOf(movie);
+	}
+	
+	
 	/**
 	 * Returns Queue Position of title (1 based)
 	 * 
@@ -214,5 +224,23 @@ public class NetFlixQueue {
 		this.perPage = perPage;
 	}
 
-	
+	public void filterInstantOnly(){
+		List<Disc> purges = new LinkedList<Disc>();
+		
+		for (Iterator<Disc> iterator = discs.iterator(); iterator.hasNext();) {
+			Disc disc = (Disc) iterator.next();
+			if(!disc.isAvailableInstant()) {
+				purges.add(disc);
+			}
+		}
+		
+		for (Iterator<Disc> iterator = purges.iterator(); iterator.hasNext();) {
+			Disc disc = (Disc) iterator.next();
+			if(discs.remove(disc)){
+					Log.d("NetFlix", "Disc removed");
+			}
+		}
+		
+		
+	}
 }
