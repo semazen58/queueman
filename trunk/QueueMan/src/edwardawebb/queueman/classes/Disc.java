@@ -52,6 +52,7 @@ public class Disc implements Serializable {
 	private String availibilityText;
 	private boolean hasUserRating=false;
 	private String uniqueId;
+	private boolean isAvailableInstant=false;
 	private int queueType;//self awareness for adding new titles - not used by existing discs
 	private int position; // @ TODO need to use this for all discs, will allow us to restore showing of movies moved to bvottom
 
@@ -185,8 +186,10 @@ public class Disc implements Serializable {
 	 * @param userRating the userRating to set
 	 */
 	public void setUserRating(double userRating) {
-		this.userRating = userRating;
-		hasUserRating=true;
+		if(userRating <=5 && userRating >=0 ){
+			this.userRating = userRating;		
+			hasUserRating=true;
+		}
 	}
 
 	/**
@@ -251,5 +254,21 @@ public class Disc implements Serializable {
 	 */
 	public int getPosition() {
 		return position;
+	}
+
+
+	/**
+	 * @param isAvailableInstant the isAvailableInstant to set
+	 */
+	public void setAvailableInstant(boolean isAvailableInstant) {
+		this.isAvailableInstant = isAvailableInstant;
+	}
+
+
+	/**
+	 * @return the isAvailableInstant
+	 */
+	public boolean isAvailableInstant() {
+		return isAvailableInstant;
 	}
 }

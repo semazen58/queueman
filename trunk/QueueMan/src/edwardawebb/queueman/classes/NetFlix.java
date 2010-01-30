@@ -17,15 +17,20 @@
  */
 package edwardawebb.queueman.classes;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -114,11 +119,13 @@ public class NetFlix {
 	public String lastResponseMessage = "none";
 	public String lastNFResponseMessage = "";
 	
-	
+	//For some methods they will retry themselves, got a better way?
+	private int retries = 0;
+	public static final int MAX_RETRIES=2;// At least 1 for that pesky 502, but there must mbe a limit!
 	
 	public static final int NF_ERROR_BAD_DEFAULT=900; // defaukl return code
 	public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
-	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
+	public static final int NF_ERROR_NO_MORE=903; // asking for higher start then total results
 	//public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
 	public static final String NF_RATING_NO_INTEREST = "not_interested";
 	public static final int MOVED_OUTSIDE_CURRENT_VIEW = 299; // result code used when disc is moved outside our current range (and we need ot remove it)
@@ -145,7 +152,7 @@ public class NetFlix {
 		// maybe pass in authentication info
 		// NetFlix.oaconsumer = oac;
 		// NetFlix.oaprovider = oap;
-		NetFlix.oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
+		NetFlix.oaconsumer =  new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		NetFlix.oaprovider = new DefaultOAuthProvider(oaconsumer,
 				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
@@ -186,16 +193,16 @@ public class NetFlix {
 					+ result.getQueryParameter("oauth_token_secret"));
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthNotAuthorizedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthCommunicationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		}
 		return result;
 	}
@@ -223,16 +230,16 @@ public class NetFlix {
 			NetFlix.userID = oaprovider.getResponseParameters().get("user_id");
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthNotAuthorizedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthCommunicationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		}
 		return result;
 	}
@@ -271,13 +278,13 @@ public class NetFlix {
 			if (urlc.getResponseCode() == 200 || urlc.getResponseCode()==403) {
 				result = true;
 			}
+			urlc.disconnect();
 		} catch (MalformedURLException e1) {
 		        e1.printStackTrace();
 		} catch (IOException e) {
-		        reportError(e);
+		        reportError(e, lastResponseMessage);
 		}
 		return result;
-
 	}
 
 	/**
@@ -329,7 +336,7 @@ public class NetFlix {
 			
 			xml = request.getInputStream();
 			
-			/*  BufferedReader in = new BufferedReader(new
+			 /* BufferedReader in = new BufferedReader(new
 			  InputStreamReader(xml)); String linein = null; while ((linein =
 			  in.readLine()) != null) { Log.d("NetFlix", "GetQueue: " +
 			  linein); }*/
@@ -372,21 +379,21 @@ public class NetFlix {
 			
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Unable to Sign request - token invalid")
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Expectation failed")
 		}
 		return result;
@@ -398,18 +405,26 @@ public class NetFlix {
 	 * @param maxResults
 	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
 	 */
-	public int getRecommendations(String maxResults) {
+	public int getRecommendations(int startIndex,String maxResults) {
 		URL QueueUrl = null;
 		int result = NF_ERROR_BAD_DEFAULT;
 		if (maxResults.equals(QueueMan.ALL_TITLES_STRING)) {
 			maxResults = "500";
 		}
-		String expanders = "?expand=synopsis,formats&max_results=" + maxResults;
+		
+		
+		String expanders = "?expand=synopsis,formats&start_index=" + startIndex + "&max_results=" + maxResults;
 		InputStream xml = null;
 		try {
-			
-			if (!NetFlix.recomemendedQueue.isEmpty())
+			// we're either rotating/task jumping OR we're starting/paging
+			if (!NetFlix.recomemendedQueue.isEmpty() && startIndex == recomemendedQueue.getStartIndex()){
 				return 200;
+			}else if(recomemendedQueue.getTotalTitles() < startIndex){
+				return NF_ERROR_NO_MORE;
+			}else{
+				recomemendedQueue.purge();
+			}
+				
 			QueueUrl = new URL("http://api.netflix.com/users/" + userID
 					+ "/recommendations" + expanders);
 			RecommendationsHandler myHandler = new RecommendationsHandler(this);
@@ -428,7 +443,7 @@ public class NetFlix {
 			xml = request.getInputStream();
 			
 			
-			/* BufferedReader in = new BufferedReader(new
+		/*BufferedReader in = new BufferedReader(new
 			 InputStreamReader(xml)); String linein = null; while ((linein =
 			 in.readLine()) != null) { Log.d("NetFlixQueue", "" +
 			 linein); }*/
@@ -443,21 +458,21 @@ public class NetFlix {
 
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Unable to Sign request - token invalid")
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Expectation failed")
 		}
 		return result;
@@ -513,21 +528,21 @@ public class NetFlix {
 
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Unable to Sign request - token invalid")
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Expectation failed")
 		}
 		return result;
@@ -577,21 +592,21 @@ public class NetFlix {
 
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Unable to Sign request - token invalid")
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Expectation failed")
 		}*/
 		return result;
@@ -651,27 +666,27 @@ public class NetFlix {
 
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Unable to Sign request - token invalid")
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Expectation failed")
 		}
 		return result;
 	}
 
-	public static NetFlixQueue getSearchResults(String searchTerm) {
+	public  NetFlixQueue getSearchResults(String searchTerm) {
 		searchQueue = new NetFlixQueue(NetFlixQueue.QUEUE_TYPE_SEARCH);
 		setSignPost(oathAccessToken, oathAccessTokenSecret);
 
@@ -691,6 +706,8 @@ public class NetFlix {
 			NetFlix.oaconsumer.sign(request);
 			request.connect();
 
+			lastResponseMessage = request.getResponseCode()+ ": " + request.getResponseMessage();
+			
 			if (request.getResponseCode() == 200) {
 				// Log.d("NetFlix", request.getContentType())
 				// //Log.d("NetFlix",request.getInputStream().toString())
@@ -718,20 +735,20 @@ public class NetFlix {
 
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		}
 
 		return searchQueue;
@@ -750,10 +767,6 @@ public class NetFlix {
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		postConsumer.setTokenWithSecret(oathAccessToken, oathAccessTokenSecret);
-		OAuthProvider postProvider = new DefaultOAuthProvider(postConsumer,
-				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
-				AUTHORIZE_WEBSITE_URL);
-		// postProvider.setOAuth10a(false);
 
 		String expanders = "?expand=synopsis,formats";
 		InputStream xml = null;
@@ -859,20 +872,20 @@ public class NetFlix {
 			
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		}finally{
 			if(result == 502){
 				HashMap<String, String> parameters = new HashMap<String, String>();
@@ -884,6 +897,8 @@ public class NetFlix {
 				parameters.put("Availability:", ""+ disc.isAvailable() + ", " + disc.getAvailibilityText());
 				parameters.put("URL:", ""+ url);
 				FlurryAgent.onEvent("AddToQueue502", parameters);
+				getNewETag(queueType);
+				
 			}
 		}
 		return result;
@@ -905,27 +920,23 @@ public class NetFlix {
 		
 		//getNewETag(queueType,newPosition);
 		// 2 choirs, send request to netflix, and if successful update local q.
+		
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		postConsumer.setTokenWithSecret(oathAccessToken, oathAccessTokenSecret);
-		/*
-		 * OAuthProvider postProvider = new DefaultOAuthProvider(postConsumer,
-		 * REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
-		 * AUTHORIZE_WEBSITE_URL);
-		 */
-		// postProvider.setOAuth10a(false);
+		
+		
 
 		InputStream xml = null;
+		URL url = null;
 		try {
 
-			URL url = new URL("http://api.netflix.com/users/" + NetFlix.userID + "/queues/" + NetFlixQueue.queueTypeText[queueType]);
+			url = new URL("http://api.netflix.com/users/" + NetFlix.userID + "/queues/" + NetFlixQueue.queueTypeText[queueType]);
 			Log.d("NetFlix","Moving: " + url.toString());
 			HttpClient httpclient = new DefaultHttpClient();
 			// Your URL
 			HttpPost httppost = new HttpPost(url.toString());
-			postConsumer.setTokenWithSecret(oathAccessToken,
-					oathAccessTokenSecret);
-
+			
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 			// Your DATA
 			nameValuePairs
@@ -951,7 +962,27 @@ public class NetFlix {
 			  InputStreamReader(xml)); String linein = null; while ((linein =
 			  in.readLine()) != null) { Log.d("NetFlix", "Move Movie: " +
 			  linein); }*/
-			 
+			lastResponseMessage = "HTTP:" + response.getStatusLine().getStatusCode()
+			+ ", " + response.getStatusLine().getReasonPhrase();
+	
+			if(result == 502){
+				HashMap<String, String> parameters = new HashMap<String, String>();
+				parameters.put("Queue Type:", ""+NetFlixQueue.queueTypeText[queueType]);
+				parameters.put("HTTP Result:", ""+ lastResponseMessage);
+				parameters.put("User ID:", ""+userID);
+				parameters.put("Disc ID:", ""+disc.getId() );
+				parameters.put("Positions:", ""+disc.getPosition() + " -> " + String
+				.valueOf(newPosition));
+				parameters.put("URL:", ""+ url);
+				FlurryAgent.onEvent("MoveInQueue502", parameters);
+				
+					return result;
+				
+				
+			}
+			
+			
+			
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp;
 			sp = spf.newSAXParser();
@@ -962,8 +993,6 @@ public class NetFlix {
 			xr.parse(new InputSource(xml));
 			// result=response.getStatusLine().getStatusCode();
 			result = myHandler.getSubCode(result);
-			lastResponseMessage = "HTTP:" + response.getStatusLine().getStatusCode()
-					+ ", " + response.getStatusLine().getReasonPhrase();
 			
 			if( myHandler.getMessage() != null ){
 				//we may have an error from netflix, check it
@@ -979,20 +1008,20 @@ public class NetFlix {
 			}
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		}
 		return result;
 	}
@@ -1046,17 +1075,17 @@ public class NetFlix {
 			}
 
 		} catch (OAuthMessageSignerException e) {
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthExpectationFailedException e) {
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (ClientProtocolException e) {
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (IOException e) {
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (ParserConfigurationException e) {
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		}
 
 		
@@ -1107,17 +1136,11 @@ public class NetFlix {
 	
 	/**
 	 * Post a rating to specificed title
-	 * @param disc
-	 * @param queueType
+	 * @param modifiedDisc
 	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
 	 */
-	public int setRating(String id, String rating) {
-		if (!rating.equals(NF_RATING_NO_INTEREST)){
-			int ratingInt=Integer.valueOf(rating);
-			if(ratingInt >5 || ratingInt <1){
-				return NF_ERROR_BAD_INDEX;//
-			}			
-		}
+	public int setRating(Disc modifiedDisc) {
+		
 		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
@@ -1145,9 +1168,10 @@ public class NetFlix {
 			postConsumer.setTokenWithSecret(oathAccessToken,
 					oathAccessTokenSecret);
 
+			String rating = (modifiedDisc.getUserRating() == 0) ? NF_RATING_NO_INTEREST : String.valueOf(modifiedDisc.getUserRating().intValue()); 
 			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
 			// Your DATA
-			nameValuePairs.add(new BasicNameValuePair("title_ref", id));
+			nameValuePairs.add(new BasicNameValuePair("title_ref", modifiedDisc.getId()));
 			nameValuePairs.add(new BasicNameValuePair("rating", rating));
 
 			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -1180,25 +1204,40 @@ public class NetFlix {
 			xr.setContentHandler(myHandler);
 			xr.parse(new InputSource(xml));
 
+			if(result == 201 || result == 422){
+				switch(modifiedDisc.getQueueType()){
+					//could be rating froms earch, recommends, instant, discm, or at home
+				case NetFlixQueue.QUEUE_TYPE_RECOMMEND:
+					((Disc)recomemendedQueue.getDiscs().get(recomemendedQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
+					break;
+				case NetFlixQueue.QUEUE_TYPE_INSTANT:
+					((Disc)instantQueue.getDiscs().get(instantQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
+					break;
+				case NetFlixQueue.QUEUE_TYPE_DISC:
+					((Disc)discQueue.getDiscs().get(discQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
+					break;
+				}
+			}
+			
 			lastNFResponseMessage = "NF: "+myHandler.getMessage();
 			result = myHandler.getSubCode(result);
 
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} 
 		return result;
 	}
@@ -1239,21 +1278,21 @@ public class NetFlix {
 
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (SAXException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 		} catch (IOException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "IO Error connecting to NetFlix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Unable to Sign request - token invalid")
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e);
+			reportError(e, lastResponseMessage);
 			// Log.i("NetFlix", "Expectation failed")
 		}
 		return result;
@@ -1279,9 +1318,15 @@ public class NetFlix {
 	 * report exceptions using Flurry
 	 * @param e
 	 */
-	protected static void reportError(Exception e){
+	protected static void reportError(Exception e, String responseLine){
 		//FlurryAgent.onError(String errorId, String message, String errorClass)
-		FlurryAgent.onError("NetFlix Exception", e.getLocalizedMessage()+" Or maybe:" + e.getMessage(), e.toString());
+		FlurryAgent.onError("NetFlix Exception", e.getLocalizedMessage() +  "|| But check this, I'm also looking at a " + responseLine + " here for an HTTP status. I'm just sayin", e.toString());
 	}
 	
+	/**
+	 * trims recommended queue to instant titles
+	 */
+	public void filterOnInstant(){
+		recomemendedQueue.filterInstantOnly();
+	}
 }

@@ -1,0 +1,1480 @@
+<?xml version="1.0" standalone="yes"?>
+
+<queue>
+	<etag>23930536913</etag>
+	<url_template>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available?{-join|&amp;|sort|start_index|max_results}
+	</url_template>
+	<number_of_results>27</number_of_results>
+	<start_index>0</start_index>
+	<results_per_page>10</results_per_page>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/1/70019103
+		</id>
+		<position>1</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262849361</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019103"
+			rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 3: Vol. 1"></link>
+		<title short="Curb Your Enthusiasm: Season 3: Vol. 1" regular="Curb Your Enthusiasm: Season 3: Vol. 1"></title>
+		<box_art small="http://cdn-3.nflximg.com/us/boxshots/tiny/70019104.jpg"
+			medium="http://cdn-3.nflximg.com/us/boxshots/small/70019104.jpg"
+			large="http://cdn-3.nflximg.com/us/boxshots/large/70019104.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019103/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc includes the following episodes: "Chet's Shirt," "The Benadryl Brownie," "Club Soda and Salt," "The Nanny from Hell," "The Terrorist Attack" and "The Special Section."]]></synopsis>
+		</link>
+		<release_year>2002</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="HBO" term="HBO"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Sitcoms" term="TV Sitcoms"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Warner Home Video" term="Warner Home Video"></category>
+		<runtime>10800</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70019103/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1106006400">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70019103/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019103/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019103/directors"
+			rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70019103/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60033463"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70019104"
+			rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 3"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019103/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_3_Vol._1/70019103"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/2/70019105
+		</id>
+		<position>2</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262849361</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019105"
+			rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 3: Vol. 2"></link>
+		<title short="Curb Your Enthusiasm: Season 3: Vol. 2" regular="Curb Your Enthusiasm: Season 3: Vol. 2"></title>
+		<box_art small="http://cdn-5.nflximg.com/us/boxshots/tiny/70019104.jpg"
+			medium="http://cdn-5.nflximg.com/us/boxshots/small/70019104.jpg"
+			large="http://cdn-5.nflximg.com/us/boxshots/large/70019104.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019105/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc includes the following episodes: "The Corpse-Sniffing Dog," "Krazee-Eyez Killa," "Mary, Joseph and Larry" and "The Grand Opening."]]></synopsis>
+		</link>
+		<release_year>2002</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="HBO" term="HBO"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Sitcoms" term="TV Sitcoms"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Warner Home Video" term="Warner Home Video"></category>
+		<runtime>7200</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70019105/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1106006400">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70019105/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019105/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019105/directors"
+			rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70019105/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60033463"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70019104"
+			rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 3"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70019105/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_3_Vol._2/70019105"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/3/70036894
+		</id>
+		<position>3</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262849442</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036894"
+			rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 4: Vol. 1"></link>
+		<title short="Curb Your Enthusiasm: Season 4: Vol. 1" regular="Curb Your Enthusiasm: Season 4: Vol. 1"></title>
+		<box_art small="http://cdn-4.nflximg.com/us/boxshots/tiny/70019960.jpg"
+			medium="http://cdn-4.nflximg.com/us/boxshots/small/70019960.jpg"
+			large="http://cdn-4.nflximg.com/us/boxshots/large/70019960.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036894/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc includes the following episodes: "Mel's Offer," "Ben's Birthday Party," "The Blind Date," "The Weatherman" and "The 5 Wood."]]></synopsis>
+		</link>
+		<release_year>2005</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="HBO" term="HBO"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Sitcoms" term="TV Sitcoms"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Warner Home Video" term="Warner Home Video"></category>
+		<runtime>9000</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70036894/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1125360000">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70036894/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036894/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036894/directors"
+			rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70036894/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60033463"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70019960"
+			rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 4"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036894/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_4_Vol._1/70036894"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/4/70036896
+		</id>
+		<position>4</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="short wait" term="short wait">Short Wait</category>
+		<updated>1262849442</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036896"
+			rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 4: Vol. 2"></link>
+		<title short="Curb Your Enthusiasm: Season 4: Vol. 2" regular="Curb Your Enthusiasm: Season 4: Vol. 2"></title>
+		<box_art small="http://cdn-6.nflximg.com/us/boxshots/tiny/70019960.jpg"
+			medium="http://cdn-6.nflximg.com/us/boxshots/small/70019960.jpg"
+			large="http://cdn-6.nflximg.com/us/boxshots/large/70019960.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036896/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc includes the following episodes: "The Car Pool Lane," "The Surrogate," "Wandering Bear," "The Survivor" and "Opening Night."]]></synopsis>
+		</link>
+		<release_year>2005</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="TV-MA" term="TV-MA"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="HBO" term="HBO"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Sitcoms" term="TV Sitcoms"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Warner Home Video" term="Warner Home Video"></category>
+		<runtime>10800</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70036896/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1125360000">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70036896/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036896/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036896/directors"
+			rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70036896/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60033463"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70019960"
+			rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 4"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70036896/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_4_Vol._2/70036896"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/5/70051034
+		</id>
+		<position>5</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262849430</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051034"
+			rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 5: Disc 1"></link>
+		<title short="Curb Your Enthusiasm: Season 5: Disc 1" regular="Curb Your Enthusiasm: Season 5: Disc 1"></title>
+		<box_art small="http://cdn-4.nflximg.com/us/boxshots/tiny/70040493.jpg"
+			medium="http://cdn-4.nflximg.com/us/boxshots/small/70040493.jpg"
+			large="http://cdn-4.nflximg.com/us/boxshots/large/70040493.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051034/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc contains the episodes: "The Larry David Sandwich," "The Bowtie," "The Christ Nail," "Kamikaze Bingo," "Lewis Needs a Kidney," and "The Smoking Jacket."]]></synopsis>
+		</link>
+		<release_year>2005</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="HBO" term="HBO"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Sitcoms" term="TV Sitcoms"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Warner Home Video" term="Warner Home Video"></category>
+		<runtime>10800</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70051034/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1154390400">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70051034/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051034/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051034/directors"
+			rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70051034/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60033463"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70040493"
+			rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 5"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051034/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_5_Disc_1/70051034"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/6/70051035
+		</id>
+		<position>6</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262849430</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051035"
+			rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 5: Disc 2"></link>
+		<title short="Curb Your Enthusiasm: Season 5: Disc 2" regular="Curb Your Enthusiasm: Season 5: Disc 2"></title>
+		<box_art small="http://cdn-5.nflximg.com/us/boxshots/tiny/70040493.jpg"
+			medium="http://cdn-5.nflximg.com/us/boxshots/small/70040493.jpg"
+			large="http://cdn-5.nflximg.com/us/boxshots/large/70040493.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051035/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc contains the episodes: "The Seder," "The Ski Lift," "The Korean Bookie," and "The End."]]></synopsis>
+		</link>
+		<release_year>2005</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="HBO" term="HBO"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Sitcoms" term="TV Sitcoms"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Warner Home Video" term="Warner Home Video"></category>
+		<runtime>9000</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70051035/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1154390400">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70051035/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051035/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051035/directors"
+			rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70051035/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60033463"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70040493"
+			rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 5"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70051035/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_5_Disc_2/70051035"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/7/70084345
+		</id>
+		<position>7</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262849378</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084345"
+			rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 6: Disc 1"></link>
+		<title short="Curb Your Enthusiasm: Season 6: Disc 1" regular="Curb Your Enthusiasm: Season 6: Disc 1"></title>
+		<box_art small="http://cdn-5.nflximg.com/us/boxshots/tiny/70054960.jpg"
+			medium="http://cdn-5.nflximg.com/us/boxshots/small/70054960.jpg"
+			large="http://cdn-5.nflximg.com/us/boxshots/large/70054960.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084345/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc includes the following episodes: "Meet the Blacks," "The Anonymous Donor," "The Ida Funkhouser Roadside Memorial," "The Bathroom Monitor," "The Freak Book" and "The Rat Dog."&#x000D;&#x000A;]]></synopsis>
+		</link>
+		<release_year>2007</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="HBO" term="HBO"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Warner Home Video" term="Warner Home Video"></category>
+		<runtime>10800</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70084345/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1201564800">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70084345/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084345/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084345/directors"
+			rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70084345/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60033463"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70054960"
+			rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 6"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084345/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_6_Disc_1/70084345"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/8/70084346
+		</id>
+		<position>8</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262849378</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084346"
+			rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 6: Disc 2"></link>
+		<title short="Curb Your Enthusiasm: Season 6: Disc 2" regular="Curb Your Enthusiasm: Season 6: Disc 2"></title>
+		<box_art small="http://cdn-6.nflximg.com/us/boxshots/tiny/70054960.jpg"
+			medium="http://cdn-6.nflximg.com/us/boxshots/small/70054960.jpg"
+			large="http://cdn-6.nflximg.com/us/boxshots/large/70054960.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084346/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc includes the following episodes: "The TiVo Guy," "The N Word," "The Therapists" and "The Bat Mitzvah."&#x000D;&#x000A;]]></synopsis>
+		</link>
+		<release_year>2007</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="HBO" term="HBO"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Warner Home Video" term="Warner Home Video"></category>
+		<runtime>7200</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70084346/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1201564800">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70084346/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084346/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084346/directors"
+			rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70084346/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60033463"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70054960"
+			rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 6"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70084346/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_6_Disc_2/70084346"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/9/70101260
+		</id>
+		<position>9</position>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262606651</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70101260"
+			rel="http://schemas.netflix.com/catalog/title" title="South Park: Season 11: Disc 2"></link>
+		<title short="South Park: Season 11: Disc 2" regular="South Park: Season 11: Disc 2"></title>
+		<box_art small="http://cdn-0.nflximg.com/us/boxshots/tiny/70073028.jpg"
+			medium="http://cdn-0.nflximg.com/us/boxshots/small/70073028.jpg"
+			large="http://cdn-0.nflximg.com/us/boxshots/large/70073028.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70101260/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc includes the following episodes: "D-Yikes," "Night of the Living Homeless," "Le Petite Tourette" and "More Crap."&#x000D;&#x000A;]]></synopsis>
+		</link>
+		<release_year>2007</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Animated Comedies" term="TV Animated Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Comedy Central" term="Comedy Central"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Paramount Home Entertainment" term="Paramount Home Entertainment"></category>
+		<runtime>5280</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70101260/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1218499200">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70101260/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70101260/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70101260/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60030529"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="South Park"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60030529/seasons/70073028"
+			rel="http://schemas.netflix.com/catalog/title.season" title="South Park: Season 11"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70101260/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/South_Park_Season_11_Disc_2/70101260"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<queue_item>
+		<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/10/70101261
+		</id>
+		<position>10</position>
+		01-26 15:36:15.01-26 15:36:02.935: DEBUG/NetFlix(2970):
+		http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/recommendations?expand=synopsis,formats&max_results=10
+<?xml version="1.0" standalone="yes"?>
+
+		<queue>
+			<etag>23930536913</etag>
+			<url_template>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available?{-join|&amp;|sort|start_index|max_results}
+			</url_template>
+			<number_of_results>27</number_of_results>
+			<start_index>0</start_index>
+			<results_per_page>10</results_per_page>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/1/70019103
+				</id>
+				<position>1</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262849361</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70019103"
+					rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 3: Vol. 1"></link>
+				<title short="Curb Your Enthusiasm: Season 3: Vol. 1" regular="Curb Your Enthusiasm: Season 3: Vol. 1"></title>
+				<box_art small="http://cdn-3.nflximg.com/us/boxshots/tiny/70019104.jpg"
+					medium="http://cdn-3.nflximg.com/us/boxshots/small/70019104.jpg"
+					large="http://cdn-3.nflximg.com/us/boxshots/large/70019104.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019103/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc includes the following episodes: "Chet's Shirt," "The Benadryl Brownie," "Club Soda and Salt," "The Nanny from Hell," "The Terrorist Attack" and "The Special Section."]]></synopsis>
+				</link>
+				<release_year>2002</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="HBO" term="HBO"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Sitcoms" term="TV Sitcoms"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Warner Home Video" term="Warner Home Video"></category>
+				<runtime>10800</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019103/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1106006400">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019103/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70019103/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019103/directors"
+					rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019103/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60033463"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70019104"
+					rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 3"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019103/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_3_Vol._1/70019103"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/2/70019105
+				</id>
+				<position>2</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262849361</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70019105"
+					rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 3: Vol. 2"></link>
+				<title short="Curb Your Enthusiasm: Season 3: Vol. 2" regular="Curb Your Enthusiasm: Season 3: Vol. 2"></title>
+				<box_art small="http://cdn-5.nflximg.com/us/boxshots/tiny/70019104.jpg"
+					medium="http://cdn-5.nflximg.com/us/boxshots/small/70019104.jpg"
+					large="http://cdn-5.nflximg.com/us/boxshots/large/70019104.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019105/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc includes the following episodes: "The Corpse-Sniffing Dog," "Krazee-Eyez Killa," "Mary, Joseph and Larry" and "The Grand Opening."]]></synopsis>
+				</link>
+				<release_year>2002</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="HBO" term="HBO"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Sitcoms" term="TV Sitcoms"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Warner Home Video" term="Warner Home Video"></category>
+				<runtime>7200</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019105/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1106006400">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019105/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70019105/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019105/directors"
+					rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019105/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60033463"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70019104"
+					rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 3"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70019105/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_3_Vol._2/70019105"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/3/70036894
+				</id>
+				<position>3</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262849442</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70036894"
+					rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 4: Vol. 1"></link>
+				<title short="Curb Your Enthusiasm: Season 4: Vol. 1" regular="Curb Your Enthusiasm: Season 4: Vol. 1"></title>
+				<box_art small="http://cdn-4.nflximg.com/us/boxshots/tiny/70019960.jpg"
+					medium="http://cdn-4.nflximg.com/us/boxshots/small/70019960.jpg"
+					large="http://cdn-4.nflximg.com/us/boxshots/large/70019960.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036894/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc includes the following episodes: "Mel's Offer," "Ben's Birthday Party," "The Blind Date," "The Weatherman" and "The 5 Wood."]]></synopsis>
+				</link>
+				<release_year>2005</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="HBO" term="HBO"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Sitcoms" term="TV Sitcoms"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Warner Home Video" term="Warner Home Video"></category>
+				<runtime>9000</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036894/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1125360000">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036894/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70036894/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036894/directors"
+					rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036894/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60033463"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70019960"
+					rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 4"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036894/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_4_Vol._1/70036894"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/4/70036896
+				</id>
+				<position>4</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="short wait" term="short wait">Short Wait</category>
+				<updated>1262849442</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70036896"
+					rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 4: Vol. 2"></link>
+				<title short="Curb Your Enthusiasm: Season 4: Vol. 2" regular="Curb Your Enthusiasm: Season 4: Vol. 2"></title>
+				<box_art small="http://cdn-6.nflximg.com/us/boxshots/tiny/70019960.jpg"
+					medium="http://cdn-6.nflximg.com/us/boxshots/small/70019960.jpg"
+					large="http://cdn-6.nflximg.com/us/boxshots/large/70019960.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036896/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc includes the following episodes: "The Car Pool Lane," "The Surrogate," "Wandering Bear," "The Survivor" and "Opening Night."]]></synopsis>
+				</link>
+				<release_year>2005</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="TV-MA" term="TV-MA"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="HBO" term="HBO"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Sitcoms" term="TV Sitcoms"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Warner Home Video" term="Warner Home Video"></category>
+				<runtime>10800</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036896/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1125360000">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036896/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70036896/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036896/directors"
+					rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036896/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60033463"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70019960"
+					rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 4"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70036896/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_4_Vol._2/70036896"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/5/70051034
+				</id>
+				<position>5</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262849430</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70051034"
+					rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 5: Disc 1"></link>
+				<title short="Curb Your Enthusiasm: Season 5: Disc 1" regular="Curb Your Enthusiasm: Season 5: Disc 1"></title>
+				<box_art small="http://cdn-4.nflximg.com/us/boxshots/tiny/70040493.jpg"
+					medium="http://cdn-4.nflximg.com/us/boxshots/small/70040493.jpg"
+					large="http://cdn-4.nflximg.com/us/boxshots/large/70040493.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051034/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc contains the episodes: "The Larry David Sandwich," "The Bowtie," "The Christ Nail," "Kamikaze Bingo," "Lewis Needs a Kidney," and "The Smoking Jacket."]]></synopsis>
+				</link>
+				<release_year>2005</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="HBO" term="HBO"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Sitcoms" term="TV Sitcoms"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Warner Home Video" term="Warner Home Video"></category>
+				<runtime>10800</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051034/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1154390400">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051034/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70051034/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051034/directors"
+					rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051034/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60033463"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70040493"
+					rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 5"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051034/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_5_Disc_1/70051034"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/6/70051035
+				</id>
+				<position>6</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262849430</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70051035"
+					rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 5: Disc 2"></link>
+				<title short="Curb Your Enthusiasm: Season 5: Disc 2" regular="Curb Your Enthusiasm: Season 5: Disc 2"></title>
+				<box_art small="http://cdn-5.nflximg.com/us/boxshots/tiny/70040493.jpg"
+					medium="http://cdn-5.nflximg.com/us/boxshots/small/70040493.jpg"
+					large="http://cdn-5.nflximg.com/us/boxshots/large/70040493.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051035/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc contains the episodes: "The Seder," "The Ski Lift," "The Korean Bookie," and "The End."]]></synopsis>
+				</link>
+				<release_year>2005</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="HBO" term="HBO"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Sitcoms" term="TV Sitcoms"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Warner Home Video" term="Warner Home Video"></category>
+				<runtime>9000</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051035/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1154390400">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051035/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70051035/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051035/directors"
+					rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051035/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60033463"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70040493"
+					rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 5"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70051035/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_5_Disc_2/70051035"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/7/70084345
+				</id>
+				<position>7</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262849378</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70084345"
+					rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 6: Disc 1"></link>
+				<title short="Curb Your Enthusiasm: Season 6: Disc 1" regular="Curb Your Enthusiasm: Season 6: Disc 1"></title>
+				<box_art small="http://cdn-5.nflximg.com/us/boxshots/tiny/70054960.jpg"
+					medium="http://cdn-5.nflximg.com/us/boxshots/small/70054960.jpg"
+					large="http://cdn-5.nflximg.com/us/boxshots/large/70054960.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084345/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc includes the following episodes: "Meet the Blacks," "The Anonymous Donor," "The Ida Funkhouser Roadside Memorial," "The Bathroom Monitor," "The Freak Book" and "The Rat Dog."&#x000D;&#x000A;]]></synopsis>
+				</link>
+				<release_year>2007</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="HBO" term="HBO"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Warner Home Video" term="Warner Home Video"></category>
+				<runtime>10800</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084345/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1201564800">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084345/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70084345/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084345/directors"
+					rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084345/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60033463"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70054960"
+					rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 6"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084345/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_6_Disc_1/70084345"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/8/70084346
+				</id>
+				<position>8</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262849378</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70084346"
+					rel="http://schemas.netflix.com/catalog/title" title="Curb Your Enthusiasm: Season 6: Disc 2"></link>
+				<title short="Curb Your Enthusiasm: Season 6: Disc 2" regular="Curb Your Enthusiasm: Season 6: Disc 2"></title>
+				<box_art small="http://cdn-6.nflximg.com/us/boxshots/tiny/70054960.jpg"
+					medium="http://cdn-6.nflximg.com/us/boxshots/small/70054960.jpg"
+					large="http://cdn-6.nflximg.com/us/boxshots/large/70054960.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084346/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc includes the following episodes: "The TiVo Guy," "The N Word," "The Therapists" and "The Bat Mitzvah."&#x000D;&#x000A;]]></synopsis>
+				</link>
+				<release_year>2007</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="HBO" term="HBO"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Must-See TV Comedies" term="Must-See TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Warner Home Video" term="Warner Home Video"></category>
+				<runtime>7200</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084346/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1201564800">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084346/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70084346/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084346/directors"
+					rel="http://schemas.netflix.com/catalog/people.directors" title="directors"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084346/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60033463"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="Curb Your Enthusiasm"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60033463/seasons/70054960"
+					rel="http://schemas.netflix.com/catalog/title.season" title="Curb Your Enthusiasm: Season 6"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70084346/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/Curb_Your_Enthusiasm_Season_6_Disc_2/70084346"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/9/70101260
+				</id>
+				<position>9</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262606651</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70101260"
+					rel="http://schemas.netflix.com/catalog/title" title="South Park: Season 11: Disc 2"></link>
+				<title short="South Park: Season 11: Disc 2" regular="South Park: Season 11: Disc 2"></title>
+				<box_art small="http://cdn-0.nflximg.com/us/boxshots/tiny/70073028.jpg"
+					medium="http://cdn-0.nflximg.com/us/boxshots/small/70073028.jpg"
+					large="http://cdn-0.nflximg.com/us/boxshots/large/70073028.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101260/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc includes the following episodes: "D-Yikes," "Night of the Living Homeless," "Le Petite Tourette" and "More Crap."&#x000D;&#x000A;]]></synopsis>
+				</link>
+				<release_year>2007</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Animated Comedies" term="TV Animated Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Comedy Central" term="Comedy Central"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Paramount Home Entertainment" term="Paramount Home Entertainment"></category>
+				<runtime>5280</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101260/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1218499200">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101260/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70101260/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101260/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60030529"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="South Park"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60030529/seasons/70073028"
+					rel="http://schemas.netflix.com/catalog/title.season" title="South Park: Season 11"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101260/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/South_Park_Season_11_Disc_2/70101260"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<queue_item>
+				<id>http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available/10/70101261
+				</id>
+				<position>10</position>
+				<link
+					href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+					rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+				<category scheme="http://api.netflix.com/categories/queue_availability"
+					label="available now" term="available now">Available Now</category>
+				<updated>1262606651</updated>
+				<category scheme="http://api.netflix.com/categories/title_formats"
+					label="DVD" term="DVD"></category>
+				<link href="http://api.netflix.com/catalog/titles/discs/70101261"
+					rel="http://schemas.netflix.com/catalog/title" title="South Park: Season 11: Disc 3"></link>
+				<title short="South Park: Season 11: Disc 3" regular="South Park: Season 11: Disc 3"></title>
+				<box_art small="http://cdn-1.nflximg.com/us/boxshots/tiny/70073028.jpg"
+					medium="http://cdn-1.nflximg.com/us/boxshots/small/70073028.jpg"
+					large="http://cdn-1.nflximg.com/us/boxshots/large/70073028.jpg"></box_art>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101261/synopsis"
+					rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+					<synopsis><![CDATA[This disc includes the following episodes: "Imaginationland: Episode I," &#x000D;&#x000A;"Imaginationland: Episode II," "Imaginationland: Episode III," "Guitar Queer-O" and "The List."&#x0009;&#x000D;&#x000A;]]></synopsis>
+				</link>
+				<release_year>2007</release_year>
+				<category scheme="http://api.netflix.com/categories/tv_ratings"
+					label="NR" term="NR"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Television" term="Television"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Animated Comedies" term="TV Animated Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="TV Comedies" term="TV Comedies"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Comedy Central" term="Comedy Central"></category>
+				<category scheme="http://api.netflix.com/categories/genres"
+					label="Paramount Home Entertainment" term="Paramount Home Entertainment"></category>
+				<runtime>6600</runtime>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101261/format_availability"
+					rel="http://schemas.netflix.com/catalog/titles/format_availability"
+					title="formats">
+					<delivery_formats>
+						<availability available_from="1218499200">
+							<category scheme="http://api.netflix.com/categories/title_formats"
+								label="DVD" term="DVD"></category>
+						</availability>
+					</delivery_formats>
+				</link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101261/screen_formats"
+					rel="http://schemas.netflix.com/catalog/titles/screen_formats"
+					title="screen formats"></link>
+				<link href="http://api.netflix.com/catalog/titles/discs/70101261/cast"
+					rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101261/languages_and_audio"
+					rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+					title="languages and audio"></link>
+				<link href="http://api.netflix.com/catalog/titles/series/60030529"
+					rel="http://schemas.netflix.com/catalog/titles.series" title="South Park"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/series/60030529/seasons/70073028"
+					rel="http://schemas.netflix.com/catalog/title.season" title="South Park: Season 11"></link>
+				<link
+					href="http://api.netflix.com/catalog/titles/discs/70101261/similars"
+					rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+				<link
+					href="http://www.netflix.com/Movie/South_Park_Season_11_Disc_3/70101261"
+					rel="alternate" title="web page"></link>
+
+			</queue_item>
+			<link
+				href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+				rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+			<link
+				href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/saved"
+				rel="http://schemas.netflix.com/queues.saved" title="saved queue"></link>
+		</queue>
+		<link
+			href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+			rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+		<category scheme="http://api.netflix.com/categories/queue_availability"
+			label="available now" term="available now">Available Now</category>
+		<updated>1262606651</updated>
+		<category scheme="http://api.netflix.com/categories/title_formats"
+			label="DVD" term="DVD"></category>
+		<link href="http://api.netflix.com/catalog/titles/discs/70101261"
+			rel="http://schemas.netflix.com/catalog/title" title="South Park: Season 11: Disc 3"></link>
+		<title short="South Park: Season 11: Disc 3" regular="South Park: Season 11: Disc 3"></title>
+		<box_art small="http://cdn-1.nflximg.com/us/boxshots/tiny/70073028.jpg"
+			medium="http://cdn-1.nflximg.com/us/boxshots/small/70073028.jpg"
+			large="http://cdn-1.nflximg.com/us/boxshots/large/70073028.jpg"></box_art>
+		<link href="http://api.netflix.com/catalog/titles/discs/70101261/synopsis"
+			rel="http://schemas.netflix.com/catalog/titles/synopsis" title="synopsis">
+			<synopsis><![CDATA[This disc includes the following episodes: "Imaginationland: Episode I," &#x000D;&#x000A;"Imaginationland: Episode II," "Imaginationland: Episode III," "Guitar Queer-O" and "The List."&#x0009;&#x000D;&#x000A;]]></synopsis>
+		</link>
+		<release_year>2007</release_year>
+		<category scheme="http://api.netflix.com/categories/tv_ratings"
+			label="NR" term="NR"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Television" term="Television"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Animated Comedies" term="TV Animated Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="TV Comedies" term="TV Comedies"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Comedy Central" term="Comedy Central"></category>
+		<category scheme="http://api.netflix.com/categories/genres"
+			label="Paramount Home Entertainment" term="Paramount Home Entertainment"></category>
+		<runtime>6600</runtime>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70101261/format_availability"
+			rel="http://schemas.netflix.com/catalog/titles/format_availability"
+			title="formats">
+			<delivery_formats>
+				<availability available_from="1218499200">
+					<category scheme="http://api.netflix.com/categories/title_formats"
+						label="DVD" term="DVD"></category>
+				</availability>
+			</delivery_formats>
+		</link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70101261/screen_formats"
+			rel="http://schemas.netflix.com/catalog/titles/screen_formats" title="screen formats"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70101261/cast"
+			rel="http://schemas.netflix.com/catalog/people.cast" title="cast"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/discs/70101261/languages_and_audio"
+			rel="http://schemas.netflix.com/catalog/titles/languages_and_audio"
+			title="languages and audio"></link>
+		<link href="http://api.netflix.com/catalog/titles/series/60030529"
+			rel="http://schemas.netflix.com/catalog/titles.series" title="South Park"></link>
+		<link
+			href="http://api.netflix.com/catalog/titles/series/60030529/seasons/70073028"
+			rel="http://schemas.netflix.com/catalog/title.season" title="South Park: Season 11"></link>
+		<link href="http://api.netflix.com/catalog/titles/discs/70101261/similars"
+			rel="http://schemas.netflix.com/catalog/titles.similars" title="similars"></link>
+		<link
+			href="http://www.netflix.com/Movie/South_Park_Season_11_Disc_3/70101261"
+			rel="alternate" title="web page"></link>
+
+	</queue_item>
+	<link
+		href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/available"
+		rel="http://schemas.netflix.com/queues.available" title="available queue"></link>
+	<link
+		href="http://api.netflix.com/users/T1tEwd9MNuICbsUVX5CZcwq0FHd1.JpcGgduYZv5cjoTY-/queues/disc/saved"
+		rel="http://schemas.netflix.com/queues.saved" title="saved queue"></link>
+</queue>

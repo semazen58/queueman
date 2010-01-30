@@ -29,6 +29,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.text.TextUtils;
+import android.text.Html.TagHandler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -56,14 +58,10 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 	 */
 	private static Dialog dialog;
 	private Button addButton;
-	private Button cancelButton;
 	private TextView title;
 	private TextView year;
-	private TextView rating;
 	private ImageView boxart;
 	private TextView synopsis;
-	private RelativeLayout searchOptions;
-	private RadioGroup radioOptions;
 	private RadioButton radioAddTop;
 	private RadioButton radioAddBottom;
 	private RadioButton radioAddInstant;
@@ -72,7 +70,6 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 	
 	private Button rateMe;
 	private Button noThanks;
-	private RatingBar rate;
 
 	private Bitmap bitmap;
 	private int action;
@@ -106,7 +103,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				addButton = (Button) findViewById(R.id.add_movie);
 				addButton.setOnClickListener(new clickr());
 							
-				radioOptions = (RadioGroup) findViewById(R.id.add_options);
+				//radioOptions = (RadioGroup) findViewById(R.id.add_options);
 				radioAddTop = (RadioButton) findViewById(R.id.radio_top);
 				radioAddBottom = (RadioButton) findViewById(R.id.radio_bottom);
 				radioAddInstant = (RadioButton) findViewById(R.id.radio_instant);
@@ -116,16 +113,10 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				// populate views
 				radioAddInstant.setEnabled(false);
 				// get smaller image to save space for buttons
-				loadBoxArt(disc.getBoxArtUrlMedium());
-				// we may need to trim this is searching, or moving to allow
-				// room for buttons
-				/*String snippet = null;
-				if (disc.getSynopsis().length() > 250) {
-					snippet = disc.getSynopsis().substring(0, 250) + "...";
-				} else {
-					snippet = disc.getSynopsis();
-				}*/
+				loadBoxArt(disc.getBoxArtUrlLarge());
+			
 				synopsis = (TextView) findViewById(R.id.synopsis);
+				
 				synopsis.setText(Html.fromHtml(disc.getSynopsis()));
 
 				// availability
@@ -164,15 +155,13 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		year = (TextView) findViewById(R.id.myear);
 
 		//rating button
-		rateMe= (Button) findViewById(R.id.Button01);
+		rateMe= (Button) findViewById(R.id.RateMe);
 		rateMe.setText("Rate Title");
 		//rateMe.setHeight(20);
 		rateMe.setOnClickListener(this);
 		
 		//current rating indicator
 		avgRatingBar = (RatingBar) findViewById(R.id.DetailRatingBar01);
-		avgRatingBar.setNumStars(5);
-		avgRatingBar.setIsIndicator(true);
 		if(disc.hasUserRating()){
 			avgRatingBar.setRating(disc.getUserRating().floatValue());
 			rateMe.setText(R.string.rate_button_rerate);
@@ -180,7 +169,6 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		}else{
 			avgRatingBar.setRating(disc.getAvgRating().floatValue());
 		}
-		avgRatingBar.setFocusable(false);
 		
 		
 		// set values based on disc
@@ -221,6 +209,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 			boxart.setAdjustViewBounds(true); // set the ImageView bounds to
 												// match the Drawable's
 												// dimensions
+			
 
 		}
 	};
@@ -313,12 +302,9 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		dialog.setContentView(R.layout.active_rating_bar);
 		dialog.setTitle(title);
 		
-		rate=(RatingBar)dialog.findViewById(R.id.ActiveRatingBar);
 		noThanks=(Button)dialog.findViewById(R.id.no_thanks);
-		rate.setNumStars(5);
-		rate.setStepSize(1.0f);
-		rate.setOnRatingBarChangeListener(this);
 		noThanks.setOnClickListener(this);
+		((RatingBar)dialog.findViewById(R.id.ActiveRatingBar)).setOnRatingBarChangeListener(this);
 		
 		dialog.show();
 	}
@@ -349,9 +335,10 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 	public void onRatingChanged(RatingBar arg0, float arg1, boolean arg2) {
 		// TODO Auto-generated method stub
 		dialog.dismiss();
-		new SetRatings().execute(disc.getId(), String.valueOf((int)arg0.getRating()));
-		avgRatingBar.setRating(rate.getRating());
-
+		disc.setUserRating(arg0.getRating());
+		new SetRatings().execute(disc);
+		avgRatingBar.setRating(arg0.getRating());	
+		
 	}
 
 	public void onClick(View view) {
@@ -361,18 +348,19 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		}else if(view==noThanks){
 			dialog.dismiss();
 			avgRatingBar.setRating(0.0f);
-			new SetRatings().execute(disc.getId(), NetFlix.NF_RATING_NO_INTEREST);
+			disc.setUserRating(0);
+			new SetRatings().execute(disc);
 		}
 	}
 
 	
-	 private class SetRatings extends AsyncTask<String, Integer, Integer> {
+	 private class SetRatings extends AsyncTask<Disc, Integer, Integer> {
 
 		@Override
-		protected Integer doInBackground(String... idRatingPair) {
+		protected Integer doInBackground(Disc... modifiedDisc) {
 			int result;
 
-			result=QueueMan.netflix.setRating(idRatingPair[0], idRatingPair[1]);
+			result=QueueMan.netflix.setRating(modifiedDisc[0]);
 			// TODO Auto-generated method stub
 			return result;
 		}
@@ -386,7 +374,6 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				case 422:
 					//already rated
 					Toast.makeText(MovieDetails.this, "Title Rated!", Toast.LENGTH_SHORT).show();
-	
 					rateMe.setText(R.string.rate_button_rerate);
 					break;
 				default:
@@ -397,6 +384,22 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 			}
 		}
 		 
+	 }
+	 
+	 /**
+	  * 
+	  * @param dips
+	  * @return pixels
+	  */
+	 private int getPixels(int dips){
+		// The gesture threshold expressed in dip
+		 final float GESTURE_THRESHOLD_DIP = 16.0f;
+
+		 // Convert the dips to pixels
+		 final float scale = getBaseContext().getResources().getDisplayMetrics().density;
+		return (int) (GESTURE_THRESHOLD_DIP * scale + 0.5f);
+
+		 // Use mGestureThreshold as a distance in pixels
 	 }
 		 
 }
