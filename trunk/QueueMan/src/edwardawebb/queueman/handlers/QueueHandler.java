@@ -34,6 +34,7 @@ public class QueueHandler extends DefaultHandler {
 
 	private boolean inId = false;
 	private boolean inRating = false;
+	private boolean inUserRating = false;
 	private boolean inPosition = false;
 	private boolean inBoxArt = false;
 	private boolean inSynopsis = false;
@@ -60,6 +61,7 @@ public class QueueHandler extends DefaultHandler {
 	private String boxArtUrl;
 	private String year;
 	private double rating;
+	private double userRating;
 	protected int statusCode = 0;
 	private int subCode = 0;
 	private boolean isAvailable = false;
@@ -119,6 +121,8 @@ public class QueueHandler extends DefaultHandler {
 			inNumResults = true;
 		} else if (element.equals("average_rating")) {
 			inRating = true;
+		}else if (element.equals("user_rating")) {
+			inUserRating = true;
 		} else if (element.equals("title")) {
 			stitle = atts.getValue("short");
 			ftitle = atts.getValue("regular");
@@ -162,6 +166,8 @@ public class QueueHandler extends DefaultHandler {
 			inNumResults = false;
 		} else if (element.equals("average_rating")) {
 			inRating = false;
+		} else if (element.equals("user_rating")) {
+			inUserRating = false;
 		} else if (element.equals("box_art")) {
 			inBoxArt = false;
 		} else if (element.equals(itemElementName)) {
@@ -197,6 +203,8 @@ public class QueueHandler extends DefaultHandler {
 			// Log.d("QueueHandler","Id: " + id);
 		}  else if (inRating) {
 			rating = Double.valueOf(chars);
+		}else if (inUserRating) {
+			userRating = Double.valueOf(chars);
 		} else if (inSynopsis) {
 			synopsis = (chars);
 		} else if (inYear) {

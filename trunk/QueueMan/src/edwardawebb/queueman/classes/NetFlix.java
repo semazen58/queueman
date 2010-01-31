@@ -152,7 +152,7 @@ public class NetFlix {
 		// maybe pass in authentication info
 		// NetFlix.oaconsumer = oac;
 		// NetFlix.oaprovider = oap;
-		NetFlix.oaconsumer =  new CommonsHttpOAuthConsumer(CONSUMER_KEY,
+		NetFlix.oaconsumer =  new DefaultOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		NetFlix.oaprovider = new DefaultOAuthProvider(oaconsumer,
 				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
@@ -336,7 +336,7 @@ public class NetFlix {
 			
 			xml = request.getInputStream();
 			
-			 /* BufferedReader in = new BufferedReader(new
+			/*  BufferedReader in = new BufferedReader(new
 			  InputStreamReader(xml)); String linein = null; while ((linein =
 			  in.readLine()) != null) { Log.d("NetFlix", "GetQueue: " +
 			  linein); }*/

@@ -222,7 +222,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		
 	
 		//@ TODO DEBUGGIN ONLY - DONT LOG
-		//FlurryAgent.setLogEnabled(false);
+		FlurryAgent.setLogEnabled(false);
 		
 		//start logigng
 		FlurryAgent.onStartSession(this, FLURRY_APP_KEY);
@@ -248,7 +248,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	public void onStart() {
 		super.onStart();
 		// start analytics session
-		FlurryAgent.onStartSession(this, FLURRY_APP_KEY);
+		//FlurryAgent.onStartSession(this, FLURRY_APP_KEY);
 		
 		//catch restart when linking. If successful they will have passed us the request token with our scheme
 		Uri uri = getIntent().getData();
@@ -993,7 +993,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 
 		 protected Integer doInBackground(String... arg0) {
 			 String rt=arg0[0];
-	    	 int result=901;
+	    	 int result=36;
 				
 			if (isOnline()) {
 				boolean accessProvided = netflix
