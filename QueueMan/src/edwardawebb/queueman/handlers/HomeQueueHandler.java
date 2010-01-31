@@ -25,6 +25,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.classes.NetFlixQueue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -46,13 +47,12 @@ public class HomeQueueHandler extends QueueHandler {
 		super.endElement(uri, name, qName);
 		if(name.trim().equals("at_home_item")){	
 			//add additional format info and save movie to search q
+			super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_HOME);
 			NetFlix.homeQueue.add(super.tempMovie);
 			
 		}
 	}
 	
-
-
 	
 
 }
