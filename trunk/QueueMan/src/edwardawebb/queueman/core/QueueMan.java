@@ -608,12 +608,16 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					edwardawebb.queueman.core.ViewLicense.class));
 		}else if(v == btnFilterInstant){
 			//only thing we do here is filter
+			btnFilterInstant.setEnabled(false);
 			netflix.filterOnInstant();
 			redrawQueue();
+			
 		}else if (v == btnNextPage){
 			//increment starindeex, so they can see next set
 			recommendStart+=Integer.valueOf(getDownloadCount());
 			loadRecommendations();
+			//unlock filter button for another round
+			btnFilterInstant.setEnabled(true);
 		}
 	
 		
@@ -1405,7 +1409,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				//show navigation panel (instant filter, next)
 				
 	            if (navigationPanel == null) {
-	            	navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
+	            	//navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
+	            	navigationPanel = ((View) findViewById(R.id.stub_import));
 					//provide some references
 	            	btnFilterInstant = (Button) navigationPanel.findViewById(R.id.filter_instant);
 					btnNextPage = (Button) navigationPanel.findViewById(R.id.next_page);
