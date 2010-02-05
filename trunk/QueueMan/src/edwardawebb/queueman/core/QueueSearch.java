@@ -39,7 +39,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.classes.Disc;
-import edwardawebb.queueman.classes.NetFlix;
 import edwardawebb.queueman.classes.NetFlixQueue;
 
 public class QueueSearch extends Activity {
