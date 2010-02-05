@@ -37,7 +37,6 @@ import android.view.View;
 import android.view.ViewStub;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -1410,7 +1409,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				
 	            if (navigationPanel == null) {
 	            	//navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
-	            	navigationPanel = ((View) findViewById(R.id.stub_import));
+	            	navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
 					//provide some references
 	            	btnFilterInstant = (Button) navigationPanel.findViewById(R.id.filter_instant);
 					btnNextPage = (Button) navigationPanel.findViewById(R.id.next_page);
