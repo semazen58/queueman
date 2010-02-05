@@ -222,7 +222,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		
 	
 		//@ TODO DEBUGGIN ONLY - DONT LOG
-		FlurryAgent.setLogEnabled(false);
+		//FlurryAgent.setLogEnabled(false);
 		
 		//start logigng
 		FlurryAgent.onStartSession(this, FLURRY_APP_KEY);
