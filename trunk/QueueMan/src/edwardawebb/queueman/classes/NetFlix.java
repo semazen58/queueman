@@ -762,6 +762,7 @@ public class NetFlix {
 	 */
 	public int addToQueue(Disc disc, int queueType) {
 		lastResponseMessage="";
+		lastNFResponseMessage="";
 		int result = NF_ERROR_BAD_DEFAULT;
 		// 2 choirs, send request to netflix, and if successful update local q.
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
@@ -788,17 +789,15 @@ public class NetFlix {
 				}
 				// @ TODO   Move this to instnat once it works
 				
-				
-				url = new URL("http://api.netflix.com/users/" + userID
-						+ "/queues/disc" + expanders);
 				eTag = NetFlix.discQueue.getETag();
-				//prevent an OOB erro with NF
+				url = new URL("https://api.netflix.com/users/" + userID
+						+ "/queues/disc" + expanders);
 				
 				break;
 			case NetFlixQueue.QUEUE_TYPE_INSTANT:
-				url = new URL("http://api.netflix.com/users/" + userID
-						+ "/queues/instant" + expanders);
 				eTag = NetFlix.instantQueue.getETag();
+				url = new URL("https://api.netflix.com/users/" + userID
+						+ "/queues/instant" + expanders);
 				break;
 			}
 
@@ -850,7 +849,7 @@ public class NetFlix {
 				myHandler = (AddDiscQueueHandler) new AddDiscQueueHandler();
 				break;
 			case NetFlixQueue.QUEUE_TYPE_INSTANT:
-				myHandler = new AddInstantQueueHandler();
+				myHandler = (AddInstantQueueHandler) new AddInstantQueueHandler();
 				break;
 			}
 			xr.setContentHandler(myHandler);
@@ -896,8 +895,7 @@ public class NetFlix {
 				parameters.put("Position:", ""+disc.getPosition());
 				parameters.put("Availability:", ""+ disc.isAvailable() + ", " + disc.getAvailibilityText());
 				parameters.put("URL:", ""+ url);
-				FlurryAgent.onEvent("AddToQueue502", parameters);
-				getNewETag(queueType);
+				FlurryAgent.onEvent("AddToQueue502", parameters);			
 				
 			}
 		}

@@ -1321,6 +1321,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					//title already exists! cant add
 					Toast.makeText(mListView.getContext(), ""+netflix.lastNFResponseMessage, Toast.LENGTH_LONG).show();
 					break;
+				case 502:
+					showCustomDialog("Error - Bad Gateway", "I'm sorry, but I was unable to add your movie due to a issue connecting. Please try again over Wi-Fi, or from a different location"+ "\n\n hit 'Back' to continue");
+			        
+					break;
 				case 620:
 					// added to SAVED queue - double post lolonger message
 					Toast.makeText(mListView.getContext(), "Title Saved - This title is not currently available, but was added to your Saved queue", Toast.LENGTH_LONG).show();

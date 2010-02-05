@@ -94,7 +94,6 @@ public class RecommendationsHandler extends DefaultHandler {
 
 	public void startElement(String uri, String name, String qName,
 			Attributes atts) {
-		Log.d("RecommendationHandler",">>>startELement:" + name);
 		String element = name.trim();
 		if (element.equals("category")) {
 			inCategory = true;

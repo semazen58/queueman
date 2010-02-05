@@ -22,6 +22,8 @@
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import android.util.Log;
+
 import edwardawebb.queueman.classes.NetFlix;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
@@ -72,6 +74,8 @@ public class AddInstantQueueHandler extends QueueHandler {
 			NetFlix.instantQueue.setETag(eTag);
 		} else if (inStatusCode) {
 			statusCode = Integer.valueOf(chars);
+			Log.d("AddInstantHandler","statusCode:" + chars);
+			
 		}
 
 	}
