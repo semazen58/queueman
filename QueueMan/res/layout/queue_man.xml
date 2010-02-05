@@ -14,8 +14,15 @@
 					android:layout_height="wrap_content" />
 				<ListView android:id="@+id/instantqueue"
 					android:layout_width="fill_parent" android:layout_height="wrap_content" />
-				<ListView android:id="@+id/recommendqueue"
-						android:layout_width="fill_parent" android:layout_height="wrap_content"/>
+					<ListView android:id="@+id/recommendqueue"
+						android:layout_width="fill_parent" android:layout_height="wrap_content" 
+						android:clipChildren="true"
+						android:clipToPadding="true"
+						android:paddingBottom="40dp"/>
+
+
+
+
 			
 			</FrameLayout>
 
