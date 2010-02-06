@@ -1,5 +1,6 @@
 #summary Quick intro to !QueueMan features
 #labels Featured
+#sidebar MasterTOC
 
 
 =Netflix Queue Manager Feature List=
