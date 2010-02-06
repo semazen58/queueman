@@ -3,16 +3,3 @@
 = !QueueMan Wiki Pages =
 
 Welcome to !QueueMan's Wiki.  You may search above, use the TOC to the left. Important messages will be shown below.
-
-
-= Important Messages =
-
-== Eclair Compatibility ==
-QueueMan is now *logically* on board with the Eclair SDK (2.0, 2.01, 2.1). (Visually some devices may not look nice - see below)
-
-
-
-== Fancy Screen Compatibility ==
-Fancy phones like Droid and Nexus One don't play very nice with any of the rating bars. I am not sure what the dilly is.  Please stay tuned as I am working actively to fix this!
-
-(If your some Android Layout Guru - well c'mon help out! )
