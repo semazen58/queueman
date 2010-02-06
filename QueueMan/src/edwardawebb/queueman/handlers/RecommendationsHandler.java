@@ -83,6 +83,7 @@ public class RecommendationsHandler extends DefaultHandler {
 	private String availability;
 	private String discAvailabilityCategoryScheme = "http://api.netflix.com/categories/queue_availability";
 	private String discMpaaRatingScheme = "http://api.netflix.com/categories/mpaa_ratings";
+	private String discTvRatingScheme = "http://api.netflix.com/categories/tv_ratings";
 
 	private boolean isInstant;
 
@@ -106,7 +107,8 @@ public class RecommendationsHandler extends DefaultHandler {
 				} else {
 					isAvailable = true;
 				}
-			}else if (atts.getValue("scheme").equals(discMpaaRatingScheme)) {
+			}else if (atts.getValue("scheme").equals(discMpaaRatingScheme)
+					|| atts.getValue("scheme").equals(discTvRatingScheme)) {
 				mpaaRating = atts.getValue("label");				
 			}
 		} else if(element.equals("link") && atts.getValue("title").equals("synopsis")){

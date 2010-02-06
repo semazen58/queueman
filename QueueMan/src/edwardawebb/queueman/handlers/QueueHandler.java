@@ -78,7 +78,8 @@ public class QueueHandler extends DefaultHandler {
 	private String availability;
 	private String discAvailabilityCategoryScheme = "http://api.netflix.com/categories/queue_availability";
 	private String discMpaaRatingScheme = "http://api.netflix.com/categories/mpaa_ratings";
-
+	private String discTvRatingScheme = "http://api.netflix.com/categories/tv_ratings";
+	
 	public void startElement(String uri, String name, String qName,
 			Attributes atts) {
 		// Log.d("QueueHandler",">>>startELement:" + element);
@@ -92,7 +93,8 @@ public class QueueHandler extends DefaultHandler {
 				} else {
 					isAvailable = true;
 				}
-			}else if (atts.getValue("scheme").equals(discMpaaRatingScheme)) {
+			}else if (atts.getValue("scheme").equals(discMpaaRatingScheme)
+					|| atts.getValue("scheme").equals(discTvRatingScheme)) {
 				mpaaRating = atts.getValue("label");				
 			}
 		} else if (element.equals("availability")) {
