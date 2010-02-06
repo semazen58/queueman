@@ -44,6 +44,7 @@ public class Disc implements Serializable {
 	private String boxArtUrl;
 	private String synopsis;
 	private String year;
+	private String mpaaRating="";
 	private double avgRating;
 	private double userRating;
 	private Date availableFrom;
@@ -216,12 +217,13 @@ public class Disc implements Serializable {
 	 */
 	@Override
 	public String toString() {
+		
 		if(availibilityText==null){
-			return shortTitle;
+			return shortTitle + " |" + getMpaaRating() + "|";
 		}else if( availibilityText.equals("available now")){
-			return shortTitle;
+			return shortTitle+ " |" + getMpaaRating() + "|";
 		}else{
-			return "Saved - " + shortTitle;
+			return "Saved - " + shortTitle+ " |" + getMpaaRating() + "|";
 		}
 	}
 
@@ -270,5 +272,25 @@ public class Disc implements Serializable {
 	 */
 	public boolean isAvailableInstant() {
 		return isAvailableInstant;
+	}
+
+
+	/**
+	 * @param mpaaRating the mpaaRating to set
+	 */
+	public void setMpaaRating(String mpaaRating) {
+		this.mpaaRating = mpaaRating;
+	}
+
+
+	/**
+	 * @return the mpaaRating
+	 */
+	public String getMpaaRating() {
+		if(!mpaaRating.equals("")){
+			return mpaaRating;
+		}else{
+			return "?";
+		}
 	}
 }
