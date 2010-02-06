@@ -36,13 +36,10 @@ public class QueueHandler extends DefaultHandler {
 	private boolean inRating = false;
 	private boolean inUserRating = false;
 	private boolean inPosition = false;
-	private boolean inBoxArt = false;
 	private boolean inSynopsis = false;
-	private boolean inFormats = false;
 	protected boolean inAvailability = false;
 	protected boolean inCategory = false;
 	private boolean inYear = false;
-	private boolean inItem = false;
 	private boolean inStatus = false;
 	private boolean inSubCode = false;
 	private boolean inNumResults = false;
@@ -55,6 +52,7 @@ public class QueueHandler extends DefaultHandler {
 	protected int position;
 	private String stitle;
 	private String ftitle;
+	private String mpaaRating="";
 	private String synopsis;
 	private String id;
 	private String uniqueID;
@@ -79,6 +77,7 @@ public class QueueHandler extends DefaultHandler {
 
 	private String availability;
 	private String discAvailabilityCategoryScheme = "http://api.netflix.com/categories/queue_availability";
+	private String discMpaaRatingScheme = "http://api.netflix.com/categories/mpaa_ratings";
 
 	public void startElement(String uri, String name, String qName,
 			Attributes atts) {
@@ -93,6 +92,8 @@ public class QueueHandler extends DefaultHandler {
 				} else {
 					isAvailable = true;
 				}
+			}else if (atts.getValue("scheme").equals(discMpaaRatingScheme)) {
+				mpaaRating = atts.getValue("label");				
 			}
 		} else if (element.equals("availability")) {
 			inAvailability = true;
@@ -103,8 +104,6 @@ public class QueueHandler extends DefaultHandler {
 			 * 
 			 * }
 			 */
-		} else if (element.equals("delivery_formats")) {
-			inFormats = true;
 		} else if(element.equals("link") && atts.getValue("title").equals("synopsis")){
 			//very poor way, but only way i could find to compare discs ascross queus.
 			String href=atts.getValue("href");
@@ -126,11 +125,8 @@ public class QueueHandler extends DefaultHandler {
 		} else if (element.equals("title")) {
 			stitle = atts.getValue("short");
 			ftitle = atts.getValue("regular");
-		} else if (element.equals("box_art")) {
-			inBoxArt = true;
+		} else if (element.equals("box_art")) {			
 			boxArtUrl = atts.getValue("small");
-		} else if (element.equals(itemElementName)) {
-			inItem = true;
 		} else if (element.equals("start_index")) {
 			inStartIndex = true;
 		} else if (element.equals("results_per_page")) {
@@ -152,8 +148,6 @@ public class QueueHandler extends DefaultHandler {
 			inCategory = false;
 		} else if (element.equals("availability")) {
 			inAvailability = false;
-		} else if (element.equals("delivery_formats")) {
-			inFormats = false;
 		} else if (element.equals("position")) {
 			inPosition = false;
 		} else if (element.equals("synopsis")) {
@@ -168,13 +162,12 @@ public class QueueHandler extends DefaultHandler {
 			inRating = false;
 		} else if (element.equals("user_rating")) {
 			inUserRating = false;
-		} else if (element.equals("box_art")) {
-			inBoxArt = false;
 		} else if (element.equals(itemElementName)) {
-			inItem = false;
 			tempMovie = new Disc(id,uniqueID, stitle, ftitle, boxArtUrl, rating,
 					synopsis, year, isAvailable);
 			tempMovie.setAvailibilityText(availability);
+			tempMovie.setMpaaRating(new String(mpaaRating));
+			mpaaRating="";
 		} else if (element.equals("start_index")) {
 			inStartIndex = false;
 		} else if (element.equals("results_per_page")) {

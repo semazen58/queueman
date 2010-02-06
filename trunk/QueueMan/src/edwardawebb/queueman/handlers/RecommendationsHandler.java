@@ -59,6 +59,7 @@ public class RecommendationsHandler extends DefaultHandler {
 	private String stitle;
 	private String ftitle;
 	private String synopsis;
+	private String mpaaRating="";
 	private String id;
 	private String message;
 	private int totalResults;
@@ -81,6 +82,7 @@ public class RecommendationsHandler extends DefaultHandler {
 
 	private String availability;
 	private String discAvailabilityCategoryScheme = "http://api.netflix.com/categories/queue_availability";
+	private String discMpaaRatingScheme = "http://api.netflix.com/categories/mpaa_ratings";
 
 	private boolean isInstant;
 
@@ -104,6 +106,8 @@ public class RecommendationsHandler extends DefaultHandler {
 				} else {
 					isAvailable = true;
 				}
+			}else if (atts.getValue("scheme").equals(discMpaaRatingScheme)) {
+				mpaaRating = atts.getValue("label");				
 			}
 		} else if(element.equals("link") && atts.getValue("title").equals("synopsis")){
 			//very poor way, but only way i could find to compare discs ascross queus.
@@ -181,7 +185,8 @@ public class RecommendationsHandler extends DefaultHandler {
 			tempMovie.setFormats(new ArrayList<String>(mformats));
 			tempMovie.setAvailableInstant(new Boolean(isInstant));
 			tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_RECOMMEND);
-			
+			tempMovie.setMpaaRating(new String(mpaaRating));
+			mpaaRating="";
 			mformats.clear();
 			isInstant=false;
 			if(!netflix.discQueue.getDiscs().contains(tempMovie)){
