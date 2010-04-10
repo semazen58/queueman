@@ -17,19 +17,41 @@
  */
  package edwardawebb.queueman.classes;
 
-public class User {
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class User implements Serializable{
 	private String userId;
+	private String firstName;
 	private String accessToken;
 	private String accessTokenSecret;
 	private boolean canWatchInstant;
+	private ArrayList<String> preferredFormats;
 	
-	
-	public User(String userId, String accessToken, String accessTokenSecret,
-			boolean canWatchInstant) {
+	/**
+	 * Contrust new user with only tokens. we will use this user to get remaining info 
+	 * @param userId
+	 * @param accessToken
+	 * @param accessTokenSecret
+	 */
+	public User(String userId, String accessToken, String accessTokenSecret){
+			
 		this.userId = userId;
 		this.accessToken = accessToken;
 		this.accessTokenSecret = accessTokenSecret;
-		this.canWatchInstant = canWatchInstant;
+		
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public void setPreferredFormats(ArrayList<String> preferredFormats) {
+		this.preferredFormats = preferredFormats;
+	}
+	public String getFirstName() {
+		return firstName;
+	}
+	public ArrayList<String> getPreferredFormats() {
+		return preferredFormats;
 	}
 	public String getUserId() {
 		return userId;

@@ -42,24 +42,28 @@ public class DiscQueueHandler extends QueueHandler {
 
 	
 	public void startElement(String uri, String name, String qName,	Attributes atts) {
-		super.startElement(uri, name, qName, atts);
-		if (name.trim().equals("etag")){
+		if (name.equals("etag")){
 			inETag = true;			
-		}else if(name.trim().equals("queue")){
-			inQueue = true;
+		}else{
+			super.startElement(uri, name, qName, atts);	
+			// any addituona ifs nested here
+			
+			
 		}
 	}
 
 	//we pnly want to update the local q when downlaoing disc q.
 	@Override
-	public void endElement(String uri, String name, String qName)throws SAXException {
-		super.endElement(uri, name, qName);
-		String value=name.trim();
+	public void endElement(String uri, String value, String qName)throws SAXException {
 		if (value.equals("etag")){
 			inETag = false;			
-		}else if(value.equals("queue_item")){	
-			super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_DISC);	
-			NetFlix.discQueue.add(super.tempMovie);
+		}else {
+			//
+			super.endElement(uri, value, qName);
+			if(value.equals("queue_item")){	
+				super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_DISC);	
+				NetFlix.discQueue.add(super.tempMovie);
+			}
 		}
 	}
 	

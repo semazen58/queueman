@@ -23,15 +23,17 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import android.util.Log;
 import edwardawebb.queueman.classes.Disc;
 
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
-public class QueueHandler extends DefaultHandler {
+public class FastQueueHandler extends DefaultHandler {
 
 	protected Disc tempMovie;
 
+	private boolean inItem = false;
 	private boolean inId = false;
 	private boolean inRating = false;
 	private boolean inUserRating = false;
@@ -80,10 +82,23 @@ public class QueueHandler extends DefaultHandler {
 	private String discMpaaRatingScheme = "http://api.netflix.com/categories/mpaa_ratings";
 	private String discTvRatingScheme = "http://api.netflix.com/categories/tv_ratings";
 	
+	long time=0;
+	
+	public void startDocument(){
+		Log.d("Fast","startDoc()>>>");
+	}
+	
 	public void startElement(String uri, String element, String qName,
 			Attributes atts) {
-		// Log.d("QueueHandler",">>>startELement:" + element);
-		if (element.equals("category")) {
+		//Log.d("Fast",">>>startELement:" + element);
+		//time = new Date().getTime();
+				
+			
+		if(element.equals("link") && atts.getValue("title").equals("synopsis")){
+				//very poor way, but only way i could find to compare discs ascross queus.
+				String href=atts.getValue("href");
+				uniqueID=(String) href.subSequence(0,href.lastIndexOf("/") )   ;
+		}else if (element.equals("category")) {
 			inCategory = true;
 			if (atts.getValue("scheme").equals(discAvailabilityCategoryScheme)) {
 				availability = atts.getValue("term");
@@ -96,19 +111,6 @@ public class QueueHandler extends DefaultHandler {
 					|| atts.getValue("scheme").equals(discTvRatingScheme)) {
 				mpaaRating = atts.getValue("label");				
 			}
-		} else if (element.equals("availability")) {
-			inAvailability = true;
-			/*
-			 * if(!isAvailable){ //if not available, find out when it was / is
-			 * //availableFrom = new Date(atts.getValue("available_from"));
-			 * //availableUntil = new Date(atts.getValue("available_until"));
-			 * 
-			 * }
-			 */
-		} else if(element.equals("link") && atts.getValue("title").equals("synopsis")){
-			//very poor way, but only way i could find to compare discs ascross queus.
-			String href=atts.getValue("href");
-			uniqueID=(String) href.subSequence(0,href.lastIndexOf("/") )   ;
 		} else if (element.equals("position")) {
 			inPosition = true;
 		} else if (element.equals("synopsis")) {
@@ -128,18 +130,22 @@ public class QueueHandler extends DefaultHandler {
 			ftitle = atts.getValue("regular");
 		} else if (element.equals("box_art")) {			
 			boxArtUrl = atts.getValue("small");
-		} else if (element.equals("start_index")) {
-			inStartIndex = true;
-		} else if (element.equals("results_per_page")) {
-			inResultsPerPage = true;
-		} else if (element.equals("status_code")) {
-			inStatus = true;
-		} else if (element.equals("sub_code")) {
-			inSubCode = true;
-		}else if (element.equals("message")) {
-			inMessage = true;
+		} else if (element.equals(itemElementName)) {			
+			inItem=true;
+		} else if(!inItem ){
+			//only excute if not in an item
+			 if (element.equals("start_index")) {		
+				inStartIndex = true;
+			} else if (element.equals("results_per_page")) {
+				inResultsPerPage = true;
+			} else if (element.equals("status_code")) {
+				inStatus = true;
+			} else if (element.equals("sub_code")) {
+				inSubCode = true;
+			}else if (element.equals("message")) {
+				inMessage = true;
+			}
 		}
-		// Log.d("QueueHandler","<<<startELement:" + element);
 	}
 
 	public void endElement(String uri, String element, String qName)
@@ -169,19 +175,24 @@ public class QueueHandler extends DefaultHandler {
 			tempMovie.setAvailibilityText(availability);
 			tempMovie.setMpaaRating(new String(mpaaRating));
 			mpaaRating="";
-		} else if (element.equals("start_index")) {
-			inStartIndex = false;
-		} else if (element.equals("results_per_page")) {
-			inResultsPerPage = false;
-		} else if (element.equals("status_code")) {
-			inStatus = false;
-		} else if (element.equals("sub_code")) {
-			inSubCode = false;
-		}else if (element.equals("message")) {
-			inMessage = false;
+			inItem=false;
+		} else if(!inItem ){
+			//only excute if not in an item
+			 if (element.equals("start_index")) {		
+				inStartIndex = false;
+			} else if (element.equals("results_per_page")) {
+				inResultsPerPage = false;
+			} else if (element.equals("status_code")) {
+				inStatus = false;
+			} else if (element.equals("sub_code")) {
+				inSubCode = false;
+			}else if (element.equals("message")) {
+				inMessage = false;
+			}
 		}
 		// Log.d("QueueHandler","<<<endELement:" + element);
-
+		//Log.d("Fast","<<<EndELement:" + element + "\t\t" + (new Date().getTime()-time));
+		
 	}
 
 	public void characters(char ch[], int start, int length) {
@@ -219,6 +230,11 @@ public class QueueHandler extends DefaultHandler {
 		}
 		// Log.d("QueueHandler","<<<characters:" );
 
+	}
+	
+	public void endDocument(){
+		Log.d("Fast","endDoc()<<<");
+		
 	}
 
 	/**
