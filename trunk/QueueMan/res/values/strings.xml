@@ -19,7 +19,10 @@
 <string name="app_name_powered">QueueMan - delivered by Netflix</string>
 <!--  Dialog Messages -->
 <string name="dialog_license_start">QueueMan\nCopyright (C) 2009 Edward A. Webb\n
-			     This program is released under the GPL v3 License. \n\nPlease read the license terms by clicking \'Read License\'.
+			      
+    This program comes with ABSOLUTELY NO WARRANTY; for details see about, or  by clicking \'Read License\'\n
+    This is free software, and you are welcome to redistribute it
+    under certain conditions; \n\nPlease read the license terms by clicking \'Read License\'.
 			     </string>
 <string name="dialog_accept">I agree</string>
 <string name="no_thanks">Not Interested</string>

@@ -37,6 +37,8 @@ android:debuggable="true"
 		</activity>
 		<activity android:name=".ViewLicense" android:label="QueueMan EULA" >
 		</activity>
+		<activity android:name=".AboutHelp" android:label="QueueMan Info and Help" >
+		</activity>
 </application>
 	<uses-sdk  android:minSdkVersion="4" android:maxSdkVersion="7" />
 </manifest> 
