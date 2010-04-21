@@ -1370,7 +1370,7 @@ public class NetFlix {
 			 * "UTF-8")); Log.d("NetFlix", "etag=" +
 			 * URLEncoder.encode(NetFlixQueue.getETag(), "UTF-8"));
 			 */
-			URL url = new URL("http://api.netflix.com/users/" + user.getUserId()
+			URL url = new URL("https://api.netflix.com/users/" + user.getUserId()
 						+ "/ratings/title/actual");
 				
 
@@ -1481,7 +1481,7 @@ public class NetFlix {
 			if (urlc.getResponseCode() == 200 || urlc.getResponseCode()==403) {
 				result = true;
 			}
-			urlc.disconnect();
+			//urlc.disconnect();
 		} catch (MalformedURLException e1) {
 		        e1.printStackTrace();
 		} catch (IOException e) {
