@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+   >
+
+<include android:id="@+id/cell3" layout="@layout/queue_man"
+						android:layout_height="wrap_content" android:layout_gravity="top" />
+
+
+    					<ViewStub android:id="@+id/stub_import"
+    					 android:layout="@layout/pagination_bar"
+    					
+
+						android:layout_width="fill_parent" android:layout_height="40dp"
+						android:layout_gravity="bottom" />
+
+
+</merge>
+
+
