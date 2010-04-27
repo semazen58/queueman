@@ -23,7 +23,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.queues.MutableQueue;
+import edwardawebb.queueman.queues.Queue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -42,8 +43,11 @@ public class MoveQueueHandler extends DefaultHandler {
 	private boolean inSubCode;
 	private String message="";
 
-	public MoveQueueHandler(int oldPosition) {
+	private MutableQueue queue;
+
+	public MoveQueueHandler(MutableQueue queue,int oldPosition) {
 		this.oldPosition=oldPosition;
+		this.queue = queue;
 	}
 	
 	public void startElement(String uri, String name, String qName,	Attributes atts) {
@@ -66,7 +70,7 @@ public class MoveQueueHandler extends DefaultHandler {
 	public void endElement(String uri, String name, String qName)throws SAXException {
 		if(name.trim().equals("queue_item") && statusCode == 201){	
 			//add additional format info and save movie to search q
-			NetFlix.discQueue.reorder(oldPosition, position);
+			queue.reorder(oldPosition, position);
 		}else if (name.trim().equals("status_code")){
 			inStatus=false;
 		}else if (name.trim().equals("etag")){
@@ -86,7 +90,7 @@ public class MoveQueueHandler extends DefaultHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
-			NetFlix.discQueue.setETag(eTag);
+			queue.seteTag(eTag);
 		}else if(inPosition){
 			position=Integer.parseInt(chars);
 		}else if(inStatus){

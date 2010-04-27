@@ -98,24 +98,7 @@ public class NetFlixQueue {
 	 * @param oldPosition
 	 * @param newPosition
 	 */
-	public void reorder(int oldPosition, int newPosition) {
-		// always good to check to make sure the indices are ok.
-		// we are being passed 'postions' 1,2,3....
-		// but discs is 0 based, so down shift!
-		if (oldPosition >= 1 && newPosition >= 1) {
-			if (newPosition > discs.size()) {
-				newPosition = discs.size();
-			}
-			Disc movie = discs.remove(oldPosition - 1);
-			discs.add(newPosition - 1, movie);
-		} else {
-			FlurryAgent.onError("outOfBounds",
-					"reorder: provided indices are out of bound. old:"
-							+ oldPosition + ", new:" + newPosition,
-					"NetFlixQueue");
-		}
 
-	}
 
 	public void delete(Disc movie) {
 		// netflix.deleteFromQueue(movie);

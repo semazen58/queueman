@@ -2,10 +2,19 @@ package edwardawebb.queueman.queues;
 import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.classes.Disc;
+import edwardawebb.queueman.classes.Netflix;
 import edwardawebb.queueman.classes.NetflixResponse;
 
 
-public abstract class MutableQueues extends Queue{
+public abstract class MutableQueue extends Queue{
+	
+	protected String eTag;
+	
+	public MutableQueue(Netflix netflix) {
+		super(netflix);
+		// TODO Auto-generated constructor stub
+	}
+
 	public NetflixResponse postTitle(){
 		return null;
 		// TODO add implementation and return statement
@@ -22,10 +31,27 @@ public abstract class MutableQueues extends Queue{
 		// TODO add implementation and return statement
 	}
 	
+		/**
+	 * @return the eTag
+	 */
+	public String geteTag() {
+		return eTag;
+	}
+
+	/**
+	 * @param eTag the eTag to set
+	 */
+	public void seteTag(String eTag) {
+		this.eTag = eTag;
+	}
+	
+	
 	/**Collection Mutators ********************************************************/
 	
 	
 	
+
+
 	/**
 		 * Moves the disc at the specified queue position to the new position.
 		 * Position is 1 based

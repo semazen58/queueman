@@ -21,8 +21,8 @@
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import edwardawebb.queueman.classes.NetFlix;
 import edwardawebb.queueman.classes.NetFlixQueue;
+import edwardawebb.queueman.queues.MutableQueue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -32,12 +32,14 @@ public class InstantQueueHandler extends QueueHandler {
 	private boolean inETag=false;
 	//temp variables
 	private String eTag;
+	private MutableQueue queue;
 
 	
 	
 	
-	public InstantQueueHandler() {
+	public InstantQueueHandler(MutableQueue queue) {
 		super.itemElementName="queue_item";
+		this.queue=queue;
 	}
 
 	
@@ -58,7 +60,7 @@ public class InstantQueueHandler extends QueueHandler {
 			inETag = false;			
 		}else if(name.trim().equals("queue_item")){	
 			super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_INSTANT);
-			NetFlix.instantQueue.add(super.tempMovie);
+			queue.add(super.tempMovie);
 		}
 	}
 	
@@ -69,7 +71,7 @@ public class InstantQueueHandler extends QueueHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
-			NetFlix.instantQueue.setETag(eTag);
+			queue.setETag(eTag);
 		}
 	}
 
@@ -78,7 +80,7 @@ public class InstantQueueHandler extends QueueHandler {
 	@Override
 	public void endDocument(){
 		
-		NetFlix.instantQueue.setTotalTitles(super.numResults);
+		queue.setTotalTitles(super.numResults);
 	}
 	
 }

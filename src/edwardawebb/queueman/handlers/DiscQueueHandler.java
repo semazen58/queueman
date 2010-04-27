@@ -21,7 +21,6 @@
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import edwardawebb.queueman.classes.NetFlix;
 import edwardawebb.queueman.classes.NetFlixQueue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
@@ -32,12 +31,14 @@ public class DiscQueueHandler extends QueueHandler {
 	private boolean inETag=false;
 	//temp variables
 	private String eTag;
+	private DiscQueue queue;
 
 	
 	
 	
-	public DiscQueueHandler() {
+	public DiscQueueHandler(DiscQueue queue) {
 		super.itemElementName="queue_item";
+		this.queue = queue;
 	}
 
 	
@@ -62,7 +63,7 @@ public class DiscQueueHandler extends QueueHandler {
 			super.endElement(uri, value, qName);
 			if(value.equals("queue_item")){	
 				super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_DISC);	
-				NetFlix.discQueue.add(super.tempMovie);
+				queue.add(super.tempMovie);
 			}
 		}
 	}
@@ -74,16 +75,16 @@ public class DiscQueueHandler extends QueueHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
-			NetFlix.discQueue.setETag(eTag);
+			queue.setETag(eTag);
 		}
 	}
 
 	@Override
 	public void endDocument(){
 		//these let us know for which range our etag is valid, needed for move to bottom top
-		NetFlix.discQueue.setTotalTitles(super.numResults);
-		NetFlix.discQueue.setStartIndex(super.startIndex);
-		NetFlix.discQueue.setPerPage(resultsPerPage);
+		queue.setTotalTitles(super.numResults);
+		queue.setStartIndex(super.startIndex);
+		queue.setPerPage(resultsPerPage);
 	}
 	
 

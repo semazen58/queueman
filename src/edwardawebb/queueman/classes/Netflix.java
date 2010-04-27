@@ -90,7 +90,7 @@ public class Netflix{
 
 	protected String mashupConsumerSecret;
 
-	protected OAuthConsumer oauthConsumer;
+	private OAuthConsumer oauthConsumer;
 
 	protected DefaultOAuthProvider oauthProvider;
 
@@ -194,7 +194,7 @@ public class Netflix{
 	
 	public static Netflix getInstance(){
 		// TODO add implementation and return statement
-		return netflix;
+		return NETFLIX;
 	}
 
 	public void authorizeUser(){
@@ -354,217 +354,8 @@ public class Netflix{
 	}
 */
 	
-	/**
-	 * 
-	 * @param queueType
-	 * @param maxResults
-	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
-	 */
-	public int getRecommendations(int startIndex,String maxResults) {
-		times[0]=System.currentTimeMillis();
-		URL QueueUrl = null;
-		int result = NF_ERROR_BAD_DEFAULT;
-		if (maxResults.equals(QueueMan.ALL_TITLES_STRING)) {
-			maxResults = "500";
-		}
-		
-		
-		String expanders = "?expand=synopsis,formats&start_index=" + startIndex + "&max_results=" + maxResults;
-		InputStream xml = null;
-		try {
-			// we're either rotating/task jumping OR we're starting/paging
-			/*if (!Netflix.recomemendedQueue.isEmpty() && startIndex == recomemendedQueue.getStartIndex()){
-				return 200;
-			}else if(recomemendedQueue.getTotalTitles() < startIndex){
-				return NF_ERROR_NO_MORE;
-			}else{
-				recomemendedQueue.purge();
-			}*/
-				
-			QueueUrl = new URL("http://api.Netflix.com/users/" + user.getUserId()
-					+ "/recommendations" + expanders);
-			RecommendationsHandler myHandler = new RecommendationsHandler(this);
-			Log.d("Netflix",""+QueueUrl.toString());
-			
-			setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
-			HttpURLConnection request = (HttpURLConnection) QueueUrl
-					.openConnection();
-
-			Netflix.oaconsumer.sign(request);
-			request.connect();
-
-			lastResponseMessage = request.getResponseCode() + ": "
-					+ request.getResponseMessage();
-			result = request.getResponseCode();
-			xml = request.getInputStream();
-			
-			
-	/*	BufferedReader in = new BufferedReader(new
-			 InputStreamReader(xml)); String linein = null; while ((linein =
-			 in.readLine()) != null) { Log.d("NetflixQueue", "" +
-			 linein); }*/
-			 
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp;
-			sp = spf.newSAXParser();
-			XMLReader xr = sp.getXMLReader();
-
-			xr.setContentHandler(myHandler);
-			xr.parse(new InputSource(xml));
-
-		} catch (ParserConfigurationException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (SAXException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (IOException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "IO Error connecting to Netflix queue")
-		} catch (OAuthMessageSignerException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "Unable to Sign request - token invalid")
-		} catch (OAuthExpectationFailedException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "Expectation failed")
-		}
-		times[1]=System.currentTimeMillis();
-		return result;
-	}
 
 
-	/**
-	 * 
-	 * @param queueType
-	 * @param maxResults
-	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
-	 */
-	public int getHomeTitles() {
-		URL QueueUrl = null;
-		int result = NF_ERROR_BAD_DEFAULT;
-		
-		String expanders = "?expand=synopsis,formats";
-		InputStream xml = null;
-		try {
-			
-			if (!Netflix.homeQueue.isEmpty())
-				return 200;
-			QueueUrl = new URL("http://api.Netflix.com/users/" + user.getUserId()
-					+ "/at_home" + expanders);
-			HomeQueueHandler myHandler = new HomeQueueHandler();
-			Log.d("Netflix",""+QueueUrl.toString());
-			
-			setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
-			HttpURLConnection request = (HttpURLConnection) QueueUrl
-					.openConnection();
-
-			Netflix.oaconsumer.sign(request);
-			request.connect();
-
-			lastResponseMessage = request.getResponseCode() + ": "
-					+ request.getResponseMessage();
-			result = request.getResponseCode();
-			xml = request.getInputStream();
-
-			
-			 /*BufferedReader in = new BufferedReader(new
-			 InputStreamReader(xml)); String linein = null; while ((linein =
-			 in.readLine()) != null) { Log.d("NetflixQueue", "" +
-			 linein); }*/
-			 
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp;
-			sp = spf.newSAXParser();
-			XMLReader xr = sp.getXMLReader();
-
-			xr.setContentHandler(myHandler);
-			xr.parse(new InputSource(xml));
-
-		} catch (ParserConfigurationException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (SAXException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (IOException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "IO Error connecting to Netflix queue")
-		} catch (OAuthMessageSignerException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "Unable to Sign request - token invalid")
-		} catch (OAuthExpectationFailedException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "Expectation failed")
-		}
-		return result;
-	}
-	/**
-	 * 
-	 * @param queueType
-	 * @param maxResults
-	 * @return HttpStatusCOde or NF_ERROR_BAD_DEFAULT for exceptions
-	 */
-	public int getHomeTitlesJSON() {
-		times[2]=System.currentTimeMillis();
-		URL QueueUrl = null;
-		int result = NF_ERROR_BAD_DEFAULT;
-		
-		String expanders = "?expand=synopsis,formats&output=json";
-		InputStream is = null;
-		try {
-			
-			//if (!Netflix.homeQueue.isEmpty())
-			//	return 200;
-			QueueUrl = new URL("http://api.Netflix.com/users/" + user.getUserId()
-					+ "/at_home" + expanders);
-			Log.d("Netflix",""+QueueUrl.toString());
-			
-			setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
-			HttpURLConnection request = (HttpURLConnection) QueueUrl
-					.openConnection();
-
-			Netflix.oaconsumer.sign(request);
-			request.connect();
-
-			lastResponseMessage = request.getResponseCode() + ": "
-					+ request.getResponseMessage();
-			result = request.getResponseCode();
-			is = request.getInputStream();
-			
-			JSON2Queue.parseAtHome(is);
-			
-			/* BufferedReader in = new BufferedReader(new
-			 InputStreamReader(is)); String linein = null; 
-			 while ((linein = in.readLine()) != null) {
-				 Log.d("NetflixQueue", "" +			 linein); 
-				 }*/
-			 
-	
-
-		} catch (IOException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "IO Error connecting to Netflix queue")
-		} catch (OAuthMessageSignerException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "Unable to Sign request - token invalid")
-		} catch (OAuthExpectationFailedException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "Expectation failed")
-		} 
-		times[3]=System.currentTimeMillis();
-		Log.d("Performance","XML: " + (times[1]-times[0]) + " | JSON: " + (times[3]-times[2]));
-		return result;
-	}
-	
 	/**
 	 * 
 	 * @param queueType
@@ -630,147 +421,8 @@ public class Netflix{
 	}
 
 	
-	public boolean getNewETag(int queueType){
-		return getNewETag(queueType,1);
-	}
 	
-	public boolean getNewETag(int queueType, int discPosition) {
-		URL QueueUrl = null;
-		DefaultHandler myQueueHandler = null;
-		boolean result = false;
-		//start index is 0 based, so step the true position down one
-		String expanders = "?max_results="+ 1   + "&start_index="+ (discPosition-1);
-		InputStream xml = null;
-		try {
-			switch (queueType) {
-			case NetflixQueue.QUEUE_TYPE_INSTANT:
-				QueueUrl = new URL("http://api.Netflix.com/users/" + user.getUserId()
-						+ "/queues/instant" + expanders);
-				myQueueHandler = new InstantETagHandler();
-				break;
-			case NetflixQueue.QUEUE_TYPE_DISC:
-				QueueUrl = new URL("http://api.Netflix.com/users/" + user.getUserId()
-						+ "/queues/disc/available" + expanders);
-
-				myQueueHandler = new DiscETagHandler();
-				break;
-			}
-			 setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
-			HttpURLConnection request = (HttpURLConnection) QueueUrl
-					.openConnection();
-
-			Netflix.oaconsumer.sign(request);
-			request.connect();
-
-			lastResponseMessage = request.getResponseCode() + ": "
-					+ request.getResponseMessage();
-
-			if (request.getResponseCode() == 200) {
-				xml = request.getInputStream();
-
-				SAXParserFactory spf = SAXParserFactory.newInstance();
-				SAXParser sp;
-				sp = spf.newSAXParser();
-				XMLReader xr = sp.getXMLReader();
-
-				xr.setContentHandler(myQueueHandler);
-				//our custom handler will throw an exception when he gets what he want, interupting the full parse
-			 ErrorProcessor errors = new ErrorProcessor(); 
-			 xr.setErrorHandler(errors);
-				xr.parse(new InputSource(xml));
-				result = true;
-			}
-
-		} catch (ParserConfigurationException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (SAXException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (IOException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "IO Error connecting to Netflix queue")
-		} catch (OAuthMessageSignerException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "Unable to Sign request - token invalid")
-		} catch (OAuthExpectationFailedException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "Expectation failed")
-		}
-		return result;
-	}
-
-	public  NetflixQueue getSearchResults(String searchTerm) {
-		searchQueue = new NetflixQueue(NetflixQueue.QUEUE_TYPE_SEARCH);
-		setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
-
-		InputStream xml = null;
-		try {
-			String encSearchTerm = URLEncoder.encode(searchTerm);
-			setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
-			String expanders = "&expand=synopsis,formats";
-			URL QueueUrl = null;
-
-			QueueUrl = new URL("http://api.Netflix.com/catalog/titles?term="
-					+ encSearchTerm + expanders);
-			// Log.d("Netflix",""+QueueUrl.toString())
-			HttpURLConnection request = (HttpURLConnection) QueueUrl
-					.openConnection();
-
-			Netflix.oaconsumer.sign(request);
-			request.connect();
-
-			lastResponseMessage = request.getResponseCode()+ ": " + request.getResponseMessage();
-			
-			if (request.getResponseCode() == 200) {
-				// Log.d("Netflix", request.getContentType())
-				// //Log.d("Netflix",request.getInputStream().toString())
-				// return xml xmldoc
-				xml = request.getInputStream();
-
-				/*BufferedReader in = new BufferedReader(new InputStreamReader(
-						xml));
-				String linein = null;
-				while ((linein = in.readLine()) != null) {
-					Log.d("Netflix", "SearchMovie: " + linein);
-				}*/
-				SAXParserFactory spf = SAXParserFactory.newInstance();
-				SAXParser sp;
-
-				sp = spf.newSAXParser();
-
-				XMLReader xr = sp.getXMLReader();
-				// SearchResultsHandler myHandler = new
-				// SearchResultsHandler(this);
-				SearchQueueHandler myHandler = new SearchQueueHandler();
-				xr.setContentHandler(myHandler);
-				xr.parse(new InputSource(xml));
-			}
-
-		} catch (ParserConfigurationException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (SAXException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (IOException e) {
-			
-			reportError(e, lastResponseMessage);
-			// Log.i("Netflix", "IO Error connecting to Netflix queue")
-		} catch (OAuthMessageSignerException e) {
-			
-			reportError(e, lastResponseMessage);
-		} catch (OAuthExpectationFailedException e) {
-			
-			reportError(e, lastResponseMessage);
-		}
-
-		return searchQueue;
-	}
-
+	
 	/**
 	 * @return the user
 	 */
@@ -872,12 +524,12 @@ public class Netflix{
 		return Netflix.oaconsumer.getTokenSecret();
 	}
 
-	/**
+/*	*//**
 	 * 
 	 * @param disc
 	 * @param queueType
 	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
-	 */
+	 *//*
 	public int addToQueue(Disc disc, int queueType) {
 		lastResponseMessage="";
 		lastNFResponseMessage="";
@@ -944,14 +596,14 @@ public class Netflix{
 					+ ": " + response.getStatusLine().getReasonPhrase();
 
 			
-			/*  Log.d("Netflix", "" +
+			  Log.d("Netflix", "" +
 			  response.getEntity().getContentType().toString()); BufferedReader
 			  in = new BufferedReader(new InputStreamReader(xml)); String
 			  linein = null; while ((linein = in.readLine()) != null) {
 			  Log.d("Netflix", "AddMovie: " + linein); }
 			 if(true) return 200;
 			 //^ avoids the parser since we consumed xml for debug
-			 */
+			 
 			 
 			// Log.i("Netflix", "Parsing XML Response")
 			SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -1019,7 +671,7 @@ public class Netflix{
 		return result;
 	}
 
-	/**
+	*//**
 	 * moveInQueue This will post to Netflix with the new ddesired position.
 	 * Disc q only 1 based index
 	 * 
@@ -1028,7 +680,7 @@ public class Netflix{
 	 * @param newPosition
 	 * @param queueType
 	 * @return subcode, statuscode, or httpresponse code (NF_ERROR_BAD_DEFAULT on exception)
-	 */
+	 *//*
 	public int moveInQueue(Disc disc, int oldPosition, int newPosition, int queueType) {
 
 		int result = NF_ERROR_BAD_DEFAULT;
@@ -1073,10 +725,10 @@ public class Netflix{
 			
 			result = response.getStatusLine().getStatusCode();
 			
-			/*  BufferedReader in = new BufferedReader(new
+			  BufferedReader in = new BufferedReader(new
 			  InputStreamReader(xml)); String linein = null; while ((linein =
 			  in.readLine()) != null) { Log.d("Netflix", "Move Movie: " +
-			  linein); }*/
+			  linein); }
 			lastResponseMessage = "HTTP:" + response.getStatusLine().getStatusCode()
 			+ ", " + response.getStatusLine().getReasonPhrase();
 	
@@ -1165,11 +817,11 @@ public class Netflix{
 			result = response.getStatusLine().getStatusCode();
 			lastResponseMessage = response.getStatusLine().getStatusCode()
 					+ ": " + response.getStatusLine().getReasonPhrase();
-			/*BufferedReader in = new BufferedReader(new InputStreamReader(xml));
+			BufferedReader in = new BufferedReader(new InputStreamReader(xml));
 			String linein = null;
 			while ((linein = in.readLine()) != null) {
 				Log.d("Netflix", "MovieMovie: " + linein);
-			}*/
+			}
 			
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp;
@@ -1204,9 +856,9 @@ public class Netflix{
 		}
 
 		
-		/*
+		
 		 * On a successful; DELETE we remove our local recordss too
-		 */
+		 
 		if (result == 200) {
 
 			switch (queueType) {
@@ -1220,7 +872,7 @@ public class Netflix{
 			getNewETag(queueType);
 		}
 		return result;
-	}
+	}*/
 
 	private static void setSignPost(String token, String tokenSecret) {
 		// Log.i("NetApi", "Prepping SignPosT class..")
@@ -1230,11 +882,11 @@ public class Netflix{
 	}
 
 	
-	
-	/**
+/*	
+	*//**
 	 * purge local copy of the specified queuetype, this will allow a fresh download next time it is requested
 	 * @param queueType
-	 */
+	 *//*
 	public void purgeQueue(int queueType) {
 		switch (queueType) {
 		case NetflixQueue.QUEUE_TYPE_DISC:
@@ -1247,13 +899,13 @@ public class Netflix{
 			recomemendedQueue.purge();
 			break;
 		}
-	}
+	}*/
 	
 	/**
 	 * Post a rating to specificed title
 	 * @param modifiedDisc
 	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
-	 */
+	 *//*
 	public int setRating(Disc modifiedDisc) {
 		
 		int result = NF_ERROR_BAD_DEFAULT;
@@ -1267,11 +919,11 @@ public class Netflix{
 		try {
 
 			// Construct data
-			/*
+			
 			 * Log.d("Netflix", "title_ref=" + URLEncoder.encode(disc.getId(),
 			 * "UTF-8")); Log.d("Netflix", "etag=" +
 			 * URLEncoder.encode(NetflixQueue.getETag(), "UTF-8"));
-			 */
+			 
 			URL url = new URL("https://api.Netflix.com/users/" + user.getUserId()
 						+ "/ratings/title/actual");
 				
@@ -1300,11 +952,11 @@ public class Netflix{
 					+ ": " + response.getStatusLine().getReasonPhrase();
 			result=response.getStatusLine().getStatusCode();
 			
-			/* Log.d("Netflix", "" +
+			 Log.d("Netflix", "" +
 			 response.getEntity().getContentType().toString()); BufferedReader
 			 in = new BufferedReader(new InputStreamReader(xml)); String
 			 linein = null; while ((linein = in.readLine()) != null) {
-			 Log.d("Netflix", "SetRating: " + linein); }*/
+			 Log.d("Netflix", "SetRating: " + linein); }
 			 
 			// Log.i("Netflix", "Parsing XML Response")
 			SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -1356,7 +1008,7 @@ public class Netflix{
 		return result;
 	}
 
-	
+	*/
 /**
 	 * report exceptions using Flurry
 	 * @param e
@@ -1366,12 +1018,7 @@ public class Netflix{
 		FlurryAgent.onError("Netflix Exception", e.getLocalizedMessage() +  "|| But check this, I'm also looking at a " + responseLine + " here for an HTTP status. I'm just sayin", e.toString());
 	}
 	
-	/**
-	 * trims recommended queue to instant titles
-	 */
-	public void filterOnInstant(){
-		recomemendedQueue.filterInstantOnly();
-	}
+
 
 	public boolean isConnected(){
 		boolean result =false;
@@ -1401,7 +1048,15 @@ public class Netflix{
 		// TODO Auto-generated method stub
 		Log.d("Netflix","sign() >>>");
 		setSignPost(user.oauthToken, user.oauthTokenSecret);
-		oaconsumer.sign(request);
+		try {
+			oaconsumer.sign(request);
+		} catch (OAuthMessageSignerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Log.d("Netflix","sign() <<<");
 		
 	}

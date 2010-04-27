@@ -5,34 +5,27 @@ import java.net.URL;
 
 import edwardawebb.queueman.classes.Netflix;
 import edwardawebb.queueman.classes.User;
+import edwardawebb.queueman.handlers.DiscQueueHandler;
 import edwardawebb.queueman.handlers.QueueHandler;
-import edwardawebb.queueman.handlers.RecommendationsHandler;
 
+public class HomeQueue extends BrowsableQueue{
 
-public class RecommendedQueue extends BrowsableQueue{
-	public RecommendedQueue(Netflix netflix) {
+	public HomeQueue(Netflix netflix) {
 		super(netflix);
 		// TODO Auto-generated constructor stub
-	}
-
-	protected String category;
-
-	public void changeCategory(){
-		// TODO add implementation
 	}
 
 	@Override
 	protected QueueHandler getQueueHandler() {
 		// TODO Auto-generated method stub
-		return new RecommendationsHandler(this);
+		return new DiscQueueHandler();
 	}
 
 	@Override
 	protected URL getQueueUrl(User user) throws MalformedURLException {
 		// TODO Auto-generated method stub
-		return  new URL("http://api.Netflix.com/users/" + user.getUserId()
-				+ "/recommendations" + expanders);
+		return new URL("http://api.Netflix.com/users/" + user.getUserId()
+				+ "/queues/disc/available" + expanders);
 	}
-
 }
 
