@@ -29,7 +29,7 @@ import edwardawebb.queueman.classes.Disc;
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
 public class QueueHandler extends DefaultHandler {
-
+	public static final String INSTANT_LABEL="instant";
 	protected Disc tempMovie;
 
 	private boolean inId = false;
