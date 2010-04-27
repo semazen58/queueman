@@ -22,19 +22,16 @@ import java.util.Date;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
-import android.util.Log;
 import edwardawebb.queueman.classes.Disc;
-import edwardawebb.queueman.classes.NetFlix;
-import edwardawebb.queueman.classes.NetFlixQueue;
+import edwardawebb.queueman.queues.Queue;
 
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
-public class RecommendationsHandler extends DefaultHandler {
+public class RecommendationsHandler extends QueueHandler {
 
-	private NetFlix netflix;
+	private Queue queue;
 	
 	protected Disc tempMovie;
 
@@ -87,12 +84,12 @@ public class RecommendationsHandler extends DefaultHandler {
 
 	private boolean isInstant;
 
-	public RecommendationsHandler(NetFlix netflix){
-		this.netflix=netflix;
+	public RecommendationsHandler(Queue queue){
+		this.queue=queue;
 	}
 	public void endDocument() {
 		// Log.d("AddDiscQueueHandler","Reading results XML")
-		netflix.recomemendedQueue.setTotalTitles(totalResults);
+		queue.setTotalTitles(totalResults);
 	}
 
 	public void startElement(String uri, String name, String qName,
@@ -155,7 +152,7 @@ public class RecommendationsHandler extends DefaultHandler {
 		if(inAvailability && inCategory){
 			//
 			mformats.add(atts.getValue("label"));
-			if(atts.getValue("label").equals(NetFlixQueue.INSTANT_LABEL)) isInstant=true;
+			if(atts.getValue("label").equals(QueueHandler.INSTANT_LABEL)) isInstant=true;
 		}
 		
 	}
@@ -186,16 +183,13 @@ public class RecommendationsHandler extends DefaultHandler {
 			tempMovie.setAvailibilityText(availability);
 			tempMovie.setFormats(new ArrayList<String>(mformats));
 			tempMovie.setAvailableInstant(new Boolean(isInstant));
-			tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_RECOMMEND);
+			//tempMovie.setQueueType(QueueHandler.QUEUE_TYPE_RECOMMEND);
 			tempMovie.setMpaaRating(new String(mpaaRating));
 			mpaaRating="";
 			mformats.clear();
 			isInstant=false;
-			if(!netflix.discQueue.getDiscs().contains(tempMovie)){
-				//no pioitn in showing a title they already got.
-				
-				NetFlix.recomemendedQueue.add(tempMovie);
-			}
+			
+		
 			this.mformats.clear();
 		} else if (element.equals("number_of_results")) {
 			inResultsTotal = false;

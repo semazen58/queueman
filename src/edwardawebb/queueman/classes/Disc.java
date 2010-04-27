@@ -19,10 +19,13 @@
  * 
  */
 package edwardawebb.queueman.classes;
+import java.util.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+
+
 
 /**
  * @author Eddie Webb
@@ -39,14 +42,9 @@ public class Disc implements Serializable {
 	private static final CharSequence LARGE_SIZE = "large";
 	private static final CharSequence MED_SIZE = "small";
 	private String id;
-	private String shortTitle;
-	private String fullTitle;
 	private String boxArtUrl;
-	private String synopsis;
 	private String year;
 	private String mpaaRating="";
-	private double avgRating;
-	private double userRating;
 	private Date availableFrom;
 	private Date availableUntil;
 	private boolean isAvailable;
@@ -55,9 +53,34 @@ public class Disc implements Serializable {
 	private String uniqueId;
 	private boolean isAvailableInstant=false;
 	private int queueType;//self awareness for adding new titles - not used by existing discs
-	private int position; // @ TODO need to use this for all discs, will allow us to restore showing of movies moved to bvottom
+	
+	
+	protected String shortTitle;
 
-	private ArrayList<String> formats = new ArrayList<String>();
+	protected String fullTitle;
+
+	protected ArrayList<String> formats;
+
+	protected String synopsis;
+
+	protected double userRating;
+
+	protected double avgRating;
+
+	protected int position;
+
+	protected double suggestedRating;
+
+	protected Date waitTime;
+
+	protected boolean hasBluRay;
+
+	protected boolean hasInstant;
+
+	public NetflixResponse rateTitle(){
+		return null;
+		// TODO add implementation and return statement
+	}
 
 	/*
 	 * searc

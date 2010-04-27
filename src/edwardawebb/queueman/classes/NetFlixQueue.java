@@ -41,7 +41,7 @@ import com.flurry.android.FlurryAgent;
  */
 public class NetFlixQueue {
 
-	private NetFlix netflix;
+	private Netflix netflix;
 	private int id;
 	private String etag;
 	private boolean isDownloaded = false; //have we actually retrieved from NF, or just added titles
@@ -70,7 +70,6 @@ public class NetFlixQueue {
 	public static final int QUEUE_TYPE_SEARCH = 2;
 	public static final int QUEUE_TYPE_RECOMMEND = 3;
 	public static final int QUEUE_TYPE_HOME = 4;
-	public static final String INSTANT_LABEL="instant";
 	
 	public static final String[] queueTypeText = {"disc","instant","search","recommended","at_home"};
 

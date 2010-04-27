@@ -20,8 +20,20 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 
+
+
 public class User implements Serializable{
-	private String userId;
+	protected String oauthToken;
+
+	protected String oauthTokenSecret;
+
+	protected String userId;
+
+	protected String name;
+
+	protected boolean hasInstant;
+
+	protected boolean hasBluRay;
 	private String firstName;
 	private String accessToken;
 	private String accessTokenSecret;
