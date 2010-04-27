@@ -24,16 +24,19 @@ import java.util.ArrayList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.queues.Queue;
+
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
 public class SearchQueueHandler extends QueueHandler {
 
 	private ArrayList<String> mformats=new ArrayList<String>();
+	private Queue queue;
 
-	public SearchQueueHandler() {
+	public SearchQueueHandler(Queue queue) {
 		super.itemElementName="catalog_title";
+		this.queue=queue;
 	}
 	
 	public void startElement(String uri, String name, String qName,	Attributes atts) {
@@ -51,7 +54,7 @@ public class SearchQueueHandler extends QueueHandler {
 		if(name.trim().equals("catalog_title")){	
 			//add additional format info and save movie to search q
 			super.tempMovie.setFormats(new ArrayList<String>(mformats));
-			NetFlix.searchQueue.add(super.tempMovie);
+			queue.add(super.tempMovie);
 			this.mformats.clear();
 		}
 	}

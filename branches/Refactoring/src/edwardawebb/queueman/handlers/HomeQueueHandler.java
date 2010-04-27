@@ -19,21 +19,22 @@
 
 
 
-import java.util.ArrayList;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import edwardawebb.queueman.classes.NetFlix;
 import edwardawebb.queueman.classes.NetFlixQueue;
+import edwardawebb.queueman.queues.Queue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
 public class HomeQueueHandler extends QueueHandler {
 
 	
-	public HomeQueueHandler() {
+	private Queue queue;
+
+	public HomeQueueHandler(Queue queue) {
 		super.itemElementName="at_home_item";
+		this.queue=queue;
 	}
 	
 	public void startElement(String uri, String name, String qName,	Attributes atts) {
@@ -48,7 +49,7 @@ public class HomeQueueHandler extends QueueHandler {
 		if(name.trim().equals("at_home_item")){	
 			//add additional format info and save movie to search q
 			super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_HOME);
-			NetFlix.homeQueue.add(super.tempMovie);
+			queue.add(super.tempMovie);
 			
 		}
 	}

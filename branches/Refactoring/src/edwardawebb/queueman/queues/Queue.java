@@ -34,16 +34,20 @@ import oauth.signpost.http.HttpRequest;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
 import android.util.Log;
 
 import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.classes.Disc;
+import edwardawebb.queueman.classes.ErrorProcessor;
 import edwardawebb.queueman.classes.Netflix;
 import edwardawebb.queueman.classes.User;
 import edwardawebb.queueman.core.QueueMan;
+import edwardawebb.queueman.handlers.DiscETagHandler;
 import edwardawebb.queueman.handlers.DiscQueueHandler;
+import edwardawebb.queueman.handlers.InstantETagHandler;
 import edwardawebb.queueman.handlers.InstantQueueHandler;
 import edwardawebb.queueman.handlers.QueueHandler;
 public abstract class Queue implements QueueInterface{
@@ -52,15 +56,15 @@ public abstract class Queue implements QueueInterface{
 	
 	protected LinkedList<Disc> titles;
 
-	protected int totalTitles;
+	protected int totalTitles=-1;
 
-	protected int startTitle;
+	protected int startTitle=-1;
 
-	protected int pageCount;
+	protected int pageCount=-1;
 	
-	private int totalResults;
+	private int totalResults=-1;
 
-	protected String expanders;
+	protected String expanders="";
 
 	protected Netflix netflix;
 	
@@ -97,6 +101,8 @@ public abstract class Queue implements QueueInterface{
 	 */
 	public Queue(Netflix netflix){
 		this.netflix=netflix;
+		this.expanders = "&expand=synopsis,formats";
+		
 	}
 	
 	
@@ -113,7 +119,7 @@ public abstract class Queue implements QueueInterface{
 		resultCode = NF_ERROR_BAD_DEFAULT;
 		
 		// addtional info to return 
-		String expanders = "?expand=synopsis,formats&max_results=" + maxResults;
+		expanders = "?expand=synopsis,formats&max_results=" + maxResults;
 		InputStream xml = null;
 		if (!isCached()){
 			resultCode = SUCCESS_FROM_CACHE;
@@ -181,19 +187,90 @@ public abstract class Queue implements QueueInterface{
 			
 			reportError(e);
 			// Log.i("Netflix", "IO Error connecting to Netflix queue")
-		} catch (OAuthMessageSignerException e) {
-			
-			reportError(e);
-			// Log.i("Netflix", "Unable to Sign request - token invalid")
-		} catch (OAuthExpectationFailedException e) {
-			
-			reportError(e);
-			// Log.i("Netflix", "Expectation failed")
 		}
 		Log.d("Netflix","getQueue()<<<");
 		return getQueue();
 
 	}
+	
+	
+	public boolean getNewETag(int discPosition) {
+		URL QueueUrl = null;
+		DefaultHandler myQueueHandler = null;
+		boolean result = false;
+		//start index is 0 based, so step the true position down one
+		expanders = "?max_results="+ 1   + "&start_index="+ (discPosition-1);
+		InputStream xml = null;
+		try{
+			QueueUrl = getQueueUrl(netflix.getUser());
+			myQueueHandler = getQueueHandler();
+				
+			
+			
+			HttpURLConnection request = (HttpURLConnection) QueueUrl
+					.openConnection();
+
+			netflix.sign(request);
+			request.connect();
+
+			
+
+			if (request.getResponseCode() == 200) {
+				xml = request.getInputStream();
+
+				SAXParserFactory spf = SAXParserFactory.newInstance();
+				SAXParser sp;
+				sp = spf.newSAXParser();
+				XMLReader xr = sp.getXMLReader();
+
+				xr.setContentHandler(myQueueHandler);
+				//our custom handler will throw an exception when he gets what he want, interupting the full parse
+			 ErrorProcessor errors = new ErrorProcessor(); 
+			 xr.setErrorHandler(errors);
+				xr.parse(new InputSource(xml));
+				result = true;
+			}
+
+		} catch (ParserConfigurationException e) {
+			
+			reportError(e);
+		} catch (SAXException e) {
+			
+			reportError(e);
+		} catch (IOException e) {
+			
+			reportError(e);
+			// Log.i("Netflix", "IO Error connecting to Netflix queue")
+		} 
+		return result;
+	}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	private void reportError(Exception e) {
 		// TODO Auto-generated method stub
@@ -282,6 +359,29 @@ public abstract class Queue implements QueueInterface{
 		// TODO Auto-generated method stub
 		/* Filter recommendations to hide movies in our queues already **/
 	
+	}
+	
+	
+
+	/**
+	 * @return the expanders
+	 */
+	public String getExpanders() {
+		return expanders;
+	}
+
+
+	/**
+	 * @param expanders the expanders to set
+	 */
+	public void setExpanders(String expanders) {
+		this.expanders = expanders;
+	}
+
+
+	public void setETag(String eTag) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

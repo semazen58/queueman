@@ -22,8 +22,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edwardawebb.queueman.classes.Disc;
-import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.queues.Queue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -32,9 +31,12 @@ public class InstantETagHandler extends DefaultHandler {
 	private boolean inETag=false;
 	//temp variables
 	private String eTag;
+	private Queue queue;
 
 	
-	
+	public InstantETagHandler(Queue queue){
+		this.queue=queue;
+	}
 		
 	public void startElement(String uri, String name, String qName,	Attributes atts) {
 		if (name.trim().equals("etag")){
@@ -56,7 +58,7 @@ public class InstantETagHandler extends DefaultHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
-			NetFlix.instantQueue.setETag(eTag);
+			queue.setETag(eTag);
 		}
 	}
 
