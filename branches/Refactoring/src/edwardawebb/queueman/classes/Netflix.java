@@ -164,12 +164,8 @@ public class Netflix{
 	/**
 	 * second time, we will need to request access tokens from request token
 	 */
-	private Netflix(String requestToken, String requestSecret){
-		Netflix.oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
-				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
-		Netflix.oaprovider = new DefaultOAuthProvider(oaconsumer,
-				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
-				AUTHORIZE_WEBSITE_URL);	
+	public void setRequestTokens(String requestToken, String requestSecret){
+		
 		Netflix.oaconsumer.setTokenWithSecret(requestToken,requestSecret);
 		
 	}
@@ -178,15 +174,8 @@ public class Netflix{
 	 * We already know the user (was serioalized and saved previously), and have the required tokens
 	 * @param user
 	 */
-	private Netflix(String userId, String accessToken, String accessSecret) {
-		this.user=new User(userId, accessToken, accessSecret);
-		Netflix.oaconsumer =  new DefaultOAuthConsumer(CONSUMER_KEY,
-				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
-		Netflix.oaprovider = new DefaultOAuthProvider(oaconsumer,
-				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
-				AUTHORIZE_WEBSITE_URL);
-
-		
+	public void setExistingUser(String userId, String accessToken, String accessSecret) {
+		this.user=new User(userId, accessToken, accessSecret);			
 		//load name, and formats (we dont save as it might change)
 		getUserDetails();
 		

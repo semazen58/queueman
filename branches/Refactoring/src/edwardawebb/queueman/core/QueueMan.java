@@ -17,7 +17,6 @@
  */
 package edwardawebb.queueman.core;
 
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 import android.app.Dialog;
@@ -27,7 +26,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -53,8 +51,12 @@ import android.widget.TabHost.OnTabChangeListener;
 import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.classes.Disc;
-import edwardawebb.queueman.classes.NetFlix;
-import edwardawebb.queueman.classes.NetFlixQueue;
+import edwardawebb.queueman.classes.Netflix;
+import edwardawebb.queueman.queues.DiscQueue;
+import edwardawebb.queueman.queues.HomeQueue;
+import edwardawebb.queueman.queues.InstantQueue;
+import edwardawebb.queueman.queues.Queue;
+import edwardawebb.queueman.queues.RecommendedQueue;
 
 
 /**
@@ -98,7 +100,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	protected static boolean canWatchInstant;
 	
 	
-	public static NetFlix netflix;
+	public static Netflix netflix;
 	// see res/values/download_count_array.xml
 	public static final String ALL_TITLES_STRING = "All";
 
@@ -158,7 +160,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private static final int TAB_INSTANT = 1;
 	private static final int TAB_RECOMMEND = 2;
 	protected static final String POSITION_KEY = null;
-	private static int queueType = NetFlixQueue.QUEUE_TYPE_DISC;
 
 
 	/*
@@ -188,26 +189,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	//see sessionn variables for rec. download count
 	private int currentItemNumber=0;
 	
-	/*
-	 * handler for thread callbacks
-	 *  @deprecated
-	 */
-	final Handler mHandler = new Handler();
-	// redraw q on callback
-	
+	private DiscQueue discQueue;
+	private InstantQueue instantQueue;
+	private HomeQueue homeQueue;
+	private RecommendedQueue recommendedQueue;
 	
 
-	 /*
-	  * mRetrieveQueue - called after successful move or delete
-	  *  @deprecated
-	  */
-	final Runnable mRetrieveQueue = new Runnable() {
-		public void run() {
-			// make changes in UI
-			dialog.dismiss();
-			loadQueue();
-		}
-	};
+	
 
 	
 	
@@ -235,8 +223,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		mTabHost.addTab(mTabHost.newTabSpec("instantqueue").setIndicator("Netflix\nInstant",getResources().getDrawable(R.drawable.instant2)).setContent(R.id.instantqueue));
 		mTabHost.addTab(mTabHost.newTabSpec("recommendations").setIndicator("Recommendations",getResources().getDrawable(R.drawable.heart)).setContent(R.id.recommendqueue));
 		mTabHost.setOnTabChangedListener(this);
-		// set current defaults
-		queueType = NetFlixQueue.QUEUE_TYPE_DISC;
+		// set current defaults		
 		mTabHost.setCurrentTab(TAB_DISC);
 
 		Log.d("QueueMan","onCreate()<<<");
@@ -269,7 +256,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					//user has already linkd with NF, just load settings and run
 					loadSettings();
 					sessionStatus= SESSION_ACTIVE;
-					netflix = new NetFlix(userId, accessToken, accessTokenSecret);
+					netflix = Netflix.getInstance();
+					netflix.setExistingUser(userId, accessToken, accessTokenSecret);
 					//load user's preferred tab from preferences
 					mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
 					if(Integer.valueOf(defaultTab) == TAB_DISC) loadQueue() ;// this is missed by "onTabChange" since it is Disc -> Disc, and not really a change
@@ -368,7 +356,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				int qt=data.getIntExtra(ACTION_KEY, (int) 0);
 				disc.setQueueType(data.getIntExtra(ACTION_KEY, (int) 0));
 				if(mTabHost.getCurrentTab() == TAB_RECOMMEND){
-					NetFlix.recomemendedQueue.delete(disc);
+					recommendedQueue.delete(disc);
 					redrawQueue();
 				}
 				new AddTitleTask().execute(disc);
@@ -407,7 +395,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		case REFRESH_ID:
-			return refreshCurrentQueue();
+			return refreshCurrentQueue(discQueue);
 		case HOME_ID:
 			FlurryAgent.onEvent("Launching At Home");
 			//load the at home titles if we habent already
@@ -1529,7 +1517,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					if(!this.isCancelled()){
 				 // get queue will connect to neflix and resave the currentQ
 					// vairable
-					result = QueueMan.netflix.getHomeTitles();
+					//result = QueueMan.netflix.getHomeTitles();
 					switch (result) {
 					case 200:
 					case 201:
@@ -1591,14 +1579,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * Uses current tab to purgew cucrrent queue and request new one
 	 * @return
 	 */
-	private boolean refreshCurrentQueue() {
-		netflix.purgeQueue(queueType);
-		if(queueType == NetFlixQueue.QUEUE_TYPE_RECOMMEND){
-			recommendStart=0;
-			loadRecommendations();
-		}else{			
-			loadQueue();
-			}
+	private boolean refreshCurrentQueue(Queue queue) {
+		queue.purgeQueue();
+		loadQueue();		
 		return true;
 	}
 

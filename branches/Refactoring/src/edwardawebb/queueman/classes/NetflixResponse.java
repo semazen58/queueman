@@ -1,3 +1,5 @@
+package edwardawebb.queueman.classes;
+
 
 public class NetflixResponse{
 	protected int httpCode;

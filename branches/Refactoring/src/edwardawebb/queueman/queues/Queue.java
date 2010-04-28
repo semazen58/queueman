@@ -379,11 +379,73 @@ public abstract class Queue implements QueueInterface{
 	}
 
 
-	public void setETag(String eTag) {
+
+	public void setStartIndex(int i) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	public void setPerPage(int resultsPerPage) {
+		// TODO Auto-generated method stub
+		
+	}
+	public boolean isEmpty() {
+		// Log.d("NetFlixQueue","Size:"+discs.size())
+		return (boolean) (titles.size() == 0);
+	}
+
+
+
+
+	public void delete(Disc movie) {
+		// netflix.deleteFromQueue(movie);
+		titles.remove(movie);
+
+	}
+
+
+	/**
+	 * Adds new disc to Queue Position specified. position is 1 based.
+	 * 
+	 * @param position
+	 * @param movie
+	 */
+	public void add(int position, Disc movie) {
+		if(titles.contains(movie)){
+			titles.remove(movie);
+		}
+		if (position >= 1 && position <= this.titles.size()) {
+			titles.add(position - 1, movie);
+		} else if (position < 1 ) {
+			FlurryAgent.onError("outOfBounds",
+					"Add: The provided Position was too low", "NetFlixQueue");
+		} else if ( position == 500){
+			//;eddie was lazy, moze to the end.(for new move to bootom feature)
+			titles.add(movie);
+		}
+	}
+
+	public void purgeQueue(){
+		titles.clear();
+		this.isCachedLocally=false;
+		this.pageCount=-1;
+		this.totalResults=-1;
+		this.startTitle=-1;
+	}
+	public int indexOf(Disc movie) {
+		return titles.indexOf(movie);
+	}
+	
+	
+	/**
+	 * Returns Queue Position of title (1 based)
+	 * 
+	 * @param movie
+	 * @return
+	 */
+	public int positionOf(Disc movie) {
+		return titles.indexOf(movie) + 1;
+	}
 }
 
 

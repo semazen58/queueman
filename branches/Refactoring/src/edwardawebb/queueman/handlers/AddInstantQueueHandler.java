@@ -23,8 +23,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import android.util.Log;
-
-import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.queues.MutableQueue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -38,9 +37,12 @@ public class AddInstantQueueHandler extends QueueHandler {
 	private boolean inStatusCode = false;
 
 	private Integer statusCode;
+
+	private MutableQueue queue;
 	
-	public AddInstantQueueHandler() {
+	public AddInstantQueueHandler(MutableQueue queue) {
 		super.itemElementName = "queue_item";
+		this.queue=queue;
 
 	}
 
@@ -59,7 +61,7 @@ public class AddInstantQueueHandler extends QueueHandler {
 			inETag = false;			
 		}else if(name.trim().equals("queue_item")){			
 			if(statusCode == 201){
-				NetFlix.instantQueue.add(super.position,super.tempMovie);
+				queue.add(super.position,super.tempMovie);
 			}
 		}else if (name.trim().equals("status_code")){
                 inStatusCode = false;           
@@ -71,7 +73,7 @@ public class AddInstantQueueHandler extends QueueHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if (inETag) {
 			eTag = chars;
-			NetFlix.instantQueue.setETag(eTag);
+			queue.seteTag(eTag);
 		} else if (inStatusCode) {
 			statusCode = Integer.valueOf(chars);
 			Log.d("AddInstantHandler","statusCode:" + chars);

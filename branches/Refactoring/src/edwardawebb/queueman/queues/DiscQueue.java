@@ -8,9 +8,9 @@ import edwardawebb.queueman.classes.User;
 import edwardawebb.queueman.handlers.DiscQueueHandler;
 import edwardawebb.queueman.handlers.QueueHandler;
 
-public class DIscQueue extends MutableQueue{
+public class DiscQueue extends MutableQueue{
 
-	public DIscQueue(Netflix netflix) {
+	public DiscQueue(Netflix netflix) {
 		super(netflix);
 		// TODO Auto-generated constructor stub
 	}
@@ -18,7 +18,7 @@ public class DIscQueue extends MutableQueue{
 	@Override
 	protected QueueHandler getQueueHandler() {
 		// TODO Auto-generated method stub
-		return new DiscQueueHandler();
+		return new DiscQueueHandler(this);
 	}
 
 	@Override
@@ -27,5 +27,7 @@ public class DIscQueue extends MutableQueue{
 		return new URL("http://api.Netflix.com/users/" + user.getUserId()
 				+ "/queues/disc/available" + expanders);
 	}
+
+
 }
 

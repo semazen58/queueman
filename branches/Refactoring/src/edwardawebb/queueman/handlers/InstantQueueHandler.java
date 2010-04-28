@@ -71,7 +71,7 @@ public class InstantQueueHandler extends QueueHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
-			queue.setETag(eTag);
+			queue.seteTag(eTag);
 		}
 	}
 
