@@ -21,7 +21,7 @@ public class InstantQueue extends MutableQueue{
 	@Override
 	protected QueueHandler getQueueHandler() {
 		// TODO Auto-generated method stub
-		return new InstantQueueHandler();
+		return new InstantQueueHandler(this);
 	}
 
 

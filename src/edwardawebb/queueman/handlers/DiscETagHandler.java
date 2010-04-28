@@ -22,7 +22,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.queues.DiscQueue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -33,7 +33,11 @@ public class DiscETagHandler extends DefaultHandler {
 	//temp variables
 	private String eTag;
 	protected int numResults = 0;
+	private DiscQueue queue;
 
+	public DiscETagHandler(DiscQueue queue){
+		this.queue=queue;
+	}
 	
 	
 		
@@ -61,11 +65,11 @@ public class DiscETagHandler extends DefaultHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
-			NetFlix.discQueue.setETag(eTag);
+			queue.seteTag(eTag);
 			//throw new SAXException("ETag Updated");
 		}else if (inNumResults) {
 			numResults = Integer.valueOf(chars);
-			NetFlix.discQueue.setTotalTitles(numResults);
+			queue.setTotalTitles(numResults);
 		} 
 	}
 

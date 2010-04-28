@@ -20,7 +20,7 @@
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.queues.DiscQueue;
 
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
@@ -32,10 +32,13 @@ public class AddDiscQueueHandler extends QueueHandler {
 	//
 	private String eTag;
 
+	private DiscQueue queue;
 
 
-	public AddDiscQueueHandler() {
+
+	public AddDiscQueueHandler(DiscQueue queue) {
 		super.itemElementName = "queue_item";
+		this.queue=queue;
 
 	}
 
@@ -58,7 +61,7 @@ public class AddDiscQueueHandler extends QueueHandler {
 		}else if(name.trim().equals("queue_item")){			
 			if(super.statusCode == 201){
 				
-				NetFlix.discQueue.add(super.position,super.tempMovie);
+				queue.add(super.position,super.tempMovie);
 			}
 		}
 	}
@@ -68,7 +71,7 @@ public class AddDiscQueueHandler extends QueueHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if (inETag) {
 			eTag = chars;
-			if(eTag != null && !eTag.equals("")) NetFlix.discQueue.setETag(eTag);
+			if(eTag != null && !eTag.equals("")) queue.seteTag(eTag);
 		}
 
 	}

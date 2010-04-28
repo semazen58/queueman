@@ -22,6 +22,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import edwardawebb.queueman.queues.InstantQueue;
 import edwardawebb.queueman.queues.Queue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
@@ -31,10 +32,10 @@ public class InstantETagHandler extends DefaultHandler {
 	private boolean inETag=false;
 	//temp variables
 	private String eTag;
-	private Queue queue;
+	private InstantQueue queue;
 
 	
-	public InstantETagHandler(Queue queue){
+	public InstantETagHandler(InstantQueue queue){
 		this.queue=queue;
 	}
 		
@@ -58,7 +59,7 @@ public class InstantETagHandler extends DefaultHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
-			queue.setETag(eTag);
+			queue.seteTag(eTag);
 		}
 	}
 

@@ -6,7 +6,6 @@ import java.util.List;
 
 import android.util.Log;
 import edwardawebb.queueman.classes.Disc;
-import edwardawebb.queueman.classes.NetFlixQueue;
 import edwardawebb.queueman.classes.Netflix;
 
 public abstract class BrowsableQueue extends Queue{

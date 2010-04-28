@@ -22,6 +22,9 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import edwardawebb.queueman.classes.NetFlixQueue;
+import edwardawebb.queueman.queues.DiscQueue;
+import edwardawebb.queueman.queues.HomeQueue;
+import edwardawebb.queueman.queues.MutableQueue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -31,14 +34,14 @@ public class DiscQueueHandler extends QueueHandler {
 	private boolean inETag=false;
 	//temp variables
 	private String eTag;
-	private DiscQueue queue;
+	private MutableQueue queue;
 
 	
 	
 	
-	public DiscQueueHandler(DiscQueue queue) {
+	public DiscQueueHandler(DiscQueue homeQueue) {
 		super.itemElementName="queue_item";
-		this.queue = queue;
+		this.queue = homeQueue;
 	}
 
 	
@@ -75,7 +78,7 @@ public class DiscQueueHandler extends QueueHandler {
 		String chars = (new String(ch).substring(start, start + length));
 		if(inETag){
 			eTag=chars;
-			queue.setETag(eTag);
+			queue.seteTag(eTag);
 		}
 	}
 
