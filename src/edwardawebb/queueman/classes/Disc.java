@@ -19,11 +19,30 @@
  * 
  */
 package edwardawebb.queueman.classes;
-import java.util.*;
-
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+
+import edwardawebb.queueman.handlers.QueueHandler;
 
 
 
@@ -77,6 +96,12 @@ public class Disc implements Serializable {
 
 	protected boolean hasInstant;
 
+	
+	public static final String NF_RATING_NO_INTEREST = "not_interested";
+	
+	
+	
+	
 	public NetflixResponse rateTitle(){
 		return null;
 		// TODO add implementation and return statement
@@ -316,4 +341,115 @@ public class Disc implements Serializable {
 			return "?";
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Post a rating to specificed title
+	 * @param modifiedDisc
+	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
+	 */
+	public NetflixResponse setRating(Disc modifiedDisc) {
+		
+		
+		NetflixResponse  nfResponse= new NetflixResponse(900);
+		InputStream xml = null;
+		try {
+
+			// Construct data
+			/*
+			 * Log.d("NetFlix", "title_ref=" + URLEncoder.encode(disc.getId(),
+			 * "UTF-8")); Log.d("NetFlix", "etag=" +
+			 * URLEncoder.encode(NetFlixQueue.getETag(), "UTF-8"));
+			 */
+			URL url = new URL("http://api.netflix.com/users/" + Netflix.getInstance().getUser().getUserId()
+					+ "/ratings/title/actual");
+			
+			
+			// Log.d("NetFlix", "@URL: " + url.toString())
+			HttpClient httpclient = new DefaultHttpClient();
+			// Your URL
+			HttpPost httppost = new HttpPost(url.toString());
+			
+			//pass 1-5 for rating or "not interested" String
+			String rating = (modifiedDisc.getUserRating() == 0) ? NF_RATING_NO_INTEREST : String.valueOf(modifiedDisc.getUserRating().intValue()); 
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			// Your DATA
+			nameValuePairs.add(new BasicNameValuePair("title_ref", modifiedDisc.getId()));
+			nameValuePairs.add(new BasicNameValuePair("rating", rating));
+
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			Netflix.getInstance().sign(httppost);
+
+			HttpResponse response;
+			response = httpclient.execute(httppost);
+			nfResponse.setHttpCode(response.getStatusLine().getStatusCode());
+			
+			xml = response.getEntity().getContent();
+	
+			
+			
+			
+			/* Log.d("NetFlix", "" +
+			 response.getEntity().getContentType().toString()); BufferedReader
+			 in = new BufferedReader(new InputStreamReader(xml)); String
+			 linein = null; while ((linein = in.readLine()) != null) {
+			 Log.d("NetFlix", "SetRating: " + linein); }*/
+			 
+			// Log.i("NetFlix", "Parsing XML Response")
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser sp;
+
+			sp = spf.newSAXParser();
+
+			XMLReader xr = sp.getXMLReader();
+			QueueHandler myHandler =  new QueueHandler();
+			
+			xr.setContentHandler(myHandler);
+			xr.parse(new InputSource(xml));
+
+			nfResponse.setNetflixCode(myHandler.getStatusCode());
+			nfResponse.setNetflixSubCode(myHandler.getSubCode(0));
+			nfResponse.setNetflixMessage(myHandler.getMessage());
+			
+			if(nfResponse.getHttpCode() == 201 || nfResponse.getNetflixCode() == 422){
+				setUserRating(modifiedDisc.getUserRating());
+			
+			}
+			
+			
+
+		} catch (IOException e) {	
+			
+			
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return nfResponse;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

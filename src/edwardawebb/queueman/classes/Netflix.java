@@ -86,15 +86,12 @@ import edwardawebb.queueman.handlers.UserHandler;
 public class Netflix{
 	protected User user;
 
-	protected String mashupConsumerKey;
-
-	protected String mashupConsumerSecret;
 
 	private OAuthConsumer oauthConsumer;
 
 	protected DefaultOAuthProvider oauthProvider;
 
-	private final static Netflix NETFLIX = new Netflix(); // the one instance, yes, a singleton
+	private final static Netflix NETFLIX = new Netflix(ApiKeys.getConsumerKey(), ApiKeys.getConsumerSecret()); // the one instance, yes, a singleton
 	
 	
 	private int testLoop=0;
@@ -128,9 +125,6 @@ public class Netflix{
 	private static OAuthProvider oaprovider;
 
 	
-	private static String resultStatus;
-	public String lastResponseMessage = "none";
-	public String lastNFResponseMessage = "";
 	
 	//For some methods they will retry themselves, got a better way?
 	private int retries = 0;
@@ -151,9 +145,9 @@ public class Netflix{
 	 */
 	
 	//@ TODO Use setters for stage.
-	private Netflix(){
-		Netflix.oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
-				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
+	private Netflix(String consumerKey,String consumerSecret ){
+		Netflix.oaconsumer = new DefaultOAuthConsumer(consumerKey,
+				consumerSecret, SignatureMethod.HMAC_SHA1);
 		Netflix.oaprovider = new DefaultOAuthProvider(oaconsumer,
 				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
 				AUTHORIZE_WEBSITE_URL);	
@@ -218,16 +212,16 @@ public class Netflix{
 					+ result.getQueryParameter("oauth_token_secret"));
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthNotAuthorizedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthCommunicationException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		}
 		return result;
 	}
@@ -253,16 +247,16 @@ public class Netflix{
 			
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthNotAuthorizedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthCommunicationException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		}
 		return result;
 	}
@@ -324,15 +318,15 @@ public class Netflix{
 
 		} catch (IOException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "IO Error connecting to Netflix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "Unable to Sign request - token invalid")
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "Expectation failed")
 		}
 		times[3]=System.currentTimeMillis();
@@ -389,21 +383,21 @@ public class Netflix{
 
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (SAXException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (IOException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "IO Error connecting to Netflix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "Unable to Sign request - token invalid")
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "Expectation failed")
 		}*/
 		return result;
@@ -475,21 +469,21 @@ public class Netflix{
 	
 			} catch (ParserConfigurationException e) {
 				
-				reportError(e, lastResponseMessage);
+				reportError(e);
 			} catch (SAXException e) {
 				
-				reportError(e, lastResponseMessage);
+				reportError(e);
 			} catch (IOException e) {
 				
-				reportError(e, lastResponseMessage);
+				reportError(e);
 				// Log.i("Netflix", "IO Error connecting to Netflix queue")
 			} catch (OAuthMessageSignerException e) {
 				
-				reportError(e, lastResponseMessage);
+				reportError(e);
 				// Log.i("Netflix", "Unable to Sign request - token invalid")
 			} catch (OAuthExpectationFailedException e) {
 				
-				reportError(e, lastResponseMessage);
+				reportError(e);
 				// Log.i("Netflix", "Expectation failed")
 			}
 
@@ -629,20 +623,20 @@ public class Netflix{
 			
 		} catch (IOException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "IO Error connecting to Netflix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (SAXException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		}finally{
 			if(result == 502){
 				HashMap<String, String> parameters = new HashMap<String, String>();
@@ -764,20 +758,20 @@ public class Netflix{
 			}
 		} catch (IOException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "IO Error connecting to Netflix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (SAXException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (ParserConfigurationException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		}
 		return result;
 	}
@@ -831,17 +825,17 @@ public class Netflix{
 			}
 
 		} catch (OAuthMessageSignerException e) {
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthExpectationFailedException e) {
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (ClientProtocolException e) {
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (IOException e) {
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (SAXException e) {
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (ParserConfigurationException e) {
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		}
 
 		
@@ -979,20 +973,20 @@ public class Netflix{
 
 		} catch (IOException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 			// Log.i("Netflix", "IO Error connecting to Netflix queue")
 		} catch (OAuthMessageSignerException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (OAuthExpectationFailedException e) {
 			
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} catch (SAXException e) {
 			// TODO Auto-generated catch block
-			reportError(e, lastResponseMessage);
+			reportError(e);
 		} 
 		return result;
 	}
@@ -1002,30 +996,16 @@ public class Netflix{
 	 * report exceptions using Flurry
 	 * @param e
 	 */
-	protected static void reportError(Exception e, String responseLine){
+	protected static void reportError(Exception e){
 		//FlurryAgent.onError(String errorId, String message, String errorClass)
-		FlurryAgent.onError("Netflix Exception", e.getLocalizedMessage() +  "|| But check this, I'm also looking at a " + responseLine + " here for an HTTP status. I'm just sayin", e.toString());
+		FlurryAgent.onError("Netflix Exception", e.getLocalizedMessage() , e.toString());
 	}
 	
 
 
 	public boolean isConnected(){
 		boolean result =false;
-		try{
-			URL url = new URL("http://api.Netflix.com/");
-			HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
-			urlc.connect();
-			Log.d("QM","isCOnnected: " + urlc.getResponseCode() );
-			if (urlc.getResponseCode() == 200 || urlc.getResponseCode()==403) {
-				result = true;
-			}
-			//urlc.disconnect();
-		} catch (MalformedURLException e1) {
-		        e1.printStackTrace();
-		} catch (IOException e) {
-		        reportError(e, lastResponseMessage);
-		}
-		return result;
+		return true;
 	}
 
 	/**

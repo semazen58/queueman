@@ -21,8 +21,8 @@
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import edwardawebb.queueman.classes.NetFlixQueue;
 import edwardawebb.queueman.queues.MutableQueue;
+import edwardawebb.queueman.queues.Queue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -59,7 +59,7 @@ public class InstantQueueHandler extends QueueHandler {
 		if (name.trim().equals("etag")){
 			inETag = false;			
 		}else if(name.trim().equals("queue_item")){	
-			super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_INSTANT);
+			super.tempMovie.setQueueType(Queue.QUEUE_TYPE_INSTANT);
 			queue.add(super.tempMovie);
 		}
 	}

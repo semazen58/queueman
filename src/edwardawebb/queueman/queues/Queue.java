@@ -64,13 +64,13 @@ public abstract class Queue implements QueueInterface{
 	protected String id;
 
 	
-	protected LinkedList<Disc> titles;
+	protected LinkedList<Disc> titles = new LinkedList();
 
-	protected int maxTitles=-1;// aka max results
+	protected int maxTitles=10;// aka max results, results per page
 
-	protected int startTitle=-1;
+	protected int startTitle=0;
 
-	protected int pageCount=-1; 
+	protected int pageCount=1; //what page we on
 	
 	protected int totalResults=-1;
 
@@ -104,6 +104,7 @@ public abstract class Queue implements QueueInterface{
 
 	public static final int QUEUE_TYPE_DISC = 1;
 	public static final int QUEUE_TYPE_INSTANT = 2;
+	public static final int QUEUE_TYPE_HOME = 3;
 	
 	
 	
@@ -119,6 +120,12 @@ public abstract class Queue implements QueueInterface{
 		
 	}
 	
+	public void setStartIndex(int start){
+		this.startTitle=start;
+	}
+	public int getStartIndex(){
+		return this.startTitle;
+	}
 	
 	
 	public List<Disc> retreiveQueue(){
@@ -267,92 +274,7 @@ public abstract class Queue implements QueueInterface{
 	}
 
 
-	/**
-	 * Post a rating to specificed title
-	 * @param modifiedDisc
-	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
-	 */
-	public int setRating(Disc modifiedDisc) {
-		
-		resultCode = NF_ERROR_BAD_DEFAULT;
-		
-		InputStream xml = null;
-		try {
 
-			// Construct data
-			/*
-			 * Log.d("NetFlix", "title_ref=" + URLEncoder.encode(disc.getId(),
-			 * "UTF-8")); Log.d("NetFlix", "etag=" +
-			 * URLEncoder.encode(NetFlixQueue.getETag(), "UTF-8"));
-			 */
-			URL url = getRatingUrl(netflix.getUser());
-
-			// Log.d("NetFlix", "@URL: " + url.toString())
-			HttpClient httpclient = new DefaultHttpClient();
-			// Your URL
-			HttpPost httppost = new HttpPost(url.toString());
-			
-			//pass 1-5 for rating or "not interested" String
-			String rating = (modifiedDisc.getUserRating() == 0) ? NF_RATING_NO_INTEREST : String.valueOf(modifiedDisc.getUserRating().intValue()); 
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			// Your DATA
-			nameValuePairs.add(new BasicNameValuePair("title_ref", modifiedDisc.getId()));
-			nameValuePairs.add(new BasicNameValuePair("rating", rating));
-
-			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-			netflix.sign(httppost);
-
-			HttpResponse response;
-			response = httpclient.execute(httppost);
-
-			xml = response.getEntity().getContent();
-			resultCode = response.getStatusLine().getStatusCode();
-			
-			
-			
-			/* Log.d("NetFlix", "" +
-			 response.getEntity().getContentType().toString()); BufferedReader
-			 in = new BufferedReader(new InputStreamReader(xml)); String
-			 linein = null; while ((linein = in.readLine()) != null) {
-			 Log.d("NetFlix", "SetRating: " + linein); }*/
-			 
-			// Log.i("NetFlix", "Parsing XML Response")
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp;
-
-			sp = spf.newSAXParser();
-
-			XMLReader xr = sp.getXMLReader();
-			QueueHandler myHandler =  new QueueHandler();
-			
-			xr.setContentHandler(myHandler);
-			xr.parse(new InputSource(xml));
-
-			netflixResultCode =myHandler.getStatusCode();
-			netflixSubCode =myHandler.getSubCode(0);
-			netflixMessage =myHandler.getMessage();
-			
-			if(resultCode == 201 || netflixResultCode == 422){
-				((Disc)titles.get(titles.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
-			
-			}
-			
-			
-
-		} catch (IOException e) {	
-			
-			reportError(e);
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			reportError(e);
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			reportError(e);
-		} 
-		return resultCode;
-	}
-	
 	
 	
 	
@@ -446,16 +368,7 @@ public abstract class Queue implements QueueInterface{
 	 */
 	protected abstract URL getQueueUrl(User user) throws MalformedURLException;
 	
-	/**
-	 * all resources use the same rtarting url for now
-	 * @param user
-	 * @return
-	 * @throws MalformedURLException
-	 */
-	protected URL getRatingUrl(User user)throws MalformedURLException{
-		return new URL("http://api.netflix.com/users/" + user.getUserId()
-				+ "/ratings/title/actual");
-	}
+
 
 
 	/**
@@ -523,7 +436,7 @@ public abstract class Queue implements QueueInterface{
 	}
 
 	public void purgeQueue(){
-		titles.clear();
+		if(titles!=null)titles.clear();
 		this.isCachedLocally=false;
 		this.pageCount=-1;
 		this.totalResults=-1;

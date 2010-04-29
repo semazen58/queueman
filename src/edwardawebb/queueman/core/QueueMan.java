@@ -53,6 +53,7 @@ import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.Netflix;
+import edwardawebb.queueman.queues.BrowsableQueue;
 import edwardawebb.queueman.queues.DiscQueue;
 import edwardawebb.queueman.queues.HomeQueue;
 import edwardawebb.queueman.queues.InstantQueue;
@@ -194,7 +195,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	private InstantQueue instantQueue = new InstantQueue(netflix);
 	private HomeQueue homeQueue = new HomeQueue(netflix);
 	private RecommendedQueue recommendedQueue = new RecommendedQueue(netflix);
-	
+	/** set and changed by {@link #onTabChanged(String)} **/
+	private Queue currentQueue; //just a reference to the visible queue (one of above)
 
 	
 
@@ -261,7 +263,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					netflix.setExistingUser(userId, accessToken, accessTokenSecret);
 					//load user's preferred tab from preferences
 					mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
-					if(Integer.valueOf(defaultTab) == TAB_DISC) loadQueue() ;// this is missed by "onTabChange" since it is Disc -> Disc, and not really a change
+					if(Integer.valueOf(defaultTab) == TAB_DISC) loadQueue(discQueue) ;// this is missed by "onTabChange" since it is Disc -> Disc, and not really a change
 					//retrieve and display current tab's queue
 					//loadQueue();
 				}else{
@@ -345,7 +347,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				sessionStatus=SESSION_TITLE_ADDED;
 				disc = (Disc) data.getSerializableExtra("Disc");
 				disc.setQueueType(data.getIntExtra(ACTION_KEY, (int) 0));
-				new AddTitleTask().execute(disc);
+				//@ TODO new AddTitleTask().execute(disc);
 			}else{
 				//user cancelled search, just let it slide
 			}
@@ -360,14 +362,14 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					recommendedQueue.delete(disc);
 					redrawQueue();
 				}
-				new AddTitleTask().execute(disc);
+				//@ TODO new AddTitleTask().execute(disc);
 			}
 			break;
 		case EDIT_PREFS:
 			loadSettings();
 			//because rec. has paging based on max dl, we need to get up to snuff with settings 
 			//if # did not change Netflix class will use same q
-			if(mTabHost.getCurrentTab() == TAB_RECOMMEND) loadRecommendations();
+			if(mTabHost.getCurrentTab() == TAB_RECOMMEND) loadQueue(recommendedQueue);
 			
 		default:
 		}
@@ -523,7 +525,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			
 		}
 		final int menuItemId = item.getItemId();
-		handleDiscUpdate(menuItemId, disc, lastPosition);
+		//@ TODO handleDiscUpdate(menuItemId, disc, lastPosition);
 
 		return true;
 
@@ -551,25 +553,25 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			
 			if (mTabHost.getCurrentTab() == TAB_INSTANT) {
 				if (canWatchInstant) {
-					queueType = NetFlixQueue.QUEUE_TYPE_INSTANT;
-					loadQueue();
+					currentQueue=instantQueue;
+					loadQueue(instantQueue);
 					//((ViewStub) findViewById(R.id.stub_paginate)).setVisibility(View.GONE);
 				} else {
 					showCustomDialog(
 							"Restricted",
 							"According to Netflix this user does not have \"Watch Instantly\" rights\nPress 'Back' to return to your Disc Queue");
 					mTabHost.setCurrentTab(TAB_DISC);
+					currentQueue=discQueue;
 					
 				}
 			} else if (mTabHost.getCurrentTab() == TAB_DISC) {
-				  = NetFlixQueue.QUEUE_TYPE_DISC;
-				loadQueue();
+				currentQueue=discQueue;
+				  loadQueue(discQueue);
 				//((ViewStub) findViewById(R.id.stub_paginate)).setVisibility(View.GONE);
 
 			} else if (mTabHost.getCurrentTab() == TAB_RECOMMEND) {
-				
-				queueType = NetFlixQueue.QUEUE_TYPE_RECOMMEND;
-				loadRecommendations();
+				currentQueue=recommendedQueue;
+				loadQueue(recommendedQueue);
 			}
 		}
 	}
@@ -603,13 +605,15 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		}else if(v == btnFilterInstant){
 			//only thing we do here is filter
 			btnFilterInstant.setEnabled(false);
-			netflix.filterOnInstant();
+			
+			((BrowsableQueue)currentQueue).filterInstantOnly();
 			redrawQueue();
 			
 		}else if (v == btnNextPage){
 			//increment starindeex, so they can see next set
-			recommendStart+=Integer.valueOf(getDownloadCount());
-			loadRecommendations();
+			
+			currentQueue.setStartIndex(currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount()));
+			loadQueue(currentQueue);
 			//unlock filter button for another round
 			btnFilterInstant.setEnabled(true);
 		}
@@ -618,7 +622,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	}
 
 
-	protected void handleDiscUpdate(final int menuItemId, final Disc disc,
+	/*protected void handleDiscUpdate(final int menuItemId, final Disc disc,
 			final int lastPosition) {
 		
 		int mip = 0;
@@ -642,7 +646,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			return;
 		}
 		switch (menuItemId) {
-					/*case MOVE_ID:
+					case MOVE_ID:
 						// call move
 						// notify("Dev note","I cant help you with "+l.getItemAtPosition(position));
 						Intent intent = new Intent(QueueMan.this,
@@ -655,7 +659,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 						intent.putExtras(b);
 						startActivity(intent);
 			
-							break;*/
+							break;
 			case MOVE_TOP_ID:
 				newPosition=1;
 				break;
@@ -690,21 +694,21 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			parameters.put("Queue Type", NetFlixQueue.queueTypeText[queueType]);
 			FlurryAgent.onEvent("handleDiscUpdate-move", parameters);
 		}
-	}
+	}*/
 	
 	/***
 	 * DiscMoveTask class spawns a BG thread to handle the movement or current discs in instant and disc q
 	 * @author eddie
 	 *
 	 */
-	 private class DiscMoveTask extends AsyncTask<Object, Integer, Integer> {
+	/* private class DiscMoveTask extends AsyncTask<Object, Integer, Integer> {
 	     protected void onPreExecute(){
 	    	 showCustomDialog("Moving Title", "Attempting to reorder queue...");
 	     }
 		 
-	     /*
+	     
 	      * object array ( Disc, position, newPosition, queueType )
-	      */
+	      
 		 protected Integer doInBackground(Object... oArr) {
 	    	 int result=36;
 	    	
@@ -757,20 +761,20 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	     }
 
 	 }
-
+*/
 		/***
 		 * DiscDeleteTask class spawns a BG thread to handle the movement or current discs in instant and disc q
 		 * @author eddie
 		 *
 		 */
-		 private class DiscDeleteTask extends AsyncTask<Disc, Integer, Integer> {
+		/* private class DiscDeleteTask extends AsyncTask<Disc, Integer, Integer> {
 		     protected void onPreExecute(){
 	    	 showCustomDialog("Removing Title", "I like to purge-it, purge-it.\nI like to purge-it, purge-it.\n  Purge-it!!");
 		     }
 			 
-		     /*
+		     
 		      * object array ( Disc, position, newPosition, queueType )
-		      */
+		      
 			 protected Integer doInBackground(Disc... oArr) {
 		    	 int result=901;
 		    	
@@ -807,7 +811,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		     }
 
 		 }
-
+*/
 
 	/**
 	 * helpers
@@ -874,7 +878,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		showCustomDialog(R.string.pass_to_netflix_title, R.string.pass_to_netflix_text);
 
 		//we need an instance of netflix to manage this authorization
-		netflix = new NetFlix();
+		netflix = Netflix.getInstance();
 		Log.d("QueueMan", "Netflix Instantiated:" + netflix.toString());
 		// now spawn worker class to generate auth url and start browser
 		new RequestTokenTask().execute();
@@ -972,7 +976,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		// make changes. All objects are from android.context.Context
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 		if (settings.contains(RT_KEY)){
-			netflix = new NetFlix(settings.getString(RT_KEY, ""),settings.getString(RTS_KEY, ""));
+			netflix = Netflix.getInstance();
+			 netflix.setRequestTokens(settings.getString(RT_KEY, ""),settings.getString(RTS_KEY, ""));
 		}else{
 			showCustomDialog("Error  - Please Report", "I could not load your Rquest Token - please close out and try to link with Netflix again");
 		}
@@ -1037,7 +1042,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			case 201:
 				// got token ! hooray, load q
 				sessionStatus=SESSION_ACTIVE;
-				loadQueue();
+				loadQueue(discQueue);
 				break;
 			default:
 				// error getting token, booo
@@ -1096,7 +1101,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * based on current tab. does not recieve any results, but instead matching
 	 * queue is set within netflix class.
 	 */
-	protected void loadQueue() {
+	protected void loadQueue(Queue queue) {
 
 		Log.d("QueueMan","loadQueue()>>>");
 		HashMap<String, String> parameters = new HashMap<String, String>();
@@ -1124,7 +1129,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		}
 		showCustomDialog("Retrieving Queue", message);
 				// now work in background, and redraw after if successful
-		new LoadQueueTask().execute();
+		new LoadQueueTask().execute(queue);
 
 		Log.d("QueueMan","loadQueue()<<<");
 	}
@@ -1134,7 +1139,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * @author eddie
 	 *
 	 */
-	 private class LoadQueueTask extends AsyncTask<Queue, Integer, > {
+	 private class LoadQueueTask extends AsyncTask<Queue, Integer, Queue > {
 	     
 		 /*protected void onPreExecute(){
 	 		Log.d("QueueMan","LoadQueueTask()");
@@ -1144,10 +1149,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 protected Queue doInBackground(Queue... arg1) {
 			 Log.d("QueueMan","LoadQueueTask() | doInBackground()>>>");
 		    //default error, not connected 901
+			Queue queue = (Queue) arg1[0];
 			if (isOnline()) {
 					// get queue will connect to neflix and resave the currentQ
 				// vairable
-				Queue queue = (Queue) arg1[0];
 				queue.retreiveQueue();
 							
 			} else {
@@ -1164,42 +1169,66 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	        //dont have indcators yet
 	     }
 
-	     protected void onPostExecute(Queue queue) {
+	     protected void onPostExecute(final Queue queue) {
 	    	 Log.d("QueueMan","LoadQueueTask() | PostExecute");
 		     dialog.dismiss();
 		     switch (queue.getResultCode()) {
-		     	case 36:
-					showCustomDialog("Error", "Hmm... It seems we can;t connect to NetFlix. Please try again when you have better service");
-					break;
 				case 200:
 				case 201:
-					//success load - redraw queue
+				case Netflix.NF_ERROR_NO_MORE:
+				case Netflix.SUCCESS_FROM_CACHE:	
 					redrawQueue();
-					break;
-				case Netflix.SUCCESS_FROM_CACHE:
-					//do nothing..?
-					redrawQueue();
-					break;
-				case Netflix.NF_ERROR_BAD_DEFAULT:
+					//show navigation panel (instant filter, next)
+					
+		            if (navigationPanel == null) {
+		            	//navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
+		            	navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
+						//provide some references
+		            	btnFilterInstant = (Button) navigationPanel.findViewById(R.id.filter_instant);
+						btnNextPage = (Button) navigationPanel.findViewById(R.id.next_page);
+						//register for clika
+						btnFilterInstant.setOnClickListener(QueueMan.this);
+						 //the btnNextPage has two uses, so it is set depenind on end of results switch below              
+		            } 
+		            //although inflate makes view visible, on subsequent trips will need to show it.
+		            navigationPanel.setVisibility(View.VISIBLE);
+					
+					//if this is the end of the line, prevent them asking fo more
+					if(recommendDownloadCount.equals("All") || Integer.valueOf(recommendStart) + Integer.valueOf(recommendDownloadCount) >= recommendedQueue.getTotalTitles()){
+						Toast.makeText(QueueMan.this, "That's it! only " + recommendedQueue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
+						Toast.makeText(QueueMan.this, "You can use Refresh from the menu to start over", Toast.LENGTH_LONG).show();
+						btnNextPage.setText("Start Over");
+						
+						// we al so make the "next XX' a "start over" button instead
+						btnNextPage.setOnClickListener(new View.OnClickListener() {
+			                    public void onClick(View v) {
+			                        refreshCurrentQueue(queue);
+			                    }
+			                });
 
-					FlurryAgent.onError("ER:900",
-							"Failed to Retrieve Queue - "
-							+ netflix.lastResponseMessage,
-							"QueueMan");
-						showCustomDialog("Error", "" + netflix.lastNFResponseMessage);
-					break;
+					}else{
+						//format next to "grab next XX titles"
+					String resultsTextFormat = getBaseContext().getResources().getString(R.string.nav_next_page);
+					String resultsText = String.format(resultsTextFormat,Integer.valueOf(getDownloadCount()));
+					btnNextPage.setText(resultsText);
+					btnNextPage.setOnClickListener(QueueMan.this);	
+					}
+					
+					
+					 break;				 
+					
 				default:
-					//fail - get details
+					Toast.makeText(QueueMan.this, "Sorry, we had an error, please refresh", Toast.LENGTH_LONG).show();
 					boolean hasAccess = (netflix.getUser().getAccessToken()!=null);
 					boolean hasID = (netflix.getUser().getUserId()!=null);
-					FlurryAgent.onError("ER:72",
-						"Failed to Retrieve Queue - "
-						+ netflix.lastResponseMessage
-						+ "Has Access: "+ hasAccess
-						+ "Has ID: "+ hasID,
-						"QueueMan");
-					showCustomDialog("Error  - Please Report", "Although we are connected, I was unable to load your queue. Perhaps an issue with Netflix API.\n If this error continues, please report (see \"About\" for details)");
-	        }
+					FlurryAgent.onError("ER:91",
+							"Failed to Retrieve Recommendations - "
+									+ queue.getNetflixCode()
+									+ "Has Access: "+ hasAccess
+									+ "Has ID: "+ hasID,
+							"QueueMan");
+				}	
+	     	
 		     Log.d("QueueMan","LoadQueueTask() | postExecute()<<<");
 		    	
 	     }
@@ -1287,7 +1316,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * @author eddie
 	 *
 	 */
-	 private class AddTitleTask extends AsyncTask<Disc, Integer, Integer> {
+	 /*private class AddTitleTask extends AsyncTask<Disc, Integer, Integer> {
 	     protected void onPreExecute(){
 	    	 Toast.makeText(QueueMan.this, "Just a sec as I try to add this title to your queue",Toast.LENGTH_LONG).show();
 	    	}
@@ -1368,118 +1397,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	 }
 
-	
-
-	protected void loadRecommendations(){
-		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put("Queue Type:", "Recommendations");
-		FlurryAgent.onEvent("loadRecommendations", parameters);
-		// show custom dialog to let them know
-		dialog = new Dialog(this);
-		dialog.setContentView(R.layout.custom_dialog);
-		dialog.setTitle("Loading Recommendations");
-		TextView text = (TextView) dialog.findViewById(R.id.text);
-		String message = "\nLet's see what Netflix thinks you'll like...";
-		message += "\nRetrieving " + getDownloadCount() + " recommendations - you may adjust this in Settings";
-		
-		text.setText(message);
-		ImageView image = (ImageView) dialog.findViewById(R.id.image);
-		image.setImageResource(R.drawable.red_icon);
-		// show message
-		dialog.show();
-		new DownloadRecommendations().execute();
-	}
-	/***
-	 * Manage ASync Tasks the Android way
-	 * @author eddie
-	 *
-	 */
-	 private class DownloadRecommendations extends AsyncTask<Void, Integer, Integer> {
-	     protected Integer doInBackground(Void... arg0) {
-	         int result = 36;
-	       
-			if (isOnline()) {
-				// get queue will connect to neflix and resave the currentQ
-				// vairable
-				result = netflix.getRecommendations(recommendStart,getDownloadCount());
-					
-				
-			} else {
-				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
-				result=901;
-			} 	
-	         
-	         return result;
-	     }
-
-	     protected void onProgressUpdate(Integer... progress) {
-	        //dont have indcators yet
-	     }
-
-	     protected void onPostExecute(Integer result) {
-	       dialog.dismiss();
-	       switch (result) {
-			case 200:
-			case 201:
-			case NetFlix.NF_ERROR_NO_MORE:
-					
-				redrawQueue();
-				//show navigation panel (instant filter, next)
-				
-	            if (navigationPanel == null) {
-	            	//navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
-	            	navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
-					//provide some references
-	            	btnFilterInstant = (Button) navigationPanel.findViewById(R.id.filter_instant);
-					btnNextPage = (Button) navigationPanel.findViewById(R.id.next_page);
-					//register for clika
-					btnFilterInstant.setOnClickListener(QueueMan.this);
-					 //the btnNextPage has two uses, so it is set depenind on end of results switch below              
-	            } 
-	            //although inflate makes view visible, on subsequent trips will need to show it.
-	            navigationPanel.setVisibility(View.VISIBLE);
-				
-				//if this is the end of the line, prevent them asking fo more
-				if(recommendDownloadCount.equals("All") || Integer.valueOf(recommendStart) + Integer.valueOf(recommendDownloadCount) >= NetFlix.recomemendedQueue.getTotalTitles()){
-					Toast.makeText(QueueMan.this, "That's it! only " + NetFlix.recomemendedQueue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
-					Toast.makeText(QueueMan.this, "You can use Refresh from the menu to start over", Toast.LENGTH_LONG).show();
-					btnNextPage.setText("Start Over");
-					
-					// we al so make the "next XX' a "start over" button instead
-					btnNextPage.setOnClickListener(new View.OnClickListener() {
-		                    public void onClick(View v) {
-		                        refreshCurrentQueue();
-		                    }
-		                });
-
-				}else{
-					//format next to "grab next XX titles"
-				String resultsTextFormat = getBaseContext().getResources().getString(R.string.nav_next_page);
-				String resultsText = String.format(resultsTextFormat,Integer.valueOf(getDownloadCount()));
-				btnNextPage.setText(resultsText);
-				btnNextPage.setOnClickListener(QueueMan.this);	
-				}
-				
-				
-				 break;				 
-				
-			default:
-				Toast.makeText(QueueMan.this, "Sorry, we had an error, please refresh", Toast.LENGTH_LONG).show();
-				boolean hasAccess = (netflix.getUser().getAccessToken()!=null);
-				boolean hasID = (netflix.getUser().getUserId()!=null);
-				FlurryAgent.onError("ER:91",
-						"Failed to Retrieve Recommendations - "
-								+ result
-								+ "Has Access: "+ hasAccess
-								+ "Has ID: "+ hasID,
-						"QueueMan");
-			}
-
-	     }
-
-	 }
-
-	 
+	*/
+ 
 
 		protected void loadHomeTitles(){
 			 HashMap<String, String> parameters = new HashMap<String, String>();
@@ -1530,7 +1449,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 						boolean hasID = (QueueMan.netflix.getUser().getUserId()!=null);
 						FlurryAgent.onError("ER:91",
 								"Failed to Retrieve Home titles - "
-										+ QueueMan.netflix.lastResponseMessage
+										//+ QueueMan.netflix.lastResponseMessage
 										+ "Has Access: "+ hasAccess
 										+ "Has ID: "+ hasID,
 								"QueueMan");
@@ -1584,7 +1503,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 */
 	private boolean refreshCurrentQueue(Queue queue) {
 		queue.purgeQueue();
-		loadQueue();		
+		loadQueue(queue);		
 		return true;
 	}
 

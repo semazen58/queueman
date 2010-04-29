@@ -39,7 +39,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.classes.Disc;
-import edwardawebb.queueman.classes.NetFlixQueue;
+import edwardawebb.queueman.classes.Netflix;
+import edwardawebb.queueman.queues.SearchQueue;
 
 public class QueueSearch extends Activity {
 
@@ -51,7 +52,7 @@ public class QueueSearch extends Activity {
 
 	Dialog dialog;
 
-	NetFlixQueue results;
+	SearchQueue searchQueue = new SearchQueue(Netflix.getInstance());
 
 	// handler for callbacks to UI (primary) thread
 	final Handler mHandler = new Handler();
@@ -61,7 +62,7 @@ public class QueueSearch extends Activity {
 			dialog.dismiss();
 			searchButton.setEnabled(true);
 			// TODO Auto-generated method stub
-			if (results != null) {
+			if (!searchQueue.isEmpty() ) {
 				redrawResults();
 			} else {
 				// Log.i("QueueSearch","no results")
@@ -73,7 +74,7 @@ public class QueueSearch extends Activity {
 	protected void redrawResults() {
 		resultsList = (ListView) findViewById(R.id.results);
 		resultsList.setAdapter(new ArrayAdapter<Disc>(QueueSearch.this,
-				android.R.layout.simple_list_item_1, results.getDiscs()));
+				android.R.layout.simple_list_item_1, searchQueue.retreiveQueue()));
 		// resultsList.setOnClickListener(new clickr());
 		resultsList.setTextFilterEnabled(true);
 		resultsList.setOnItemClickListener(new clickr());
@@ -142,7 +143,8 @@ public class QueueSearch extends Activity {
 		dialog.show();
 		Thread t = new Thread() {
 			public void run() {
-				results = QueueMan.netflix.getSearchResults(searchTerm.trim());
+				searchQueue.applyKeyword(searchTerm.trim());
+				searchQueue.retreiveQueue();
 				mHandler.post(displayResults);
 
 			}

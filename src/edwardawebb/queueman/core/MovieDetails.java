@@ -42,6 +42,7 @@ import com.flurry.android.FlurryAgent;
 import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.ImageLoader;
 import edwardawebb.queueman.classes.Netflix;
+import edwardawebb.queueman.classes.NetflixResponse;
 import edwardawebb.queueman.queues.Queue;
 
 public class MovieDetails extends Activity implements OnRatingBarChangeListener, OnClickListener {
@@ -348,19 +349,19 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 	}
 
 	
-	 private class SetRatings extends AsyncTask<Disc, Integer, Integer> {
+	 private class SetRatings extends AsyncTask<Disc, Integer, NetflixResponse> {
 
 		@Override
-		protected Integer doInBackground(Disc... modifiedDisc) {
+		protected NetflixResponse doInBackground(Disc... modifiedDisc) {
 			int result;
 
-			result=QueueMan.netflix.setRating(modifiedDisc[0]);
-			// TODO Auto-generated method stub
-			return result;
+			return modifiedDisc[0].setRating(modifiedDisc[0]);
+			
+			
 		}
 		
-		protected void onPostExecute(Integer result){
-			switch(result){
+		protected void onPostExecute(NetflixResponse nfr){
+			switch(nfr.getHttpCode()){
 				case 200:
 				case 201:
 					//successful rating
@@ -371,8 +372,8 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 					rateMe.setText(R.string.rate_button_rerate);
 					break;
 				default:
-					FlurryAgent.onError("SetRatings-Failed", "Error:"+result + " | HTTP: " + QueueMan.netflix.lastResponseMessage + " | " + QueueMan.netflix.lastNFResponseMessage, "QueueMan");
-					Toast.makeText(MovieDetails.this, "Oops: " + QueueMan.netflix.lastResponseMessage, Toast.LENGTH_SHORT).show();
+					//FlurryAgent.onError("SetRatings-Failed", "Error:"+result + " | HTTP: " + QueueMan.netflix.lastResponseMessage + " | " + QueueMan.netflix.lastNFResponseMessage, "QueueMan");
+					//Toast.makeText(MovieDetails.this, "Oops: " + nfr.getNetflixMessage(), Toast.LENGTH_SHORT).show();
 					
 					
 			}
