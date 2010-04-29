@@ -18,6 +18,7 @@
 package edwardawebb.queueman.core;
 
 import java.util.HashMap;
+import java.util.List;
 
 import android.app.Dialog;
 import android.app.TabActivity;
@@ -189,10 +190,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	//see sessionn variables for rec. download count
 	private int currentItemNumber=0;
 	
-	private DiscQueue discQueue;
-	private InstantQueue instantQueue;
-	private HomeQueue homeQueue;
-	private RecommendedQueue recommendedQueue;
+	static DiscQueue discQueue = new DiscQueue(netflix);
+	private InstantQueue instantQueue = new InstantQueue(netflix);
+	private HomeQueue homeQueue = new HomeQueue(netflix);
+	private RecommendedQueue recommendedQueue = new RecommendedQueue(netflix);
 	
 
 	
@@ -446,16 +447,17 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				edwardawebb.queueman.core.MovieDetails.class);
 		Bundle b = new Bundle();
 		
+		// list is already loaded, so we can just call the quick retrieve.
 		try{
 		switch (mTabHost.getCurrentTab()) {
 		case TAB_INSTANT:
-			disc = NetFlix.instantQueue.getDiscs().get(position);
+			disc = instantQueue.retreiveQueue().get(position);
 			break;
 		case TAB_DISC:
-			disc = NetFlix.discQueue.getDiscs().get(position);
+			disc = discQueue.retreiveQueue().get(position);
 			break;
 		case TAB_RECOMMEND:
-			disc = NetFlix.recomemendedQueue.getDiscs().get(position);
+			disc = recommendedQueue.retreiveQueue().get(position);
 			intent.putExtra(QueueMan.ACTION_KEY, QueueMan.ACTION_ADD);
 			break;
 		}
@@ -508,12 +510,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		int lastPosition = 0;
 		switch (mTabHost.getCurrentTab()) {
 		case TAB_DISC:
-			disc = NetFlix.discQueue.getDiscs().get((int) info.id);
-			lastPosition = (NetFlix.discQueue.getTotalTitles());
+			disc = discQueue.retreiveQueue().get((int) info.id);
+			lastPosition = (discQueue.getTotalTitles());
 			break;
 		case TAB_INSTANT:
-			disc = NetFlix.instantQueue.getDiscs().get((int) info.id);
-			lastPosition = NetFlix.instantQueue.getTotalTitles();
+			disc =instantQueue.retreiveQueue().get((int) info.id);
+			lastPosition = instantQueue.getTotalTitles();
 			break;
 			
 		case TAB_RECOMMEND:
@@ -560,7 +562,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					
 				}
 			} else if (mTabHost.getCurrentTab() == TAB_DISC) {
-				queueType = NetFlixQueue.QUEUE_TYPE_DISC;
+				  = NetFlixQueue.QUEUE_TYPE_DISC;
 				loadQueue();
 				//((ViewStub) findViewById(R.id.stub_paginate)).setVisibility(View.GONE);
 
@@ -1057,8 +1059,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			// mListView.setAdapter(new
 			// IconicAdapter(this,NetFlix.discQueue.getDiscs()));
 			mListView.setAdapter(new ArrayAdapter<Disc>(this,
-					android.R.layout.simple_list_item_1, NetFlix.discQueue
-							.getDiscs()));
+					android.R.layout.simple_list_item_1,discQueue
+							.retreiveQueue()));
 			break;
 		case TAB_INSTANT:
 			mListView = (ListView) findViewById(R.id.instantqueue);
@@ -1066,8 +1068,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			// mListView.setAdapter(new IconicAdapter(this,
 			// NetFlix.instantQueue.getDiscs()));
 			mListView.setAdapter(new ArrayAdapter<Disc>(this,
-					android.R.layout.simple_list_item_1, NetFlix.instantQueue
-							.getDiscs()));
+					android.R.layout.simple_list_item_1, instantQueue
+							.retreiveQueue()));
 			break;
 		case TAB_RECOMMEND:
 			mListView = (ListView) findViewById(R.id.recommendqueue);
@@ -1075,8 +1077,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			// mListView.setAdapter(new IconicAdapter(this,
 			// NetFlix.instantQueue.getDiscs()));
 			mListView.setAdapter(new ArrayAdapter<Disc>(this,
-					android.R.layout.simple_list_item_1, NetFlix.recomemendedQueue
-							.getDiscs()));
+					android.R.layout.simple_list_item_1, recommendedQueue
+					.retreiveQueue()
+							));
 			break;
 		}
 
@@ -1097,7 +1100,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 		Log.d("QueueMan","loadQueue()>>>");
 		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put("Queue Type:", NetFlixQueue.queueTypeText[queueType]);
+		//parameters.put("Queue Type:", NetFlixQueue.queueTypeText[queueType]);
 		parameters.put("Can Instant:", String.valueOf(canWatchInstant));
 		FlurryAgent.onEvent("loadQueue", parameters);
 		String message = "";
@@ -1131,40 +1134,40 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * @author eddie
 	 *
 	 */
-	 private class LoadQueueTask extends AsyncTask<Void, Integer, Integer> {
+	 private class LoadQueueTask extends AsyncTask<Queue, Integer, > {
 	     
 		 /*protected void onPreExecute(){
 	 		Log.d("QueueMan","LoadQueueTask()");
 	    	// showCustomDialog("Adding Title", "Just a sec as I try to add this title to your queue");
 	     }*/
 		 
-		 protected Integer doInBackground(Void... arg1) {
+		 protected Queue doInBackground(Queue... arg1) {
 			 Log.d("QueueMan","LoadQueueTask() | doInBackground()>>>");
 		    //default error, not connected 901
-			 int result=36;
 			if (isOnline()) {
 					// get queue will connect to neflix and resave the currentQ
 				// vairable
-				result = netflix.getQueue(queueType, getDownloadCount());
-				
-			
+				Queue queue = (Queue) arg1[0];
+				queue.retreiveQueue();
+							
 			} else {
 				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
 					
 			}
 			Log.d("QueueMan","LoadQueueTask() | doInBackground()<<<");
 	    	
-			 return result;
+			return queue;
+			 
 	     }
 
 	     protected void onProgressUpdate(Integer... progress) {
 	        //dont have indcators yet
 	     }
 
-	     protected void onPostExecute(Integer result) {
+	     protected void onPostExecute(Queue queue) {
 	    	 Log.d("QueueMan","LoadQueueTask() | PostExecute");
 		     dialog.dismiss();
-		     switch (result) {
+		     switch (queue.getResultCode()) {
 		     	case 36:
 					showCustomDialog("Error", "Hmm... It seems we can;t connect to NetFlix. Please try again when you have better service");
 					break;
@@ -1173,11 +1176,11 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					//success load - redraw queue
 					redrawQueue();
 					break;
-				case NetFlix.SUCCESS_FROM_CACHE:
+				case Netflix.SUCCESS_FROM_CACHE:
 					//do nothing..?
 					redrawQueue();
 					break;
-				case NetFlix.NF_ERROR_BAD_DEFAULT:
+				case Netflix.NF_ERROR_BAD_DEFAULT:
 
 					FlurryAgent.onError("ER:900",
 							"Failed to Retrieve Queue - "
@@ -1287,14 +1290,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 private class AddTitleTask extends AsyncTask<Disc, Integer, Integer> {
 	     protected void onPreExecute(){
 	    	 Toast.makeText(QueueMan.this, "Just a sec as I try to add this title to your queue",Toast.LENGTH_LONG).show();
-	    	 Toast.makeText(QueueMan.this, "Just a sec as I try to add this title to your queue",Toast.LENGTH_LONG).show();
 	    	}
 		 
 		 protected Integer doInBackground(Disc... discArr) {
 	    	int result=36;
 	    	try{
 		    	HashMap<String, String> parameters = new HashMap<String, String>();
-		 		parameters.put("Queue Type:", NetFlixQueue.queueTypeText[queueType]);
+		 		parameters.put("Queue Type:", );
 		 		parameters.put("User ID:", ""+userId);
 				parameters.put("Disc ID:", ""+discArr[0].getId() );
 				parameters.put("Position:", ""+discArr[0].getPosition());
@@ -1303,7 +1305,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			 }catch(Exception e){
 				 // empty disc, or bad values - just prevent FC
 			 }
-			Disc disc=discArr[0];
+			Disc disc=(Disc)discArr[0];
+			Queue queue=
 			if (netflix.getNewETag(disc.getQueueType())) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable

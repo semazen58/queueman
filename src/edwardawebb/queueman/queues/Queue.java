@@ -27,10 +27,20 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import oauth.signpost.OAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.http.HttpRequest;
+import oauth.signpost.signature.SignatureMethod;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -56,13 +66,13 @@ public abstract class Queue implements QueueInterface{
 	
 	protected LinkedList<Disc> titles;
 
-	protected int totalTitles=-1;
+	protected int maxTitles=-1;// aka max results
 
 	protected int startTitle=-1;
 
-	protected int pageCount=-1;
+	protected int pageCount=-1; 
 	
-	private int totalResults=-1;
+	protected int totalResults=-1;
 
 	protected String expanders="";
 
@@ -90,6 +100,10 @@ public abstract class Queue implements QueueInterface{
 	public static final int BOTTOM = 500;
 	public static final int TOP=1;
 	public static final int SUCCESS_FROM_CACHE = 255;
+
+
+	public static final int QUEUE_TYPE_DISC = 1;
+	public static final int QUEUE_TYPE_INSTANT = 2;
 	
 	
 	
@@ -106,14 +120,19 @@ public abstract class Queue implements QueueInterface{
 	}
 	
 	
-	/**
-	 * 
+	
+	public List<Disc> retreiveQueue(){
+		return retreiveQueue(startTitle, maxTitles, true);
+	}
+/**
+	 * This returns the queue, loading from 
 	 * @param start
 	 * @param end
 	 * @param useCached
 	 * @return
 	 */
-	public Collection<Disc> retreiveQueue(int start, int maxResults, boolean useCached){
+	public List<Disc> retreiveQueue(int start, int maxResults, boolean useCached){
+		
 		// TODO add implementation
 		Log.d("Queue","retrieveQueue()>>>");
 		resultCode = NF_ERROR_BAD_DEFAULT;
@@ -167,6 +186,8 @@ public abstract class Queue implements QueueInterface{
 			}
 			if(resultCode==200){
 				isCachedLocally = true;
+				this.maxTitles=maxResults;
+				this.startTitle=start;
 			}else if(resultCode == 502){
 					HashMap<String, String> parameters = new HashMap<String, String>();
 					parameters.put("Queue:", ""+this.toString());
@@ -245,7 +266,92 @@ public abstract class Queue implements QueueInterface{
 		return result;
 	}
 
-	
+
+	/**
+	 * Post a rating to specificed title
+	 * @param modifiedDisc
+	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
+	 */
+	public int setRating(Disc modifiedDisc) {
+		
+		resultCode = NF_ERROR_BAD_DEFAULT;
+		
+		InputStream xml = null;
+		try {
+
+			// Construct data
+			/*
+			 * Log.d("NetFlix", "title_ref=" + URLEncoder.encode(disc.getId(),
+			 * "UTF-8")); Log.d("NetFlix", "etag=" +
+			 * URLEncoder.encode(NetFlixQueue.getETag(), "UTF-8"));
+			 */
+			URL url = getRatingUrl(netflix.getUser());
+
+			// Log.d("NetFlix", "@URL: " + url.toString())
+			HttpClient httpclient = new DefaultHttpClient();
+			// Your URL
+			HttpPost httppost = new HttpPost(url.toString());
+			
+			//pass 1-5 for rating or "not interested" String
+			String rating = (modifiedDisc.getUserRating() == 0) ? NF_RATING_NO_INTEREST : String.valueOf(modifiedDisc.getUserRating().intValue()); 
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			// Your DATA
+			nameValuePairs.add(new BasicNameValuePair("title_ref", modifiedDisc.getId()));
+			nameValuePairs.add(new BasicNameValuePair("rating", rating));
+
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+			netflix.sign(httppost);
+
+			HttpResponse response;
+			response = httpclient.execute(httppost);
+
+			xml = response.getEntity().getContent();
+			resultCode = response.getStatusLine().getStatusCode();
+			
+			
+			
+			/* Log.d("NetFlix", "" +
+			 response.getEntity().getContentType().toString()); BufferedReader
+			 in = new BufferedReader(new InputStreamReader(xml)); String
+			 linein = null; while ((linein = in.readLine()) != null) {
+			 Log.d("NetFlix", "SetRating: " + linein); }*/
+			 
+			// Log.i("NetFlix", "Parsing XML Response")
+			SAXParserFactory spf = SAXParserFactory.newInstance();
+			SAXParser sp;
+
+			sp = spf.newSAXParser();
+
+			XMLReader xr = sp.getXMLReader();
+			QueueHandler myHandler =  new QueueHandler();
+			
+			xr.setContentHandler(myHandler);
+			xr.parse(new InputSource(xml));
+
+			netflixResultCode =myHandler.getStatusCode();
+			netflixSubCode =myHandler.getSubCode(0);
+			netflixMessage =myHandler.getMessage();
+			
+			if(resultCode == 201 || netflixResultCode == 422){
+				((Disc)titles.get(titles.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
+			
+			}
+			
+			
+
+		} catch (IOException e) {	
+			
+			reportError(e);
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			reportError(e);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			reportError(e);
+		} 
+		return resultCode;
+	}
 	
 	
 	
@@ -329,11 +435,29 @@ public abstract class Queue implements QueueInterface{
 	
 	//***** private methods to encapsulate changes needed by concrete classes ***/
 	
-		
+	//must override and specify quuee handler for sax parser	
 	protected abstract QueueHandler getQueueHandler();
 	
+	/**
+	 * Must override and specify full url to resource (without expanders) See {@link #getQueueUrl(User)} as example
+	 * @param user
+	 * @return
+	 * @throws MalformedURLException
+	 */
 	protected abstract URL getQueueUrl(User user) throws MalformedURLException;
 	
+	/**
+	 * all resources use the same rtarting url for now
+	 * @param user
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	protected URL getRatingUrl(User user)throws MalformedURLException{
+		return new URL("http://api.netflix.com/users/" + user.getUserId()
+				+ "/ratings/title/actual");
+	}
+
+
 	/**
 	 * Is there a local copy to read instead of ffresh?
 	 * @return false by default
@@ -349,10 +473,6 @@ public abstract class Queue implements QueueInterface{
 	}
 
 
-	public String getDiscs() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 
 	public void add(Disc tempMovie) {
@@ -363,32 +483,9 @@ public abstract class Queue implements QueueInterface{
 	
 	
 
-	/**
-	 * @return the expanders
-	 */
-	public String getExpanders() {
-		return expanders;
-	}
-
-
-	/**
-	 * @param expanders the expanders to set
-	 */
-	public void setExpanders(String expanders) {
-		this.expanders = expanders;
-	}
 
 
 
-	public void setStartIndex(int i) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setPerPage(int resultsPerPage) {
-		// TODO Auto-generated method stub
-		
-	}
 	public boolean isEmpty() {
 		// Log.d("NetFlixQueue","Size:"+discs.size())
 		return (boolean) (titles.size() == 0);
@@ -446,6 +543,13 @@ public abstract class Queue implements QueueInterface{
 	public int positionOf(Disc movie) {
 		return titles.indexOf(movie) + 1;
 	}
+	
+	public int getTotalTitles() {
+		// TODO Auto-generated method stub
+		return totalResults;
+	}
+	
+	
 }
 
 

@@ -41,8 +41,8 @@ import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.ImageLoader;
-import edwardawebb.queueman.classes.NetFlix;
-import edwardawebb.queueman.classes.NetFlixQueue;
+import edwardawebb.queueman.classes.Netflix;
+import edwardawebb.queueman.queues.Queue;
 
 public class MovieDetails extends Activity implements OnRatingBarChangeListener, OnClickListener {
 
@@ -245,16 +245,16 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 				if (MovieDetails.this.radioAddTop.isChecked()) {
 					// pass a yes back to search
 					// setup an intent to return a result
-					passBack(NetFlixQueue.QUEUE_TYPE_DISC);
+					passBack(Queue.QUEUE_TYPE_DISC);
 				} else if (MovieDetails.this.radioAddInstant.isChecked()) {
-					passBack(NetFlixQueue.QUEUE_TYPE_INSTANT);
+					passBack(Queue.QUEUE_TYPE_INSTANT);
 					// toast no worky
 				} else if (MovieDetails.this.radioAddBottom.isChecked()) {
-					passBack(NetFlixQueue.QUEUE_TYPE_DISC,NetFlix.BOTTOM);
+					passBack(Queue.QUEUE_TYPE_DISC,Queue.BOTTOM);
 					// toast no worky
 				} else {
 					MovieDetails.this.radioAddTop.setChecked(true);
-					passBack(NetFlixQueue.QUEUE_TYPE_DISC);
+					passBack(Queue.QUEUE_TYPE_DISC);
 				}
 			}
 
@@ -302,20 +302,21 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		dialog.show();
 	}
 	public void passBack(int queueTypeDisc){
-		passBack(queueTypeDisc, NetFlix.TOP);
+		passBack(queueTypeDisc, Netflix.TOP);
 	}
 	
-	public void passBack(final int queueTypeDisc, final int position) {
+	public void passBack(final int queueType, final int position) {
 		// TODO Auto-generated method stub
 		Thread t = new Thread() {
 			public void run() {
 				Bundle b = new Bundle();
 				disc.setPosition(position);
 				b.putSerializable("Disc", disc);
+				disc.setQueueType(queueType);
 
 				Intent resultIntent = new Intent();
 				resultIntent.putExtras(b);
-				resultIntent.putExtra(QueueMan.ACTION_KEY, queueTypeDisc);
+				resultIntent.putExtra(QueueMan.ACTION_KEY, queueType);
 				MovieDetails.this.setResult(QueueSearch.ADD_MOVIES,
 						resultIntent);
 

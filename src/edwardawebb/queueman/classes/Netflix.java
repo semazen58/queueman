@@ -1049,4 +1049,25 @@ public class Netflix{
 		Log.d("Netflix","sign() <<<");
 		
 	}
+	
+	public void sign(HttpPost httpPost){
+		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
+				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
+		postConsumer.setTokenWithSecret(user.getAccessToken(), user.getAccessTokenSecret());
+	
+		try {
+			postConsumer.sign(httpPost);
+		} catch (OAuthMessageSignerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	
+	
 }
