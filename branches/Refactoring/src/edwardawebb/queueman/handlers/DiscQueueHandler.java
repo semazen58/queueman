@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 
 import edwardawebb.queueman.queues.DiscQueue;
 import edwardawebb.queueman.queues.MutableQueue;
+import edwardawebb.queueman.queues.Queue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
  */
@@ -63,7 +64,7 @@ public class DiscQueueHandler extends QueueHandler {
 			//
 			super.endElement(uri, value, qName);
 			if(value.equals("queue_item")){	
-				super.tempMovie.setQueueType(NetFlixQueue.QUEUE_TYPE_DISC);	
+				super.tempMovie.setQueueType(Queue.QUEUE_TYPE_DISC);	
 				queue.add(super.tempMovie);
 			}
 		}
@@ -85,7 +86,7 @@ public class DiscQueueHandler extends QueueHandler {
 		//these let us know for which range our etag is valid, needed for move to bottom top
 		queue.setTotalTitles(super.numResults);
 		queue.setStartIndex(super.startIndex);
-		queue.setPerPage(resultsPerPage);
+		// dont we know this as max results? queue.setPerPage(resultsPerPage);
 	}
 	
 

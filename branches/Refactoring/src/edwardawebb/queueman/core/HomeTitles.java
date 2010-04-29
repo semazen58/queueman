@@ -38,7 +38,8 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.ImageLoader;
-import edwardawebb.queueman.classes.NetFlix;
+import edwardawebb.queueman.classes.Netflix;
+import edwardawebb.queueman.queues.HomeQueue;
 
 
 /**
@@ -49,6 +50,7 @@ public class HomeTitles extends Activity implements OnItemClickListener {
 	
 	List<Disc> discs;
 	TextView noTitles;
+	HomeQueue homeQueue = new HomeQueue(Netflix.getInstance());
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.titles_at_home);
@@ -57,14 +59,14 @@ public class HomeTitles extends Activity implements OnItemClickListener {
 	    noTitles = (TextView) findViewById(R.id.no_titles);
 	    
 	    GridView gridview = (GridView) findViewById(R.id.grid_athome);
-	    gridview.setAdapter(new ImageAdapter(this,NetFlix.homeQueue.getDiscs()));
+	    gridview.setAdapter(new ImageAdapter(this,homeQueue.retreiveQueue()));
 	    gridview.setOnItemClickListener(this);
-	    if(NetFlix.homeQueue.getDiscs().size()<1){
+	    if(homeQueue.isEmpty()){
 	    	Toast.makeText(this, "No Titles at Home", Toast.LENGTH_LONG).show();
 	    }else{
 	    	//noTitles.setText(NetFlix.homeQueue.getDiscs().size() + " title(s) at home or in transit.\nPlease wait as titles load.");
 	    	noTitles.setText(R.string.at_home_click);
-	    	Toast.makeText(this, NetFlix.homeQueue.getDiscs().size()+" titles loading, give it a sec..", Toast.LENGTH_LONG).show();
+	    	Toast.makeText(this,homeQueue.getTotalTitles()+" titles loading, give it a sec..", Toast.LENGTH_LONG).show();
 	    }
 	    	
 	}
@@ -142,7 +144,7 @@ public class HomeTitles extends Activity implements OnItemClickListener {
 				edwardawebb.queueman.core.MovieDetails.class);
 		Bundle b = new Bundle();
 		//grab disc to add as bundle sent o details activity
-		Disc disc = NetFlix.homeQueue.getDiscs().get(position);
+		Disc disc = homeQueue.retreiveQueue().get(position);
 		//netflix.getTitleState(disc.getId());
 		b.putSerializable("Disc", disc);
 		intent.putExtras(b);
