@@ -21,9 +21,7 @@
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import edwardawebb.queueman.classes.NetFlixQueue;
 import edwardawebb.queueman.queues.DiscQueue;
-import edwardawebb.queueman.queues.HomeQueue;
 import edwardawebb.queueman.queues.MutableQueue;
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
