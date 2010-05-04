@@ -898,7 +898,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			 int result=901;
 				
 			if (isOnline()) {
-				Uri authUrl = netflix.getRequestLoginUri();
+				
+				Uri authUrl = Netflix.getInstance().getRequestLoginUri();
 				if (authUrl != null) {
 					//save the created Request Token and secret in case of QM being closed in the middle
 					saveRequestToken(netflix.getRT(),netflix.getRTS());

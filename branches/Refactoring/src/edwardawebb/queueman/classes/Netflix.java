@@ -16,7 +16,6 @@
  *
  */
 package edwardawebb.queueman.classes;
-import java.net.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,10 +24,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -43,25 +38,12 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
-import oauth.signpost.http.HttpRequest;
 import oauth.signpost.signature.SignatureMethod;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.DefaultHandler;
 
 import android.net.Uri;
 import android.util.Log;
@@ -69,19 +51,11 @@ import android.util.Log;
 import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.apikeys.ApiKeys;
-import edwardawebb.queueman.core.QueueMan;
-import edwardawebb.queueman.handlers.AddDiscQueueHandler;
-import edwardawebb.queueman.handlers.AddInstantQueueHandler;
-import edwardawebb.queueman.handlers.DiscETagHandler;
-import edwardawebb.queueman.handlers.DiscQueueHandler;
-import edwardawebb.queueman.handlers.HomeQueueHandler;
-import edwardawebb.queueman.handlers.InstantETagHandler;
-import edwardawebb.queueman.handlers.InstantQueueHandler;
-import edwardawebb.queueman.handlers.MoveQueueHandler;
 import edwardawebb.queueman.handlers.QueueHandler;
-import edwardawebb.queueman.handlers.RecommendationsHandler;
-import edwardawebb.queueman.handlers.SearchQueueHandler;
 import edwardawebb.queueman.handlers.UserHandler;
+
+
+
 /** Singleton */
 public class Netflix{
 	protected User user;
@@ -91,7 +65,7 @@ public class Netflix{
 
 	protected DefaultOAuthProvider oauthProvider;
 
-	private final static Netflix NETFLIX = new Netflix(ApiKeys.getConsumerKey(), ApiKeys.getConsumerSecret()); // the one instance, yes, a singleton
+	private static Netflix NETFLIX ; // the one instance, yes, a singleton
 	
 	
 	private int testLoop=0;
@@ -121,13 +95,11 @@ public class Netflix{
 	public static NetflixQueue homeQueue = new NetflixQueue(
 			NetflixQueue.QUEUE_TYPE_HOME);*/
 
-	public static OAuthConsumer oaconsumer;
+	private static OAuthConsumer oaconsumer;
 	private static OAuthProvider oaprovider;
 
 	
 	
-	//For some methods they will retry themselves, got a better way?
-	private int retries = 0;
 	public static final int MAX_RETRIES=2;// At least 1 for that pesky 502, but there must mbe a limit!
 	
 	public static final int NF_ERROR_BAD_DEFAULT=900; // defaukl return code
@@ -140,17 +112,30 @@ public class Netflix{
 	public static final int TOP=1;
 	public static final int SUCCESS_FROM_CACHE = 255;
 	
+	synchronized
+	public static Netflix getInstance(){
+		// TODO add implementation and return statement
+		if(NETFLIX != null){
+			//  we already have the one and pnly instance created
+		}else{
+			// we got nothing, create the chosen one
+			NETFLIX = new Netflix();
+		}
+			Log.d("Netflix", "NETFLIX: " + NETFLIX.toString());
+			return NETFLIX;
+		
+	}
 	/**
 	 * For first time, we will need to GET request  tokens, and then request user details
 	 */
 	
 	//@ TODO Use setters for stage.
-	private Netflix(String consumerKey,String consumerSecret ){
-		Netflix.oaconsumer = new DefaultOAuthConsumer(consumerKey,
-				consumerSecret, SignatureMethod.HMAC_SHA1);
+	private Netflix( ){
+		Netflix.oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
+				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
 		Netflix.oaprovider = new DefaultOAuthProvider(oaconsumer,
 				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
-				AUTHORIZE_WEBSITE_URL);	
+				AUTHORIZE_WEBSITE_URL);
 		
 		
 	}
@@ -160,7 +145,7 @@ public class Netflix{
 	 */
 	public void setRequestTokens(String requestToken, String requestSecret){
 		
-		Netflix.oaconsumer.setTokenWithSecret(requestToken,requestSecret);
+		oaconsumer.setTokenWithSecret(requestToken,requestSecret);
 		
 	}
 	
@@ -173,11 +158,6 @@ public class Netflix{
 		//load name, and formats (we dont save as it might change)
 		getUserDetails();
 		
-	}
-	
-	public static Netflix getInstance(){
-		// TODO add implementation and return statement
-		return NETFLIX;
 	}
 
 	public void authorizeUser(){
@@ -193,7 +173,8 @@ public class Netflix{
 		String callbackUrl = "flixman:///";// get url for user to link Netflix
 
 		// Netflix.oaprovider.setOAuth10a(false);
-
+		Log.d("Netflix", "instance: " + this.toString());
+		
 		try {
 
 			// Log.d("Netflix","token end:"+oaprovider.getRequestTokenEndpointUrl());
@@ -222,6 +203,7 @@ public class Netflix{
 		} catch (OAuthCommunicationException e) {
 			
 			reportError(e);
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -235,7 +217,7 @@ public class Netflix{
 			// call url to get access token and user id
 			// oaprovider.retrieveAccessToken();
 			// Netflix.oaconsumer.setTokenWithSecret(arg0, arg1)
-			Netflix.oaprovider.retrieveAccessToken(requestToken);
+			oaprovider.retrieveAccessToken(requestToken);
 			result = true;
 
 			// dumpMap(oaprovider.getResponseParameters());
@@ -432,7 +414,7 @@ public class Netflix{
 				HttpURLConnection request = (HttpURLConnection) QueueUrl
 						.openConnection();
 	
-				Netflix.oaconsumer.sign(request);
+				oaconsumer.sign(request);
 
 				Log.d("Netflix","getUserDetails() | signed");
 				request.connect();
@@ -496,7 +478,7 @@ public class Netflix{
 	 * @return token string
 	 */
 	public String getRT(){
-		return Netflix.oaconsumer.getToken();
+		return oaconsumer.getToken();
 	}
 
 	/**
@@ -504,7 +486,7 @@ public class Netflix{
 	 * @return secret string
 	 */
 	public String getRTS(){
-		return Netflix.oaconsumer.getTokenSecret();
+		return oaconsumer.getTokenSecret();
 	}
 
 /*	*//**
@@ -859,8 +841,8 @@ public class Netflix{
 
 	private static void setSignPost(String token, String tokenSecret) {
 		// Log.i("NetApi", "Prepping SignPosT class..")
-
-		Netflix.oaconsumer.setTokenWithSecret(token, tokenSecret);
+		if(NETFLIX != null)
+		NETFLIX.oaconsumer.setTokenWithSecret(token, tokenSecret);
 		// oaprovider.
 	}
 
@@ -1005,7 +987,21 @@ public class Netflix{
 
 	public boolean isConnected(){
 		boolean result =false;
-		return true;
+		try{
+			URL url = new URL("http://api.netflix.com/");
+			HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+			urlc.connect();
+			Log.d("QM","isCOnnected: " + urlc.getResponseCode() );
+			if (urlc.getResponseCode() == 200 || urlc.getResponseCode()==403) {
+				result = true;
+			}
+			urlc.disconnect();
+		} catch (MalformedURLException e1) {
+		        e1.printStackTrace();
+		} catch (IOException e) {
+		        reportError(e);
+		}
+		return result;
 	}
 
 	/**
