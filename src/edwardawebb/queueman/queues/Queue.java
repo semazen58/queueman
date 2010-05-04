@@ -21,26 +21,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
-import oauth.signpost.exception.OAuthExpectationFailedException;
-import oauth.signpost.exception.OAuthMessageSignerException;
-import oauth.signpost.http.HttpRequest;
-import oauth.signpost.signature.SignatureMethod;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -54,11 +43,6 @@ import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.ErrorProcessor;
 import edwardawebb.queueman.classes.Netflix;
 import edwardawebb.queueman.classes.User;
-import edwardawebb.queueman.core.QueueMan;
-import edwardawebb.queueman.handlers.DiscETagHandler;
-import edwardawebb.queueman.handlers.DiscQueueHandler;
-import edwardawebb.queueman.handlers.InstantETagHandler;
-import edwardawebb.queueman.handlers.InstantQueueHandler;
 import edwardawebb.queueman.handlers.QueueHandler;
 public abstract class Queue implements QueueInterface{
 	protected String id;
