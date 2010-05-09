@@ -61,17 +61,9 @@ public class Netflix{
 	protected User user;
 
 
-	private OAuthConsumer oauthConsumer;
-
-	protected DefaultOAuthProvider oauthProvider;
 
 	private static Netflix NETFLIX ; // the one instance, yes, a singleton
-	
-	
-	private int testLoop=0;
-	private int testLoopLimit=30;
-	private long[] times={0,0,0,0};
-	
+
 	private static final String APPLICATION_NAME = "QueueMan";
 	// TODO you will need to make this class after chkecin out. 
 	// See issue # 3
@@ -79,9 +71,9 @@ public class Netflix{
 	private static final String CONSUMER_KEY = ApiKeys.getConsumerKey();
 	private static final String CONSUMER_SECRET = ApiKeys.getConsumerSecret();
 	// for oAuth we van 'request_token' and then 'access_token'
-	private static final String REQUEST_TOKEN_ENDPOINT_URL = "http://api.Netflix.com/oauth/request_token";
-	private static final String ACCESS_TOKEN_ENDPOINT_URL = "http://api.Netflix.com/oauth/access_token";
-	private static final String AUTHORIZE_WEBSITE_URL = "https://api-user.Netflix.com/oauth/login";
+	private static final String REQUEST_TOKEN_ENDPOINT_URL = "http://api.netflix.com/oauth/request_token";
+	private static final String ACCESS_TOKEN_ENDPOINT_URL = "http://api.netflix.com/oauth/access_token";
+	private static final String AUTHORIZE_WEBSITE_URL = "https://api-user.netflix.com/oauth/login";
 	// queue types
 
 /*	public static NetflixQueue searchQueue = new NetflixQueue(
@@ -95,12 +87,11 @@ public class Netflix{
 	public static NetflixQueue homeQueue = new NetflixQueue(
 			NetflixQueue.QUEUE_TYPE_HOME);*/
 
-	private static OAuthConsumer oaconsumer;
-	private static OAuthProvider oaprovider;
+	private OAuthConsumer oaconsumer;
+	private OAuthProvider oaprovider;
 
 	
 	
-	public static final int MAX_RETRIES=2;// At least 1 for that pesky 502, but there must mbe a limit!
 	
 	public static final int NF_ERROR_BAD_DEFAULT=900; // defaukl return code
 	public static final int NF_ERROR_BAD_INDEX=902; // seting rating not bewteen 1-5
@@ -131,9 +122,9 @@ public class Netflix{
 	
 	//@ TODO Use setters for stage.
 	private Netflix( ){
-		Netflix.oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
+		oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
-		Netflix.oaprovider = new DefaultOAuthProvider(oaconsumer,
+		oaprovider = new DefaultOAuthProvider(oaconsumer,
 				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
 				AUTHORIZE_WEBSITE_URL);
 		
@@ -176,10 +167,10 @@ public class Netflix{
 		Log.d("Netflix", "instance: " + this.toString());
 		
 		try {
-
+			//oaconsumer.setTokenWithSecret("", "");
 			// Log.d("Netflix","token end:"+oaprovider.getRequestTokenEndpointUrl());
 			// get url for user to lologin and request token
-			String tmp = Netflix.oaprovider.retrieveRequestToken(callbackUrl);
+			String tmp = oaprovider.retrieveRequestToken(callbackUrl);
 			// Netflix.oaprovider.getResponseParameters().get("request_token");
 			// Log.d("Netflix","Url:"+tmp)
 			result = Uri.parse(tmp + "&application_name=" + APPLICATION_NAME
@@ -274,7 +265,7 @@ public class Netflix{
 				recomemendedQueue.purge();
 			}
 				
-			QueueUrl = new URL("http://api.Netflix.com/users/" + user.getUserId()
+			QueueUrl = new URL("http://api.netflix.com/users/" + user.getUserId()
 					+ "/recommendations" + expanders);
 			Log.d("Netflix",""+QueueUrl.toString());
 			
@@ -335,7 +326,7 @@ public class Netflix{
 		/*String expanders = "?title_refs=" + titleID;
 		InputStream xml = null;
 		try {
-			url = new URL("http://api.Netflix.com/users/" + user.getUserId()
+			url = new URL("http://api.netflix.com/users/" + user.getUserId()
 					+ "/title_states" + expanders);
 			// myQueueHandler = new InstantQueueHandler();
 			Log.d("Netflix", "" + url.toString());
@@ -408,7 +399,7 @@ public class Netflix{
 			InputStream xml = null;
 			try {
 	
-				QueueUrl = new URL("http://api.Netflix.com/users/" + user.getUserId());
+				QueueUrl = new URL("http://api.netflix.com/users/" + user.getUserId());
 	
 				setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
 				HttpURLConnection request = (HttpURLConnection) QueueUrl
@@ -525,13 +516,13 @@ public class Netflix{
 				// @ TODO   Move this to instnat once it works
 				
 				eTag = Netflix.discQueue.getETag();
-				url = new URL("https://api.Netflix.com/users/" + user.getUserId()
+				url = new URL("https://api.netflix.com/users/" + user.getUserId()
 						+ "/queues/disc" + expanders);
 				
 				break;
 			case NetflixQueue.QUEUE_TYPE_INSTANT:
 				eTag = Netflix.instantQueue.getETag();
-				url = new URL("https://api.Netflix.com/users/" + user.getUserId()
+				url = new URL("https://api.netflix.com/users/" + user.getUserId()
 						+ "/queues/instant" + expanders);
 				break;
 			}
@@ -663,7 +654,7 @@ public class Netflix{
 		URL url = null;
 		try {
 
-			url = new URL("http://api.Netflix.com/users/" + user.getUserId() + "/queues/" + NetflixQueue.queueTypeText[queueType]);
+			url = new URL("http://api.netflix.com/users/" + user.getUserId() + "/queues/" + NetflixQueue.queueTypeText[queueType]);
 			Log.d("Netflix","Moving: " + url.toString());
 			HttpClient httpclient = new DefaultHttpClient();
 			// Your URL
@@ -889,7 +880,7 @@ public class Netflix{
 			 * "UTF-8")); Log.d("Netflix", "etag=" +
 			 * URLEncoder.encode(NetflixQueue.getETag(), "UTF-8"));
 			 
-			URL url = new URL("https://api.Netflix.com/users/" + user.getUserId()
+			URL url = new URL("https://api.netflix.com/users/" + user.getUserId()
 						+ "/ratings/title/actual");
 				
 
