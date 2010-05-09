@@ -102,7 +102,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	protected static boolean canWatchInstant;
 	
 	
-	public static Netflix netflix;
+	public static Netflix netflix=Netflix.getInstance();
 	// see res/values/download_count_array.xml
 	public static final String ALL_TITLES_STRING = "All";
 
@@ -278,7 +278,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				//purge intent so we don't repeat this :)
 				getIntent().setData(null);
 				//retrive handlers will set sessions status and call queue, or report error
-								retrieveAccessToken(rt);
+				retrieveAccessToken(rt);
 				
 				break;
 				
@@ -899,7 +899,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				
 			if (isOnline()) {
 				
-				Uri authUrl = Netflix.getInstance().getRequestLoginUri();
+				Uri authUrl = netflix.getRequestLoginUri();
 				if (authUrl != null) {
 					//save the created Request Token and secret in case of QM being closed in the middle
 					saveRequestToken(netflix.getRT(),netflix.getRTS());
