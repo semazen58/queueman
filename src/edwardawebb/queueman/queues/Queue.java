@@ -144,6 +144,7 @@ public abstract class Queue implements QueueInterface{
 			
 			HttpURLConnection request = (HttpURLConnection) QueueUrl.openConnection();
 			netflix.sign(request);
+			Log.d("get",""+request.getURL());
 			request.connect();
 	
 			Log.d("Netflix","getQueue() | response");
@@ -153,10 +154,10 @@ public abstract class Queue implements QueueInterface{
 			
 			xml = request.getInputStream();
 			
-			  BufferedReader in = new BufferedReader(new
+			  /*BufferedReader in = new BufferedReader(new
 			  InputStreamReader(xml)); String linein = null; while ((linein =
 			  in.readLine()) != null) { Log.d("Netflix", "GetQueue: " +
-			  linein); }
+			  linein); }*/
 			 
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp;
