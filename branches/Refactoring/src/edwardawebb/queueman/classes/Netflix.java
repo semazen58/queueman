@@ -407,6 +407,7 @@ public class Netflix{
 	
 				oaconsumer.sign(request);
 
+				Log.d("get",""+request.getURL());
 				Log.d("Netflix","getUserDetails() | signed");
 				request.connect();
 
