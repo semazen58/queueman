@@ -16,8 +16,10 @@
  *
  */
 package edwardawebb.queueman.queues;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -131,7 +133,7 @@ public abstract class Queue implements QueueInterface{
 		// addtional info to return 
 		expanders = "?expand=synopsis,formats&max_results=" + maxResults;
 		InputStream xml = null;
-		if (!isCached()){
+		if (isCached()){
 			resultCode = SUCCESS_FROM_CACHE;
 			return getQueue();
 		}
@@ -151,10 +153,10 @@ public abstract class Queue implements QueueInterface{
 			
 			xml = request.getInputStream();
 			
-			/*  BufferedReader in = new BufferedReader(new
+			  BufferedReader in = new BufferedReader(new
 			  InputStreamReader(xml)); String linein = null; while ((linein =
 			  in.readLine()) != null) { Log.d("Netflix", "GetQueue: " +
-			  linein); }*/
+			  linein); }
 			 
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser sp;

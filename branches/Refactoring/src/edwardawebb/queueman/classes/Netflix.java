@@ -830,10 +830,9 @@ public class Netflix{
 		return result;
 	}*/
 
-	private static void setSignPost(String token, String tokenSecret) {
+	private void setSignPost(String token, String tokenSecret) {
 		// Log.i("NetApi", "Prepping SignPosT class..")
-		if(NETFLIX != null)
-		NETFLIX.oaconsumer.setTokenWithSecret(token, tokenSecret);
+		oaconsumer.setTokenWithSecret(token, tokenSecret);
 		// oaprovider.
 	}
 
@@ -1003,7 +1002,7 @@ public class Netflix{
 	public void sign(HttpURLConnection request) {
 		// TODO Auto-generated method stub
 		Log.d("Netflix","sign() >>>");
-		setSignPost(user.oauthToken, user.oauthTokenSecret);
+		setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
 		try {
 			oaconsumer.sign(request);
 		} catch (OAuthMessageSignerException e) {
