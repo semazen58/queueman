@@ -47,8 +47,6 @@ import edwardawebb.queueman.classes.Netflix;
 import edwardawebb.queueman.classes.User;
 import edwardawebb.queueman.handlers.QueueHandler;
 public abstract class Queue implements QueueInterface{
-	protected String id;
-
 	
 	protected LinkedList<Disc> titles = new LinkedList();
 
@@ -181,7 +179,7 @@ public abstract class Queue implements QueueInterface{
 			if(resultCode==200){
 				isCachedLocally = true;
 				this.maxTitles=maxResults;
-				this.startTitle=start;
+				this.startTitle=startTitle;
 			}else if(resultCode == 502){
 					HashMap<String, String> parameters = new HashMap<String, String>();
 					parameters.put("Queue:", ""+this.toString());
@@ -375,17 +373,6 @@ public abstract class Queue implements QueueInterface{
 
 
 
-	public void add(Disc tempMovie) {
-		// TODO Auto-generated method stub
-		/* Filter recommendations to hide movies in our queues already **/
-	
-	}
-	
-	
-
-
-
-
 	public boolean isEmpty() {
 		// Log.d("NetFlixQueue","Size:"+discs.size())
 		return (boolean) (titles.size() == 0);
@@ -400,6 +387,12 @@ public abstract class Queue implements QueueInterface{
 
 	}
 
+
+	public void add(Disc tempMovie) {
+		// TODO Auto-generated method stub
+		/* Filter recommendations to hide movies in our queues already **/
+		titles.add(tempMovie);
+	}
 
 	/**
 	 * Adds new disc to Queue Position specified. position is 1 based.

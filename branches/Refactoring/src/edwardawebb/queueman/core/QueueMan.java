@@ -1209,10 +1209,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 					}else{
 						//format next to "grab next XX titles"
-					String resultsTextFormat = getBaseContext().getResources().getString(R.string.nav_next_page);
-					String resultsText = String.format(resultsTextFormat,Integer.valueOf(getDownloadCount()));
-					btnNextPage.setText(resultsText);
-					btnNextPage.setOnClickListener(QueueMan.this);	
+						String resultsTextFormat = getBaseContext().getResources().getString(R.string.nav_next_page);
+						String resultsText = String.format(resultsTextFormat,Integer.valueOf(getDownloadCount()));
+						btnNextPage.setText(resultsText);
+						btnNextPage.setOnClickListener(QueueMan.this);	
 					}
 					
 					
