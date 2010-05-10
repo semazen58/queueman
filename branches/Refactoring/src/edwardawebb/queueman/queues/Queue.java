@@ -52,7 +52,7 @@ public abstract class Queue implements QueueInterface{
 
 	protected int maxTitles=10;// aka max results, results per page
 
-	protected int startTitle=0;
+	protected int startIndex=0;
 
 	protected int pageCount=1; //what page we on
 	
@@ -105,15 +105,33 @@ public abstract class Queue implements QueueInterface{
 	}
 	
 	public void setStartIndex(int start){
-		this.startTitle=start;
+		this.startIndex=start;
+		isCachedLocally=false; // changing start or page value(max downlaods) invalidates current cache
 	}
 	public int getStartIndex(){
-		return this.startTitle;
+		return this.startIndex;
 	}
+	
+	
+	/**
+	 * @param maxTitles the maxTitles to set
+	 */
+	public void setMaxTitles(int maxTitles) {
+		this.maxTitles = maxTitles;
+		isCachedLocally=false; // changing start or page value(max downlaods) invalidates current cache
+	}
+
+	/**
+	 * @return the maxTitles
+	 */
+	public int getMaxTitles() {
+		return maxTitles;
+	}
+
 	
 	
 	public List<Disc> retreiveQueue(){
-		return retreiveQueue(startTitle, maxTitles, true);
+		return retreiveQueue(startIndex, maxTitles, true);
 	}
 /**
 	 * This returns the queue, loading from 
@@ -129,7 +147,7 @@ public abstract class Queue implements QueueInterface{
 		resultCode = NF_ERROR_BAD_DEFAULT;
 		
 		// addtional info to return 
-		expanders = "?expand=synopsis,formats&max_results=" + maxResults;
+		expanders = "?expand=synopsis,formats&start_index=" + startIndex + "&max_results=" + maxResults;
 		InputStream xml = null;
 		if (isCached()){
 			resultCode = SUCCESS_FROM_CACHE;
@@ -179,7 +197,7 @@ public abstract class Queue implements QueueInterface{
 			if(resultCode==200){
 				isCachedLocally = true;
 				this.maxTitles=maxResults;
-				this.startTitle=startTitle;
+				this.startIndex=startIndex;
 			}else if(resultCode == 502){
 					HashMap<String, String> parameters = new HashMap<String, String>();
 					parameters.put("Queue:", ""+this.toString());
@@ -420,7 +438,7 @@ public abstract class Queue implements QueueInterface{
 		this.isCachedLocally=false;
 		this.pageCount=-1;
 		this.totalResults=-1;
-		this.startTitle=-1;
+		this.startIndex=-1;
 	}
 	public int indexOf(Disc movie) {
 		return titles.indexOf(movie);

@@ -263,7 +263,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					netflix.setExistingUser(userId, accessToken, accessTokenSecret);
 					//load user's preferred tab from preferences
 					mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
-					if(Integer.valueOf(defaultTab) == TAB_DISC) loadQueue(discQueue) ;// this is missed by "onTabChange" since it is Disc -> Disc, and not really a change
+					if(Integer.valueOf(defaultTab) == TAB_DISC) {
+						currentQueue=discQueue; // needed by some methods like onClick , elimates need for more case statements
+						loadQueue(discQueue) ;// this is missed by "onTabChange" since it is Disc -> Disc, and not really a change
+					}
 					//retrieve and display current tab's queue
 					//loadQueue();
 				}else{
@@ -1195,8 +1198,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		            navigationPanel.setVisibility(View.VISIBLE);
 					
 					//if this is the end of the line, prevent them asking fo more
-					if(recommendDownloadCount.equals("All") || Integer.valueOf(recommendStart) + Integer.valueOf(recommendDownloadCount) >= recommendedQueue.getTotalTitles()){
-						Toast.makeText(QueueMan.this, "That's it! only " + recommendedQueue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
+					if(queue.getTotalTitles() == 500 || queue.getStartIndex() + queue.getMaxTitles() >= queue.getTotalTitles()){
+						Toast.makeText(QueueMan.this, "That's it! only " + queue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
 						Toast.makeText(QueueMan.this, "You can use Refresh from the menu to start over", Toast.LENGTH_LONG).show();
 						btnNextPage.setText("Start Over");
 						
