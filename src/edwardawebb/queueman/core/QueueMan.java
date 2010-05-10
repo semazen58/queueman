@@ -1192,11 +1192,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 						btnNextPage = (Button) navigationPanel.findViewById(R.id.next_page);
 						//register for clika
 						btnFilterInstant.setOnClickListener(QueueMan.this);
-						 //the btnNextPage has two uses, so it is set depenind on end of results switch below              
-		            } 
+		//@ TODO  - only show filter instant for recommends and search Queuesa.
+					} 
 		            //although inflate makes view visible, on subsequent trips will need to show it.
 		            navigationPanel.setVisibility(View.VISIBLE);
-					
+					//the btnNextPage has two uses, so it is set depenind on end of results switch below              
+		            
 					//if this is the end of the line, prevent them asking fo more
 					if(queue.getTotalTitles() == 500 || queue.getStartIndex() + queue.getMaxTitles() >= queue.getTotalTitles()){
 						Toast.makeText(QueueMan.this, "That's it! only " + queue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
