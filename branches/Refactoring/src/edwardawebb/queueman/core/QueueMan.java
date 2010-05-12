@@ -185,14 +185,9 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	
 	
 	private ListView mListView;
-
+	private int firstVisibleItem=0;
 	
-	/*
-	 * Knowing where we are, ie pagination
-	 */
-	private int recommendStart=0;
-	//see sessionn variables for rec. download count
-	private int currentItemNumber=0;
+	
 	
 	static DiscQueue discQueue = new DiscQueue(netflix);
 	private InstantQueue instantQueue = new InstantQueue(netflix);
@@ -482,6 +477,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		}else{
 			startActivity(intent);
 		}
+		firstVisibleItem=position;
 	}
 
 	/*
@@ -1098,6 +1094,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		mListView.setTextFilterEnabled(true);
 		mListView.setOnItemClickListener(this);
 		mListView.setOnScrollListener(new ScrollHandler());
+		mListView.setSelection(firstVisibleItem);
 		// register for long hold on menu items
 		registerForContextMenu(mListView);
 	}
@@ -1500,7 +1497,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	
 	public class ScrollHandler implements OnScrollListener{
 		private boolean isEndOfLine = false; // scroll state is not adequate for us
-		
 		public void onScroll(AbsListView view, int firstVisibleItem,
 				int visibleItemCount, int totalItemCount) {
 			// TODO Auto-generated method stub
@@ -1525,6 +1521,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					
 				}else{
 					//format next to "grab next XX titles"
+					firstVisibleItem=currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount());
 					currentQueue.setStartIndex(currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount()));
 					loadQueue(currentQueue);
 				}
