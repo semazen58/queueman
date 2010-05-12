@@ -33,6 +33,14 @@ public class InstantQueue extends MutableQueue{
 		return new URL("http://api.netflix.com/users/" + user.getUserId()
 				+ "/queues/instant" + expanders);
 	}
+
+
+
+	@Override
+	protected String getPrettyName() {
+		// TODO Auto-generated method stub
+		return "Instant Watch";
+	}
 	
 }
 

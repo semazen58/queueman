@@ -18,7 +18,6 @@
 package edwardawebb.queueman.core;
 
 import java.util.HashMap;
-import java.util.List;
 
 import android.app.Dialog;
 import android.app.TabActivity;
@@ -34,17 +33,22 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TabHost.OnTabChangeListener;
@@ -1094,6 +1098,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 		mListView.setTextFilterEnabled(true);
 		mListView.setOnItemClickListener(this);
+		mListView.setOnScrollListener(new ScrollHandler());
 		// register for long hold on menu items
 		registerForContextMenu(mListView);
 	}
@@ -1511,6 +1516,48 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		loadQueue(queue);		
 		return true;
 	}
+
+
+	
+	
+	public class ScrollHandler implements OnScrollListener{
+		private boolean isEndOfLine = false; // scroll state is not adequate for us
+		
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			// TODO Auto-generated method stub
+			Log.d("QueueMan","Viewing " + firstVisibleItem + " through " + (visibleItemCount+firstVisibleItem) + " of "+ totalItemCount);
+			if ((firstVisibleItem+visibleItemCount) == totalItemCount) {
+				 isEndOfLine = true;
+			}else{
+				isEndOfLine = false;
+			}
+		}
+
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+			// TODO Auto-generated method stub
+			 Log.d("QueueMan","ScrollState: " + scrollState);
+			 if(scrollState == OnScrollListener.SCROLL_STATE_IDLE && isEndOfLine) {
+				
+			 
+				//if this is the end of the line, prevent them asking fo more
+				if(currentQueue.getTotalTitles() == 500 
+						|| currentQueue.getStartIndex() + currentQueue.getMaxTitles() >= currentQueue.getTotalTitles()){
+					Toast.makeText(QueueMan.this, "That's it! only " + currentQueue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
+					Toast.makeText(QueueMan.this, "You can use Refresh from the menu to start over", Toast.LENGTH_LONG).show();
+					
+				}else{
+					//format next to "grab next XX titles"
+					currentQueue.setStartIndex(currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount()));
+					loadQueue(currentQueue);
+				}
+				
+			}
+		}
+	}
+	
+  
+
 
 	 
 }

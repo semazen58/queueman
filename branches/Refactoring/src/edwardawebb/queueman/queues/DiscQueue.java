@@ -28,6 +28,12 @@ public class DiscQueue extends MutableQueue{
 				+ "/queues/disc/available" + expanders);
 	}
 
+	@Override
+	protected String getPrettyName() {
+		// TODO Auto-generated method stub
+		return "DVD";
+	}
+
 
 
 

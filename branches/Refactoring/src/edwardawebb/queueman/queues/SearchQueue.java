@@ -41,5 +41,11 @@ public class SearchQueue extends BrowsableQueue{
 				+ keywords + expanders);
 	}
 
+	@Override
+	protected String getPrettyName() {
+		// TODO Auto-generated method stub
+		return "Search Results";
+	}
+
 }
 

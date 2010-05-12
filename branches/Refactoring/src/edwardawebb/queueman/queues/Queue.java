@@ -48,6 +48,7 @@ import edwardawebb.queueman.classes.User;
 import edwardawebb.queueman.handlers.QueueHandler;
 public abstract class Queue implements QueueInterface{
 	
+	
 	protected LinkedList<Disc> titles = new LinkedList();
 
 	protected int maxTitles=10;// aka max results, results per page
@@ -371,9 +372,39 @@ public abstract class Queue implements QueueInterface{
 	 */
 	protected abstract URL getQueueUrl(User user) throws MalformedURLException;
 	
+/**
+ * Returns nice string name for type of queueue
+ * @return
+ */
+	protected abstract String getPrettyName();
 
-
-
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public boolean equals(Object o){
+		if (o instanceof Queue ) ;
+		else return false;
+		//@ TODO  FIX THIS!! use some guid for id.
+		// if the type is the same, the queue is the same, need ID, PURELY FOR STUBBING
+		return ((Queue)o).getPrettyName().equals(getPrettyName());
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Is there a local copy to read instead of ffresh?
 	 * @return false by default
