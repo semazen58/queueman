@@ -57,7 +57,9 @@ public abstract class Queue implements QueueInterface{
 
 	protected int pageCount=1; //what page we on
 	
-	protected int totalResults=-1;
+	protected int totalResults=-1;	
+
+	private int firstVisibleItem=0; // used when vewing details or lading more titles, puts user back at saame spot in queue
 
 	protected String expanders="";
 
@@ -388,6 +390,20 @@ public abstract class Queue implements QueueInterface{
 	
 	
 	
+	/**
+ * @param firstVisibleItem the firstVisibleItem to set
+ */
+public void setFirstVisibleItem(int firstVisibleItem) {
+	this.firstVisibleItem = firstVisibleItem;
+}
+
+/**
+ * @return the firstVisibleItem
+ */
+public int getFirstVisibleItem() {
+	return firstVisibleItem;
+}
+
 	@Override
 	public boolean equals(Object o){
 		if (o instanceof Queue ) ;
