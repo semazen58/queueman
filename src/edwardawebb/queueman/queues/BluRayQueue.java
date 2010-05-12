@@ -25,5 +25,11 @@ public class BluRayQueue extends MutableQueue{
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	protected String getPrettyName() {
+		// TODO Auto-generated method stub
+		return "Blu-Ray";
+	}
 }
 

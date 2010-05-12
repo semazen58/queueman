@@ -34,5 +34,11 @@ public class RecommendedQueue extends BrowsableQueue{
 				+ "/recommendations" + expanders);
 	}
 
+	@Override
+	protected String getPrettyName() {
+		// TODO Auto-generated method stub
+		return "Recommendations";
+	}
+
 }
 

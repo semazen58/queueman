@@ -28,5 +28,11 @@ public class HomeQueue extends BrowsableQueue{
 		return new URL("http://api.netflix.com/users/" + user.getUserId()
 				+ "/queues/disc/available" + expanders);
 	}
+
+	@Override
+	protected String getPrettyName() {
+		// TODO Auto-generated method stub
+		return "Movies at Home";
+	}
 }
 
