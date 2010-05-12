@@ -185,7 +185,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	
 	
 	private ListView mListView;
-	private int firstVisibleItem=0;
 	
 	
 	
@@ -477,7 +476,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		}else{
 			startActivity(intent);
 		}
-		firstVisibleItem=position;
+		currentQueue.setFirstVisibleItem(position);
 	}
 
 	/*
@@ -1094,7 +1093,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		mListView.setTextFilterEnabled(true);
 		mListView.setOnItemClickListener(this);
 		mListView.setOnScrollListener(new ScrollHandler());
-		mListView.setSelection(firstVisibleItem);
+		mListView.setSelection(currentQueue.getFirstVisibleItem());
 		// register for long hold on menu items
 		registerForContextMenu(mListView);
 	}
@@ -1521,7 +1520,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					
 				}else{
 					//format next to "grab next XX titles"
-					firstVisibleItem=currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount());
+					currentQueue.setFirstVisibleItem(currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount()));
 					currentQueue.setStartIndex(currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount()));
 					loadQueue(currentQueue);
 				}
