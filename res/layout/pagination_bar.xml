@@ -12,11 +12,6 @@ android:text="@string/nav_filter_instant"
 android:id="@+id/filter_instant" 
 android:layout_width="wrap_content" 
 android:layout_height="wrap_content"></Button>
-<Button 
-android:text="@string/nav_next_page" 
-android:id="@+id/next_page" 
-android:layout_width="wrap_content" 
-android:layout_height="wrap_content"
-android:layout_gravity="right"></Button>
+
 
 </LinearLayout>

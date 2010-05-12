@@ -181,7 +181,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
  */
 	private View navigationPanel;
 	private Button btnFilterInstant;
-	private Button btnNextPage;
 	
 	
 	
@@ -616,14 +615,14 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			((BrowsableQueue)currentQueue).filterInstantOnly();
 			redrawQueue();
 			
-		}else if (v == btnNextPage){
+		}/*else if (v == btnNextPage){
 			//increment starindeex, so they can see next set
 			
 			currentQueue.setStartIndex(currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount()));
 			loadQueue(currentQueue);
 			//unlock filter button for another round
 			btnFilterInstant.setEnabled(true);
-		}
+		}*/
 	
 		
 	}
@@ -1188,42 +1187,21 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				case Netflix.SUCCESS_FROM_CACHE:	
 					redrawQueue();
 					//show navigation panel (instant filter, next)
-					
-		            if (navigationPanel == null) {
-		            	//navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
-		            	navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
-						//provide some references
-		            	btnFilterInstant = (Button) navigationPanel.findViewById(R.id.filter_instant);
-						btnNextPage = (Button) navigationPanel.findViewById(R.id.next_page);
-						//register for clika
-						btnFilterInstant.setOnClickListener(QueueMan.this);
-		//@ TODO  - only show filter instant for recommends and search Queuesa.
-					} 
-		            //although inflate makes view visible, on subsequent trips will need to show it.
-		            navigationPanel.setVisibility(View.VISIBLE);
-					//the btnNextPage has two uses, so it is set depenind on end of results switch below              
-		            
-					//if this is the end of the line, prevent them asking fo more
-					if(queue.getTotalTitles() == 500 || queue.getStartIndex() + queue.getMaxTitles() >= queue.getTotalTitles()){
-						Toast.makeText(QueueMan.this, "That's it! only " + queue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
-						Toast.makeText(QueueMan.this, "You can use Refresh from the menu to start over", Toast.LENGTH_LONG).show();
-						btnNextPage.setText("Start Over");
-						
-						// we al so make the "next XX' a "start over" button instead
-						btnNextPage.setOnClickListener(new View.OnClickListener() {
-			                    public void onClick(View v) {
-			                        refreshCurrentQueue(queue);
-			                    }
-			                });
-
-					}else{
-						//format next to "grab next XX titles"
-						String resultsTextFormat = getBaseContext().getResources().getString(R.string.nav_next_page);
-						String resultsText = String.format(resultsTextFormat,Integer.valueOf(getDownloadCount()));
-						btnNextPage.setText(resultsText);
-						btnNextPage.setOnClickListener(QueueMan.this);	
-					}
-					
+					//@ TODO  - only show filter instant for recommends and search Queuesa.
+					if(mTabHost.getCurrentTab()==TAB_RECOMMEND){
+					            if (navigationPanel == null) {
+					            	//navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
+					            	navigationPanel = ((ViewStub) findViewById(R.id.stub_import)).inflate();
+									//provide some references
+					            	btnFilterInstant = (Button) navigationPanel.findViewById(R.id.filter_instant);
+									//register for clika
+									btnFilterInstant.setOnClickListener(QueueMan.this);
+								} 
+					            //although inflate makes view visible, on subsequent trips will need to show it.
+					            navigationPanel.setVisibility(View.VISIBLE);
+								//the btnNextPage has two uses, so it is set depenind on end of results switch below              
+					          
+					}// end block for recommended tab
 					
 					 break;				 
 					
@@ -1544,7 +1522,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				if(currentQueue.getTotalTitles() == 500 
 						|| currentQueue.getStartIndex() + currentQueue.getMaxTitles() >= currentQueue.getTotalTitles()){
 					Toast.makeText(QueueMan.this, "That's it! only " + currentQueue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
-					Toast.makeText(QueueMan.this, "You can use Refresh from the menu to start over", Toast.LENGTH_LONG).show();
 					
 				}else{
 					//format next to "grab next XX titles"
