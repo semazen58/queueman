@@ -33,15 +33,12 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -57,10 +54,12 @@ import com.flurry.android.FlurryAgent;
 
 import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.Netflix;
+import edwardawebb.queueman.classes.NetflixResponse;
 import edwardawebb.queueman.queues.BrowsableQueue;
 import edwardawebb.queueman.queues.DiscQueue;
 import edwardawebb.queueman.queues.HomeQueue;
 import edwardawebb.queueman.queues.InstantQueue;
+import edwardawebb.queueman.queues.MutableQueue;
 import edwardawebb.queueman.queues.Queue;
 import edwardawebb.queueman.queues.RecommendedQueue;
 
@@ -347,7 +346,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				sessionStatus=SESSION_TITLE_ADDED;
 				disc = (Disc) data.getSerializableExtra("Disc");
 				disc.setQueueType(data.getIntExtra(ACTION_KEY, (int) 0));
-				//@ TODO new AddTitleTask().execute(disc);
+				//@ TODO 
+				new AddTitleTask().execute(disc);
 			}else{
 				//user cancelled search, just let it slide
 			}
@@ -362,7 +362,11 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					recommendedQueue.delete(disc);
 					redrawQueue();
 				}
-				//@ TODO new AddTitleTask().execute(disc);
+				//@ TODO 
+				new AddTitleTask().execute(disc);
+				
+				
+				
 			}
 			break;
 		case EDIT_PREFS:
@@ -1176,7 +1180,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	     protected void onPostExecute(final Queue queue) {
 	    	 Log.d("QueueMan","LoadQueueTask() | PostExecute");
 		     dialog.dismiss();
-		     switch (queue.getResultCode()) {
+		     NetflixResponse nfr = queue.getLatestNFResponse();
+		     switch (nfr.getHttpCode()) {
 				case 200:
 				case 201:
 				case Netflix.NF_ERROR_NO_MORE:
@@ -1202,12 +1207,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					 break;				 
 					
 				default:
-					Toast.makeText(QueueMan.this, "Sorry, we had an error, please refresh", Toast.LENGTH_LONG).show();
+					Toast.makeText(QueueMan.this, "Sorry, we had an error("+ nfr.getNetflixMessage() +"), please refresh", Toast.LENGTH_LONG).show();
 					boolean hasAccess = (netflix.getUser().getAccessToken()!=null);
 					boolean hasID = (netflix.getUser().getUserId()!=null);
 					FlurryAgent.onError("ER:91",
 							"Failed to Retrieve Recommendations - "
-									+ queue.getNetflixCode()
+									+ nfr.getHttpCode()
 									+ "Has Access: "+ hasAccess
 									+ "Has ID: "+ hasID,
 							"QueueMan");
@@ -1300,16 +1305,16 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * @author eddie
 	 *
 	 */
-	 /*private class AddTitleTask extends AsyncTask<Disc, Integer, Integer> {
+	 private class AddTitleTask extends AsyncTask<Disc, Integer, NetflixResponse> {
 	     protected void onPreExecute(){
 	    	 Toast.makeText(QueueMan.this, "Just a sec as I try to add this title to your queue",Toast.LENGTH_LONG).show();
 	    	}
 		 
-		 protected Integer doInBackground(Disc... discArr) {
-	    	int result=36;
+		 protected NetflixResponse doInBackground(Disc... discArr) {
+			 NetflixResponse nfr = new NetflixResponse(0);
 	    	try{
 		    	HashMap<String, String> parameters = new HashMap<String, String>();
-		 		parameters.put("Queue Type:", );
+		 		parameters.put("Queue Type:", ""+discArr[0].getQueueType() );
 		 		parameters.put("User ID:", ""+userId);
 				parameters.put("Disc ID:", ""+discArr[0].getId() );
 				parameters.put("Position:", ""+discArr[0].getPosition());
@@ -1319,27 +1324,31 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				 // empty disc, or bad values - just prevent FC
 			 }
 			Disc disc=(Disc)discArr[0];
-			Queue queue=
-			if (netflix.getNewETag(disc.getQueueType())) {
+			//currently we only support disc and instant, so a tertiary is ok, for blu-ray we will need a full switch
+			// @ TODO hell, maybe we should expose a public getQueue(int queueType) method.. 
+			MutableQueue queue= (discArr[0].getQueueType()==Queue.QUEUE_TYPE_INSTANT) ? instantQueue : discQueue ;
+			if (queue.getNewETag(disc.getPosition())) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
-				result = netflix.addToQueue(disc,disc.getQueueType());
+				 nfr = queue.addToQueue(disc);
+				
 			
 			} else {
-				FlurryAgent.onError("ER:36", "Not Connected", "QueueMan");
+				FlurryAgent.onError("AddTitleTask:inBackground", "Not Connected", "QueueMan");
+				nfr.setHttpCode(36);
 			} 	
 	         
-	         return result;
+	         return nfr;
 	     }
 
 	     protected void onProgressUpdate(Integer... progress) {
 	        //dont have indcators yet
 	     }
 
-	     protected void onPostExecute(Integer result) {
+	     protected void onPostExecute(NetflixResponse nfr) {
 
 	    	 dialog.dismiss();
-	    	 switch (result) {
+	    	 switch (nfr.getHttpCode()) {
 	    	 	case 36:
 	    	 		//not online
 	    	 		Toast.makeText(mListView.getContext(), "Unable to connect - Please check your connection, or try again", Toast.LENGTH_LONG).show();
@@ -1347,13 +1356,13 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	    	 		break;
 				case 200:
 				case 201:
-					Toast.makeText(mListView.getContext(), ""+netflix.lastNFResponseMessage, Toast.LENGTH_LONG).show();
+					Toast.makeText(mListView.getContext(), ""+nfr.getHttpMessage(), Toast.LENGTH_LONG).show();
 					redrawQueue();
 					break;
 				case 412:
 				case 710:
 					//title already exists! cant add
-					Toast.makeText(mListView.getContext(), ""+netflix.lastNFResponseMessage, Toast.LENGTH_LONG).show();
+					Toast.makeText(mListView.getContext(), ""+nfr.getNetflixMessage(), Toast.LENGTH_LONG).show();
 					break;
 				case 502:
 					showCustomDialog("Error - Bad Gateway", "I'm sorry, but I was unable to add your movie due to a issue connecting. Please try again over Wi-Fi, or from a different location"+ "\n\n hit 'Back' to continue");
@@ -1371,17 +1380,17 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					break;
 				default:
 					FlurryAgent.onError("ER:45",
-							"AddNewDisc: Unkown response. Result: " + result
-									+ " Http:" + netflix.lastResponseMessage,
+							"AddNewDisc: Unkown response. NFMessage: " + nfr.getNetflixMessage()
+									+ " Http:" + nfr.getHttpCode(),
 							"QueueMan");
-						showCustomDialog("Error - Please Report", "Unable to add new title!\n Reason COde:"+netflix.lastResponseMessage + "\n\n hit 'Back' to continue");
+						showCustomDialog("Error - Please Report", "Unable to add new title!\n Reason COde:"+nfr.getHttpCode() + "\n" + nfr.getNetflixMessage() + "\n\n hit 'Back' to continue");
 		        
 				}
 	     }
 
 	 }
 
-	*/
+	
  
 
 		protected void loadHomeTitles(){
@@ -1515,13 +1524,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			 
 				//if this is the end of the line, prevent them asking fo more
 				if(currentQueue.getTotalTitles() == 500 
-						|| currentQueue.getStartIndex() + currentQueue.getMaxTitles() >= currentQueue.getTotalTitles()){
+						||  currentQueue.getEndIndex() >= currentQueue.getTotalTitles()){
 					Toast.makeText(QueueMan.this, "That's it! only " + currentQueue.getTotalTitles() + " results.", Toast.LENGTH_LONG).show();
 					
-				}else{
-					//format next to "grab next XX titles"
-					currentQueue.setFirstVisibleItem(currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount()));
-					currentQueue.setStartIndex(currentQueue.getStartIndex()+Integer.valueOf(getDownloadCount()));
+				}else{					
+					//currentQueue.setFirstVisibleItem(currentQueue.getFirstVisibleItem()+Integer.valueOf(getDownloadCount()));
+					currentQueue.incrementListSize(Integer.valueOf(getDownloadCount()));
 					loadQueue(currentQueue);
 				}
 				

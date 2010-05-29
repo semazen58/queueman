@@ -85,7 +85,7 @@ public class DiscQueueHandler extends QueueHandler {
 	public void endDocument(){
 		//these let us know for which range our etag is valid, needed for move to bottom top
 		queue.setTotalTitles(super.numResults);
-		queue.setStartIndex(super.startIndex);
+		//queue.setStartIndex(super.startIndex);
 		// dont we know this as max results? queue.setPerPage(resultsPerPage);
 	}
 	
