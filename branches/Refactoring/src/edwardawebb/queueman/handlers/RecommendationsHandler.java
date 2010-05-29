@@ -185,6 +185,9 @@ public class RecommendationsHandler extends QueueHandler {
 			tempMovie.setAvailableInstant(new Boolean(isInstant));
 			//tempMovie.setQueueType(QueueHandler.QUEUE_TYPE_RECOMMEND);
 			tempMovie.setMpaaRating(new String(mpaaRating));
+			
+			queue.add(tempMovie);
+			
 			mpaaRating="";
 			mformats.clear();
 			isInstant=false;

@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -32,6 +33,13 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -44,6 +52,7 @@ import com.flurry.android.FlurryAgent;
 import edwardawebb.queueman.classes.Disc;
 import edwardawebb.queueman.classes.ErrorProcessor;
 import edwardawebb.queueman.classes.Netflix;
+import edwardawebb.queueman.classes.NetflixResponse;
 import edwardawebb.queueman.classes.User;
 import edwardawebb.queueman.handlers.QueueHandler;
 public abstract class Queue implements QueueInterface{
@@ -54,6 +63,7 @@ public abstract class Queue implements QueueInterface{
 	protected int maxTitles=10;// aka max results, results per page
 
 	protected int startIndex=0;
+	protected int endIndex=0;
 
 	protected int pageCount=1; //what page we on
 	
@@ -67,12 +77,8 @@ public abstract class Queue implements QueueInterface{
 	
 	protected boolean isCachedLocally; //have we retieved the queue? (distiniguishes "built" queue from "downloaded"
 	
-	
-	protected int resultCode=900; // queue result code, https most cases, use secondary variables for more detail
-	protected int netflixResultCode=0; // queue result code, https most cases, use secondary variables for more detail
-	protected int netflixSubCode=0; // queue result code, https most cases, use secondary variables for more detail
-	protected String netflixMessage="";
-
+	//used by methods that return a queue instead of the nfresponse
+	protected NetflixResponse latestNFReponse = new NetflixResponse(0);
 
 	
 
@@ -103,19 +109,35 @@ public abstract class Queue implements QueueInterface{
 	 */
 	public Queue(Netflix netflix){
 		this.netflix=netflix;
-		this.expanders = "&expand=synopsis,formats";
+		this.expanders = "?expand=synopsis,formats";
 		
 	}
 	
-	public void setStartIndex(int start){
-		this.startIndex=start;
+	
+	public int incrementListSize(int increase){
+		startIndex+=increase;
+		//if never used, end index will be ?downloadcount behind, this is a hack
+		if(endIndex==0) endIndex+=increase;
+		// and now increment regardless of vale
+		 endIndex+=increase;
 		isCachedLocally=false; // changing start or page value(max downlaods) invalidates current cache
-	}
-	public int getStartIndex(){
-		return this.startIndex;
+		return endIndex;
 	}
 	
-	
+	// start index should be hidden as the interfaxce will also think 0, but we use it for the titles to actually query
+
+	//they can however get the end index which is the iunternal start index, plus max downloads per page
+	/**
+	 * @return the endIndex
+	 */
+	public int getEndIndex() {
+		return endIndex;
+	}
+
+
+
+
+
 	/**
 	 * @param maxTitles the maxTitles to set
 	 */
@@ -143,17 +165,17 @@ public abstract class Queue implements QueueInterface{
 	 * @param useCached
 	 * @return
 	 */
-	public List<Disc> retreiveQueue(int start, int maxResults, boolean useCached){
-		
+	
+	public synchronized List<Disc> retreiveQueue(int start, int maxResults, boolean useCached){
 		// TODO add implementation
 		Log.d("Queue","retrieveQueue()>>>");
-		resultCode = NF_ERROR_BAD_DEFAULT;
+		
 		
 		// addtional info to return 
-		expanders = "?expand=synopsis,formats&start_index=" + startIndex + "&max_results=" + maxResults;
+		expanders += "&start_index=" + startIndex + "&max_results=" + maxResults;
 		InputStream xml = null;
 		if (isCached()){
-			resultCode = SUCCESS_FROM_CACHE;
+			latestNFReponse.setHttpCode( SUCCESS_FROM_CACHE);
 			return getQueue();
 		}
 			
@@ -166,9 +188,11 @@ public abstract class Queue implements QueueInterface{
 			Log.d("get",""+request.getURL());
 			request.connect();
 	
+			latestNFReponse.setHttpCode(request.getResponseCode()) ;
+			
+			
 			Log.d("Netflix","getQueue() | response");
-			resultCode = request.getResponseCode() ;
-			Log.d("Queue","Retrieve Result" + resultCode +":" + request.getResponseMessage());
+			Log.d("Queue","Retrieve Result" + latestNFReponse.getHttpCode() +":" + request.getResponseMessage());
 			
 			
 			xml = request.getInputStream();
@@ -189,26 +213,28 @@ public abstract class Queue implements QueueInterface{
 			xr.parse(new InputSource(xml));
 	
 			Log.d("Netflix","getQueue() | parse complete");
-			netflixSubCode=myQueueHandler.getSubCode(0);
+			latestNFReponse.setNetflixCode(myQueueHandler.getStatusCode());
+			latestNFReponse.setNetflixSubCode(myQueueHandler.getSubCode(0));
 			
 			if( myQueueHandler.getMessage() != null){
 				//we may have an error from Netflix, check it
-				netflixMessage = myQueueHandler.getMessage();
-			}else{
-				netflixMessage = "";
+				latestNFReponse.setNetflixMessage(myQueueHandler.getMessage());
 			}
-			if(resultCode==200){
-				isCachedLocally = true;
+			if(latestNFReponse.getHttpCode()==200){
+				isCachedLocally = true;				
 				this.maxTitles=maxResults;
 				this.startIndex=startIndex;
-			}else if(resultCode == 502){
-					HashMap<String, String> parameters = new HashMap<String, String>();
+			}else if(latestNFReponse.getHttpCode() == 502){
+					
+				    HashMap<String, String> parameters = new HashMap<String, String>();
 					parameters.put("Queue:", ""+this.toString());
-					parameters.put("HTTP Result:", ""+ resultCode +":" + request.getResponseMessage());
+					parameters.put("HTTP Result:", ""+ latestNFReponse.getHttpCode() +":" + request.getResponseMessage());
 					parameters.put("User ID:", ""+ netflix.getUser().getUserId());
 					parameters.put("NF Message:", ""+ myQueueHandler.getMessage());
 					FlurryAgent.onEvent("getQueue502", parameters);
-				}
+			}
+			Log.d("Queue",latestNFReponse.getHttpCode() + "," + latestNFReponse.getNetflixMessage() + ",nf:" + latestNFReponse.getNetflixCode()+":"+latestNFReponse.getNetflixSubCode());
+			
 			
 			
 		} catch (ParserConfigurationException e) {
@@ -227,7 +253,11 @@ public abstract class Queue implements QueueInterface{
 
 	}
 	
-	
+	/**
+	 * Returns etag on this queue for specified disc position
+	 * @param discPosition
+	 * @return
+	 */
 	public boolean getNewETag(int discPosition) {
 		URL QueueUrl = null;
 		DefaultHandler myQueueHandler = null;
@@ -301,18 +331,14 @@ public abstract class Queue implements QueueInterface{
 	
 	
 	
-	
-	
-	
-	
 
-	private void reportError(Exception e) {
+	protected void reportError(Exception e) {
 		// TODO Auto-generated method stub
 		FlurryAgent.onError("Queue Exception"
 				, e.getLocalizedMessage() 
-					+  "|http:" + resultCode 
-					+ "|nfCde:" + netflixResultCode + "-" + netflixSubCode
-					+ "|nfMsg:" + netflixMessage
+					+  "|http:" + latestNFReponse.getHttpCode() 
+					+ "|nfCde:" + latestNFReponse.getNetflixCode() + "-" + latestNFReponse.getNetflixSubCode()
+					+ "|nfMsg:" + latestNFReponse.getNetflixMessage()
 					, e.toString());
 			
 	}
@@ -335,23 +361,6 @@ public abstract class Queue implements QueueInterface{
 	}
 	
 	
-	//**** Err=or managerment, sorta ****//
-	public int getResultCode(){
-		return this.resultCode;
-	}
-	
-	public int getNetflixCode(){
-		return this.netflixResultCode;
-	}
-
-	public int getSubCode(){
-		return this.netflixSubCode;
-	}
-	
-	public String getNetflixMessage(){
-		return this.netflixMessage;
-	}
-		
 	
 	
 	
@@ -483,9 +492,10 @@ public int getFirstVisibleItem() {
 	public void purgeQueue(){
 		if(titles!=null)titles.clear();
 		this.isCachedLocally=false;
-		this.pageCount=-1;
-		this.totalResults=-1;
-		this.startIndex=-1;
+		this.pageCount=1;
+		this.totalResults=0;
+		this.startIndex=0;
+		this.endIndex=0;
 	}
 	public int indexOf(Disc movie) {
 		return titles.indexOf(movie);
@@ -505,6 +515,11 @@ public int getFirstVisibleItem() {
 	public int getTotalTitles() {
 		// TODO Auto-generated method stub
 		return totalResults;
+	}
+
+	public NetflixResponse getLatestNFResponse() {
+		// TODO Auto-generated method stub
+		return latestNFReponse;
 	}
 	
 	
