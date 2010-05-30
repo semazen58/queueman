@@ -25,7 +25,7 @@ public class DiscQueue extends MutableQueue{
 	protected URL getQueueUrl(User user) throws MalformedURLException {
 		// TODO Auto-generated method stub
 		return new URL("http://api.netflix.com/users/" + user.getUserId()
-				+ "/queues/disc/available" + expanders);
+				+ "/queues/disc/available" + expanders +  "&start_index=" + startIndex + "&max_results=" + maxTitles);
 	}
 
 	@Override
