@@ -1125,7 +1125,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 							+ queueDownloadCount
 							+ " titles. \n*This may take a while*\n You may adjust this value in Settings.";
 				} else {
-					message = "\n\nDownloading titles up to position #" + queueDownloadCount
+					message = "\n\nDownloading titles up to position #" + currentQueue.getEndIndex()
 								+ ". You may adjust this value in Settings.";
 				
 				}
@@ -1161,6 +1161,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			if (isOnline()) {
 					// get queue will connect to neflix and resave the currentQ
 				// vairable
+				queue.setMaxTitles(getDownloadCount());
 				queue.retreiveQueue();
 							
 			} else {
@@ -1474,12 +1475,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	/**
 	 * @return the downloadCount based on current tab
 	 */
-	public String getDownloadCount() {
+	public int getDownloadCount() {
 							
 		if(mTabHost.getCurrentTab() == TAB_RECOMMEND){
-				return recommendDownloadCount;						
+				return (recommendDownloadCount.equals(ALL_TITLES_STRING))? 500 : Integer.parseInt(recommendDownloadCount);						
 		}else{
-				return queueDownloadCount;
+				return (queueDownloadCount.equals(ALL_TITLES_STRING))? 500 : Integer.parseInt(queueDownloadCount);						
 		}
 	}
 	
@@ -1529,7 +1530,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					
 				}else{					
 					//currentQueue.setFirstVisibleItem(currentQueue.getFirstVisibleItem()+Integer.valueOf(getDownloadCount()));
-					currentQueue.incrementListSize(Integer.valueOf(getDownloadCount()));
+					currentQueue.incrementListSize(getDownloadCount());
 					loadQueue(currentQueue);
 				}
 				

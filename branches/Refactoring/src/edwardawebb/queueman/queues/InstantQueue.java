@@ -31,7 +31,7 @@ public class InstantQueue extends MutableQueue{
 			throws MalformedURLException {	
 		
 		return new URL("http://api.netflix.com/users/" + user.getUserId()
-				+ "/queues/instant" + expanders);
+				+ "/queues/instant" + expanders + "&start_index=" + startIndex + "&max_results=" + maxTitles);
 	}
 
 

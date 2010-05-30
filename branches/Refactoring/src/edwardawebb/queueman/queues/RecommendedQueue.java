@@ -31,7 +31,7 @@ public class RecommendedQueue extends BrowsableQueue{
 	protected URL getQueueUrl(User user) throws MalformedURLException {
 		// TODO Auto-generated method stub
 		return  new URL("http://api.netflix.com/users/" + user.getUserId()
-				+ "/recommendations" + expanders);
+				+ "/recommendations" + expanders + "&start_index=" + startIndex + "&max_results=" + maxTitles);
 	}
 
 	@Override

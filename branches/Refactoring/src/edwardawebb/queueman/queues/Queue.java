@@ -67,7 +67,7 @@ public abstract class Queue implements QueueInterface{
 
 	protected int pageCount=1; //what page we on
 	
-	protected int totalResults=-1;	
+	protected int totalResults=-1;	//availaebl in netflix qieie, ie 43
 
 	private int firstVisibleItem=0; // used when vewing details or lading more titles, puts user back at saame spot in queue
 
@@ -115,12 +115,14 @@ public abstract class Queue implements QueueInterface{
 	
 	
 	public int incrementListSize(int increase){
-		startIndex+=increase;
-		//if never used, end index will be ?downloadcount behind, this is a hack
-		if(endIndex==0) endIndex+=increase;
-		// and now increment regardless of vale
-		 endIndex+=increase;
-		isCachedLocally=false; // changing start or page value(max downlaods) invalidates current cache
+		if(endIndex < totalResults){
+			startIndex+=increase;
+			//if never used, end index will be ?downloadcount behind, this is a hack
+			if(endIndex==0) endIndex+=increase;
+			// and now increment regardless of vale
+			 endIndex+=increase;
+			isCachedLocally=false; // changing start or page value(max downlaods) invalidates current cache
+		}
 		return endIndex;
 	}
 	
@@ -143,6 +145,7 @@ public abstract class Queue implements QueueInterface{
 	 */
 	public void setMaxTitles(int maxTitles) {
 		this.maxTitles = maxTitles;
+		this.endIndex+=maxTitles;
 		isCachedLocally=false; // changing start or page value(max downlaods) invalidates current cache
 	}
 
@@ -171,8 +174,6 @@ public abstract class Queue implements QueueInterface{
 		Log.d("Queue","retrieveQueue()>>>");
 		
 		
-		// addtional info to return 
-		expanders += "&start_index=" + startIndex + "&max_results=" + maxResults;
 		InputStream xml = null;
 		if (isCached()){
 			latestNFReponse.setHttpCode( SUCCESS_FROM_CACHE);
