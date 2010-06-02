@@ -227,6 +227,18 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 		Log.d("QueueMan","onCreate()<<<");
 	}
+	
+	/**
+	 * Csllred prior to screen rotartions, sotre needed info like current queue
+	 */
+	@Override
+	public Object onRetainNonConfigurationInstance() {
+	    final HashMap stuff = new HashMap();
+	    stuff.put("queue", currentQueue);
+	    stuff.put("tab", Integer.valueOf(mTabHost.getCurrentTab()));
+	   
+	    return stuff;
+	}
 
 	
 	/*
@@ -258,6 +270,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					netflix = Netflix.getInstance();
 					netflix.setExistingUser(userId, accessToken, accessTokenSecret);
 					//load user's preferred tab from preferences
+					prepTabs();
 					mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
 					if(Integer.valueOf(defaultTab) == TAB_DISC) {
 						currentQueue=discQueue; // needed by some methods like onClick , elimates need for more case statements
@@ -292,6 +305,17 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				if(mTabHost.isLayoutRequested()) {					
 					mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
 				}
+				
+				//faster screen rotation and queue persitence 
+				final Object data = getLastNonConfigurationInstance();
+				if (data != null) {
+					//saved as a hashmap for various objects
+			        // get queue saved by #onRetainNonConfigurationInstance() before 
+			        currentQueue = (Queue) ((HashMap)data).get("queue");
+			        mTabHost.setCurrentTab(Integer.parseInt(  ((HashMap)data).get("tab").toString()  ) );
+			        
+			    }
+
 				redrawQueue();
 				break;
 				
@@ -314,6 +338,25 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 		Log.d("QueueMan","onStart()<<<");
 
+	}
+
+	private void prepTabs() {
+		// TODO Auto-generated method stub
+		mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
+		switch(Integer.valueOf(defaultTab)){
+			case TAB_DISC:
+				currentQueue=discQueue; // needed by some methods like onClick , elimates need for more case statements
+				break;
+			case TAB_INSTANT:
+				currentQueue=instantQueue; // needed by some methods like onClick , elimates need for more case statements
+			break;
+			case TAB_RECOMMEND:
+				currentQueue=recommendedQueue; // needed by some methods like onClick , elimates need for more case statements
+				break;
+			
+		}
+		loadQueue(currentQueue) ;// this is missed by "onTabChange" since it is Disc -> Disc, and not really a change
+		
 	}
 
 	/**
@@ -402,7 +445,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		case REFRESH_ID:
-			return refreshCurrentQueue(discQueue);
+			return refreshQueue(currentQueue);
 		case HOME_ID:
 			FlurryAgent.onEvent("Launching At Home");
 			//load the at home titles if we habent already
@@ -418,6 +461,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 			return true;
 		case SIGNOUT_ID:
+			//@ TODO unlock this (but test it first :) !
 			purgeUser();
 			notify("User Message",
 					"! You will still need to change your Login information with Netflix");
@@ -1075,7 +1119,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			break;
 		case TAB_INSTANT:
 			mListView = (ListView) findViewById(R.id.instantqueue);
-			// @ TODO decide best layout.
 			// mListView.setAdapter(new IconicAdapter(this,
 			// NetFlix.instantQueue.getDiscs()));
 			mListView.setAdapter(new ArrayAdapter<Disc>(this,
@@ -1084,13 +1127,11 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			break;
 		case TAB_RECOMMEND:
 			mListView = (ListView) findViewById(R.id.recommendqueue);
-			// @ TODO decide best layout.
 			// mListView.setAdapter(new IconicAdapter(this,
 			// NetFlix.instantQueue.getDiscs()));
 			mListView.setAdapter(new ArrayAdapter<Disc>(this,
 					android.R.layout.simple_list_item_1, recommendedQueue
-					.retreiveQueue()
-							));
+					.retreiveQueue()));
 			break;
 		}
 
@@ -1495,7 +1536,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 * Uses current tab to purgew cucrrent queue and request new one
 	 * @return
 	 */
-	private boolean refreshCurrentQueue(Queue queue) {
+	private boolean refreshQueue(Queue queue) {
 		queue.purgeQueue();
 		loadQueue(queue);		
 		return true;
