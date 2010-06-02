@@ -144,10 +144,10 @@ public abstract class Queue implements QueueInterface{
 	 * @param maxTitles the maxTitles to set
 	 */
 	public void setMaxTitles(int maxTitles) {
+		if(maxTitles != this.maxTitles)isCachedLocally=false; // changing start or page value(max downlaods) invalidates current cache
 		this.maxTitles = maxTitles;
 		this.endIndex+=maxTitles;
-		isCachedLocally=false; // changing start or page value(max downlaods) invalidates current cache
-	}
+		}
 
 	/**
 	 * @return the maxTitles
@@ -175,7 +175,7 @@ public abstract class Queue implements QueueInterface{
 		
 		
 		InputStream xml = null;
-		if (isCached()){
+		if (isCachedLocally){
 			latestNFReponse.setHttpCode( SUCCESS_FROM_CACHE);
 			return getQueue();
 		}
@@ -192,7 +192,7 @@ public abstract class Queue implements QueueInterface{
 			latestNFReponse.setHttpCode(request.getResponseCode()) ;
 			
 			
-			Log.d("Netflix","getQueue() | response");
+			Log.d("Queue","getQueue() | response");
 			Log.d("Queue","Retrieve Result" + latestNFReponse.getHttpCode() +":" + request.getResponseMessage());
 			
 			
@@ -210,10 +210,10 @@ public abstract class Queue implements QueueInterface{
 	
 			xr.setContentHandler(myQueueHandler);
 	
-			Log.d("Netflix","getQueue() | parse ready");
+			Log.d("Queue","retreiveQueue() | parse ready");
 			xr.parse(new InputSource(xml));
 	
-			Log.d("Netflix","getQueue() | parse complete");
+			Log.d("Queue","retreiveQueue() | parse complete");
 			latestNFReponse.setNetflixCode(myQueueHandler.getStatusCode());
 			latestNFReponse.setNetflixSubCode(myQueueHandler.getSubCode(0));
 			
