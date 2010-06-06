@@ -1372,7 +1372,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			if (queue.getNewETag(disc.getPosition())) {
 				// get queue will connect to neflix and resave the currentQ
 				// vairable
-				 nfr = queue.addToQueue(disc);
+				 nfr = queue.postTitle(disc);
 				
 			
 			} else {

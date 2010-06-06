@@ -32,6 +32,7 @@ public class HomeQueueHandler extends QueueHandler {
 	private Queue queue;
 
 	public HomeQueueHandler(Queue queue) {
+		super(queue);
 		super.itemElementName="at_home_item";
 		this.queue=queue;
 	}

@@ -38,6 +38,7 @@ public class InstantQueueHandler extends QueueHandler {
 	
 	
 	public InstantQueueHandler(MutableQueue queue) {
+		super(queue);
 		super.itemElementName="queue_item";
 		this.queue=queue;
 	}

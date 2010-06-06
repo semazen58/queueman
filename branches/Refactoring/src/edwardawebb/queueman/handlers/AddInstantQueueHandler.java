@@ -41,6 +41,7 @@ public class AddInstantQueueHandler extends QueueHandler {
 	private MutableQueue queue;
 	
 	public AddInstantQueueHandler(MutableQueue queue) {
+		super(queue);
 		super.itemElementName = "queue_item";
 		this.queue=queue;
 

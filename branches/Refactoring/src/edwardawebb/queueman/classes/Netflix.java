@@ -76,16 +76,7 @@ public class Netflix{
 	private static final String AUTHORIZE_WEBSITE_URL = "https://api-user.netflix.com/oauth/login";
 	// queue types
 
-/*	public static NetflixQueue searchQueue = new NetflixQueue(
-			NetflixQueue.QUEUE_TYPE_SEARCH);
-	public static NetflixQueue discQueue = new NetflixQueue(
-			NetflixQueue.QUEUE_TYPE_DISC);
-	public static NetflixQueue instantQueue = new NetflixQueue(
-			NetflixQueue.QUEUE_TYPE_INSTANT);
-	public static NetflixQueue recomemendedQueue = new NetflixQueue(
-			NetflixQueue.QUEUE_TYPE_RECOMMEND);
-	public static NetflixQueue homeQueue = new NetflixQueue(
-			NetflixQueue.QUEUE_TYPE_HOME);*/
+
 
 	private OAuthConsumer oaconsumer;
 	private OAuthProvider oaprovider;
@@ -637,114 +628,8 @@ public class Netflix{
 		}
 	}*/
 	
-	/**
-	 * Post a rating to specificed title
-	 * @param modifiedDisc
-	 * @return SubCode, httpResponseCode or NF_ERROR_BAD_DEFAULT on exception
-	 *//*
-	public int setRating(Disc modifiedDisc) {
-		
-		int result = NF_ERROR_BAD_DEFAULT;
-		// 2 choirs, send request to Netflix, and if successful update local q.
-		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
-				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
-		postConsumer.setTokenWithSecret(user.getAccessToken(), user.getAccessTokenSecret());
-		
-		// postProvider.setOAuth10a(false);
-		InputStream xml = null;
-		try {
-
-			// Construct data
-			
-			 * Log.d("Netflix", "title_ref=" + URLEncoder.encode(disc.getId(),
-			 * "UTF-8")); Log.d("Netflix", "etag=" +
-			 * URLEncoder.encode(NetflixQueue.getETag(), "UTF-8"));
-			 
-			URL url = new URL("https://api.netflix.com/users/" + user.getUserId()
-						+ "/ratings/title/actual");
-				
-
-			// Log.d("Netflix", "@URL: " + url.toString())
-			HttpClient httpclient = new DefaultHttpClient();
-			// Your URL
-			HttpPost httppost = new HttpPost(url.toString());
-			postConsumer.setTokenWithSecret(user.getAccessToken(), user.getAccessTokenSecret());
-
-			String rating = (modifiedDisc.getUserRating() == 0) ? NF_RATING_NO_INTEREST : String.valueOf(modifiedDisc.getUserRating().intValue()); 
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			// Your DATA
-			nameValuePairs.add(new BasicNameValuePair("title_ref", modifiedDisc.getId()));
-			nameValuePairs.add(new BasicNameValuePair("rating", rating));
-
-			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-			postConsumer.sign(httppost);
-
-			HttpResponse response;
-			response = httpclient.execute(httppost);
-
-			xml = response.getEntity().getContent();
-			lastResponseMessage = response.getStatusLine().getStatusCode()
-					+ ": " + response.getStatusLine().getReasonPhrase();
-			result=response.getStatusLine().getStatusCode();
-			
-			 Log.d("Netflix", "" +
-			 response.getEntity().getContentType().toString()); BufferedReader
-			 in = new BufferedReader(new InputStreamReader(xml)); String
-			 linein = null; while ((linein = in.readLine()) != null) {
-			 Log.d("Netflix", "SetRating: " + linein); }
-			 
-			// Log.i("Netflix", "Parsing XML Response")
-			SAXParserFactory spf = SAXParserFactory.newInstance();
-			SAXParser sp;
-
-			sp = spf.newSAXParser();
-
-			XMLReader xr = sp.getXMLReader();
-			QueueHandler myHandler =  new QueueHandler();
-			
-			xr.setContentHandler(myHandler);
-			xr.parse(new InputSource(xml));
-
-			if(result == 201 || result == 422){
-				switch(modifiedDisc.getQueueType()){
-					//could be rating froms earch, recommends, instant, discm, or at home
-				case NetflixQueue.QUEUE_TYPE_RECOMMEND:
-					((Disc)recomemendedQueue.getDiscs().get(recomemendedQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
-					break;
-				case NetflixQueue.QUEUE_TYPE_INSTANT:
-					((Disc)instantQueue.getDiscs().get(instantQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
-					break;
-				case NetflixQueue.QUEUE_TYPE_DISC:
-					((Disc)discQueue.getDiscs().get(discQueue.indexOf(modifiedDisc))).setUserRating(modifiedDisc.getUserRating());
-					break;
-				}
-			}
-			
-			lastNFResponseMessage = "NF: "+myHandler.getMessage();
-			result = myHandler.getSubCode(result);
-
-		} catch (IOException e) {
-			
-			reportError(e);
-			// Log.i("Netflix", "IO Error connecting to Netflix queue")
-		} catch (OAuthMessageSignerException e) {
-			
-			reportError(e);
-		} catch (OAuthExpectationFailedException e) {
-			
-			reportError(e);
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			reportError(e);
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			reportError(e);
-		} 
-		return result;
-	}
-
-	*/
+	
+	
 /**
 	 * report exceptions using Flurry
 	 * @param e

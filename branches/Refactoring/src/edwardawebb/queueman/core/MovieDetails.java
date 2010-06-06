@@ -331,7 +331,7 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 		// TODO Auto-generated method stub
 		dialog.dismiss();
 		disc.setUserRating(arg0.getRating());
-		new SetRatings().execute(disc);
+		new SetRatings(String.valueOf(arg0.getRating())).execute(disc);
 		avgRatingBar.setRating(arg0.getRating());	
 		
 	}
@@ -344,32 +344,39 @@ public class MovieDetails extends Activity implements OnRatingBarChangeListener,
 			dialog.dismiss();
 			avgRatingBar.setRating(0.0f);
 			disc.setUserRating(0);
-			new SetRatings().execute(disc);
+			new SetRatings(Netflix.NF_RATING_NO_INTEREST).execute(disc);
 		}
 	}
 
 	
 	 private class SetRatings extends AsyncTask<Disc, Integer, NetflixResponse> {
 
+		 //must specify to-be rating when creating new async task handler
+		 private final String rating;
+		 public SetRatings(String rating){
+			 this.rating = rating;
+		 }
+		 
+		 
 		@Override
-		protected NetflixResponse doInBackground(Disc... modifiedDisc) {
-			int result;
+		protected NetflixResponse doInBackground(Disc... modifiedDisc) {			
 
-			return modifiedDisc[0].setRating(modifiedDisc[0]);
+			return modifiedDisc[0].rateTitle(rating);
 			
 			
 		}
 		
+		@Override
 		protected void onPostExecute(NetflixResponse nfr){
 			switch(nfr.getHttpCode()){
 				case 200:
 				case 201:
-					//successful rating
-					//continue
-				case 422:
-					//already rated
 					Toast.makeText(MovieDetails.this, "Title Rated!", Toast.LENGTH_SHORT).show();
 					rateMe.setText(R.string.rate_button_rerate);
+					break;
+				case 422:
+					//already rated
+					Toast.makeText(MovieDetails.this, "Already Rated!\n" + nfr.getNetflixMessage(), Toast.LENGTH_SHORT).show();
 					break;
 				default:
 					//FlurryAgent.onError("SetRatings-Failed", "Error:"+result + " | HTTP: " + QueueMan.netflix.lastResponseMessage + " | " + QueueMan.netflix.lastNFResponseMessage, "QueueMan");

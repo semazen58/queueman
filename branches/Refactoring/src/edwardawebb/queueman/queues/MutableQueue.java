@@ -106,7 +106,7 @@ public abstract class MutableQueue extends Queue{
 
 	
 
-	public NetflixResponse addToQueue(Disc disc) {
+	public NetflixResponse postTitle(Disc disc) {
 		// 2 choirs, send request to Netflix, and if successful update local q.
 		/*OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);

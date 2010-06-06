@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import edwardawebb.queueman.classes.Disc;
+import edwardawebb.queueman.queues.Queue;
 
 /*
  * I enjoy quiet evenings after being called by the factory, and long walks through XML
@@ -32,6 +33,9 @@ public class QueueHandler extends DefaultHandler {
 	public static final String INSTANT_LABEL="instant";
 	protected Disc tempMovie;
 
+	
+	protected Queue queue;
+	
 	private boolean inId = false;
 	private boolean inRating = false;
 	private boolean inUserRating = false;
@@ -79,6 +83,11 @@ public class QueueHandler extends DefaultHandler {
 	private String discAvailabilityCategoryScheme = "http://api.netflix.com/categories/queue_availability";
 	private String discMpaaRatingScheme = "http://api.netflix.com/categories/mpaa_ratings";
 	private String discTvRatingScheme = "http://api.netflix.com/categories/tv_ratings";
+	
+	public QueueHandler(Queue queue){
+		this.queue=queue;
+	}
+	
 	
 	public void startElement(String uri, String element, String qName,
 			Attributes atts) {
@@ -164,7 +173,7 @@ public class QueueHandler extends DefaultHandler {
 		} else if (element.equals("user_rating")) {
 			inUserRating = false;
 		} else if (element.equals(itemElementName)) {
-			tempMovie = new Disc(id,uniqueID, stitle, ftitle, boxArtUrl, rating,
+			tempMovie = new Disc(queue,id,uniqueID, stitle, ftitle, boxArtUrl, rating,
 					synopsis, year, isAvailable);
 			tempMovie.setAvailibilityText(availability);
 			tempMovie.setMpaaRating(new String(mpaaRating));

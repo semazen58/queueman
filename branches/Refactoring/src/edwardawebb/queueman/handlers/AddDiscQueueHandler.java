@@ -37,6 +37,7 @@ public class AddDiscQueueHandler extends QueueHandler {
 
 
 	public AddDiscQueueHandler(DiscQueue queue) {
+		super(queue);
 		super.itemElementName = "queue_item";
 		this.queue=queue;
 
