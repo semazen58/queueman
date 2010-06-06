@@ -85,6 +85,7 @@ public class RecommendationsHandler extends QueueHandler {
 	private boolean isInstant;
 
 	public RecommendationsHandler(Queue queue){
+		super(queue);
 		this.queue=queue;
 	}
 	public void endDocument() {
@@ -178,7 +179,7 @@ public class RecommendationsHandler extends QueueHandler {
 			inBoxArt = false;
 		} else if (element.equals(itemElementName)) {
 			inItem = false;
-			tempMovie = new Disc(id,uniqueID, stitle, ftitle, boxArtUrl, rating,
+			tempMovie = new Disc(queue,id,uniqueID, stitle, ftitle, boxArtUrl, rating,
 					synopsis, year, isAvailable);
 			tempMovie.setAvailibilityText(availability);
 			tempMovie.setFormats(new ArrayList<String>(mformats));

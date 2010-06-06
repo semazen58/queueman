@@ -39,6 +39,7 @@ public class DiscQueueHandler extends QueueHandler {
 	
 	
 	public DiscQueueHandler(DiscQueue homeQueue) {
+		super(homeQueue);
 		super.itemElementName="queue_item";
 		this.queue = homeQueue;
 	}

@@ -40,5 +40,5 @@ android:debuggable="true"
 		<activity android:name=".AboutHelp" android:label="QueueMan Info and Help" >
 		</activity>
 </application>
-	<uses-sdk  android:minSdkVersion="4" android:maxSdkVersion="7" />
+	<uses-sdk  android:minSdkVersion="4" android:maxSdkVersion="8" />
 </manifest> 

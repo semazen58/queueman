@@ -35,6 +35,7 @@ public class SearchQueueHandler extends QueueHandler {
 	private Queue queue;
 
 	public SearchQueueHandler(Queue queue) {
+		super(queue);
 		super.itemElementName="catalog_title";
 		this.queue=queue;
 	}

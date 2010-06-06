@@ -19,10 +19,13 @@
  * 
  */
 package edwardawebb.queueman.classes;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +33,9 @@ import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import oauth.signpost.exception.OAuthExpectationFailedException;
+import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -42,7 +48,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import android.util.Log;
 import edwardawebb.queueman.handlers.QueueHandler;
+import edwardawebb.queueman.queues.MutableQueue;
+import edwardawebb.queueman.queues.Queue;
 
 
 
@@ -95,6 +104,7 @@ public class Disc implements Serializable {
 	protected boolean hasBluRay;
 
 	protected boolean hasInstant;
+	transient private Queue queue;
 
 	
 	public static final String NF_RATING_NO_INTEREST = "not_interested";
@@ -102,11 +112,6 @@ public class Disc implements Serializable {
 	
 	
 	
-	public NetflixResponse rateTitle(){
-		return null;
-		// TODO add implementation and return statement
-	}
-
 	/*
 	 * searc
 	 */
@@ -119,7 +124,7 @@ public class Disc implements Serializable {
 		this.avgRating = avgRating;
 	}
 
-	
+
 	/**
 	 * @param id // varies  by queue type (recomends, search, etc)
 	 * @param uniqueId // same across all ex. http://api.netflix.com/catalog/titles/movies/243547
@@ -131,9 +136,10 @@ public class Disc implements Serializable {
 	 * @param year
 	 * @param isAvailable
 	 */
-	public Disc(String id,String uniqueId, String shortTitle, String fullTitle,
+	public Disc(Queue queue,String id,String uniqueId, String shortTitle, String fullTitle,
 			String boxArtUrl, Double rating, String synopsis, String year,
 			boolean isAvailable) {
+		this.queue = queue;
 		this.id = id;
 		this.uniqueId=uniqueId;
 		this.shortTitle = shortTitle;
@@ -143,6 +149,90 @@ public class Disc implements Serializable {
 		this.synopsis = synopsis;
 		this.year = year;
 		this.setAvailable(isAvailable);
+	}
+
+
+	public NetflixResponse rateTitle(String rating){
+
+		if(!rating.equalsIgnoreCase(Netflix.NF_RATING_NO_INTEREST))	{
+			rating = "" + (Double.valueOf(rating)).intValue();
+		}
+		Netflix nf = Netflix.getInstance();
+		NetflixResponse nfr = new NetflixResponse(0);
+			InputStream xml = null;
+			try {
+
+				// Construct data
+				
+				 /* Log.d("Netflix", "title_ref=" + URLEncoder.encode(getId(),
+				 "UTF-8")); Log.d("Netflix", "etag=" +
+				  URLEncoder.encode(""+queue.getNewETag(1), "UTF-8"));*/
+				URL url = new URL("http://api.netflix.com/users/" + nf.getUser().getUserId()
+							+ "/ratings/title/actual");
+				 Log.d("Disc",url.toString());
+					
+
+				// Log.d("Netflix", "@URL: " + url.toString())
+				HttpClient httpclient = new DefaultHttpClient();
+				// Your URL
+				HttpPost httppost = new HttpPost(url.toString());
+		
+				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+				// Your DATA
+				nameValuePairs.add(new BasicNameValuePair("title_ref", getId()));
+				nameValuePairs.add(new BasicNameValuePair("rating", rating));
+
+				httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+				nf.sign(httppost);
+
+				HttpResponse response;
+				response = httpclient.execute(httppost);
+
+				xml = response.getEntity().getContent();
+				nfr = new NetflixResponse(response.getStatusLine().getStatusCode());
+				nfr.setHttpMessage(response.getStatusLine().getReasonPhrase());
+					
+				
+			/*	 Log.d("Disc", "" +
+				 response.getEntity().getContentType().toString()); BufferedReader
+				 in = new BufferedReader(new InputStreamReader(xml)); String
+				 linein = null; while ((linein = in.readLine()) != null) {
+				 Log.d("Disc", "SetRating: " + linein); }*/
+				 
+				// Log.i("Netflix", "Parsing XML Response")
+				SAXParserFactory spf = SAXParserFactory.newInstance();
+				SAXParser sp;
+
+				sp = spf.newSAXParser();
+
+				XMLReader xr = sp.getXMLReader();
+				QueueHandler myHandler =  new QueueHandler(this.queue);
+				
+				xr.setContentHandler(myHandler);
+				xr.parse(new InputSource(xml));
+
+				nfr.setNetflixCode(myHandler.getStatusCode());
+				nfr.setNetflixSubCode(myHandler.getSubCode(0));
+				nfr.setNetflixMessage(myHandler.getMessage());
+				
+				
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+				// Log.i("Netflix", "IO Error connecting to Netflix queue")
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+
+				e.printStackTrace();
+			} 
+			return nfr;
+		
+
 	}
 
 	public String getSynopsis() {
@@ -414,7 +504,7 @@ public class Disc implements Serializable {
 			sp = spf.newSAXParser();
 
 			XMLReader xr = sp.getXMLReader();
-			QueueHandler myHandler =  new QueueHandler();
+			QueueHandler myHandler =  new QueueHandler(this.queue);
 			
 			xr.setContentHandler(myHandler);
 			xr.parse(new InputSource(xml));
