@@ -59,6 +59,7 @@ public class QueueHandler extends DefaultHandler {
 	private String mpaaRating="";
 	private String synopsis;
 	private String id;
+
 	private String uniqueID;
 	private String boxArtUrl;
 	private String year;
@@ -259,6 +260,15 @@ public class QueueHandler extends DefaultHandler {
 	 */
 	public String getMessage() {
 		return message;
+	}
+	
+
+	/**
+	 * Used by ratings to get id tpo PUT to after failed POST
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
 	}
 
 }

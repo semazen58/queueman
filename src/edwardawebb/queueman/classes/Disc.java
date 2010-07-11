@@ -42,6 +42,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.xml.sax.InputSource;
@@ -194,11 +195,11 @@ public class Disc implements Serializable {
 				nfr.setHttpMessage(response.getStatusLine().getReasonPhrase());
 					
 				
-			/*	 Log.d("Disc", "" +
+				 Log.d("Disc", "" +
 				 response.getEntity().getContentType().toString()); BufferedReader
 				 in = new BufferedReader(new InputStreamReader(xml)); String
 				 linein = null; while ((linein = in.readLine()) != null) {
-				 Log.d("Disc", "SetRating: " + linein); }*/
+				 Log.d("Disc", "SetRating: " + linein); }
 				 
 				// Log.i("Netflix", "Parsing XML Response")
 				SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -215,6 +216,31 @@ public class Disc implements Serializable {
 				nfr.setNetflixCode(myHandler.getStatusCode());
 				nfr.setNetflixSubCode(myHandler.getSubCode(0));
 				nfr.setNetflixMessage(myHandler.getMessage());
+				
+				if(nfr.getNetflixCode()==422){
+					//already set, call put
+					// Your URL
+					URL url2 = new URL(myHandler.getId());
+					HttpPut httpput = new HttpPut(url2.toString());
+			
+					
+					httpput.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+					nf.sign(httpput);
+
+					
+					response = httpclient.execute(httppost);
+
+					xml = response.getEntity().getContent();
+					nfr = new NetflixResponse(response.getStatusLine().getStatusCode());
+					nfr.setHttpMessage(response.getStatusLine().getReasonPhrase());
+
+					xr.parse(new InputSource(xml));
+
+					nfr.setNetflixCode(myHandler.getStatusCode());
+					nfr.setNetflixSubCode(myHandler.getSubCode(0));
+					nfr.setNetflixMessage(myHandler.getMessage());
+				}
 				
 				
 			} catch (IOException e) {

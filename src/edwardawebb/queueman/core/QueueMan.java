@@ -272,10 +272,10 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 					//load user's preferred tab from preferences
 					prepTabs();
 					mTabHost.setCurrentTab(Integer.valueOf(defaultTab));
-					if(Integer.valueOf(defaultTab) == TAB_DISC) {
+					/*if(Integer.valueOf(defaultTab) == TAB_DISC) {
 						currentQueue=discQueue; // needed by some methods like onClick , elimates need for more case statements
 						loadQueue(discQueue) ;// this is missed by "onTabChange" since it is Disc -> Disc, and not really a change
-					}
+					}*/
 					//retrieve and display current tab's queue
 					//loadQueue();
 				}else{
@@ -603,7 +603,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			if (mTabHost.getCurrentTab() == TAB_INSTANT) {
 				if (canWatchInstant) {
 					currentQueue=instantQueue;
-					loadQueue(instantQueue);
 					//((ViewStub) findViewById(R.id.stub_paginate)).setVisibility(View.GONE);
 				} else {
 					showCustomDialog(
@@ -611,35 +610,25 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 							"According to Netflix this user does not have \"Watch Instantly\" rights\nPress 'Back' to return to your Disc Queue");
 					mTabHost.setCurrentTab(TAB_DISC);
 					currentQueue=discQueue;
-					
+					return;
 				}
 			} else if (mTabHost.getCurrentTab() == TAB_DISC) {
 				currentQueue=discQueue;
-				  loadQueue(discQueue);
 				//((ViewStub) findViewById(R.id.stub_paginate)).setVisibility(View.GONE);
 
 			} else if (mTabHost.getCurrentTab() == TAB_RECOMMEND) {
 				currentQueue=recommendedQueue;
-				loadQueue(recommendedQueue);
+				
 			}
+			if(currentQueue.getEndIndex()==0){
+				currentQueue.setMaxTitles(getDownloadCount());
+			}
+			
+			loadQueue(currentQueue);
 		}
 	}
 
 
-	/*	protected void upgradePreBetaUser() {
-		// show custom dialog to let them know
-		showCustomDialog("New Instant Features",
-				"Checking if you have an instant Queue..  \n (A one time operation)");
-		Thread t = new Thread() {
-			public void run() {
-				canWatchInstant = netflix.getWatchInstant();
-				saveSettings();
-				mHandler.post(mRetrieveQueue1st);
-			}
-		};
-		t.start();
-	}*/
-	
 	
 	public void onClick(View v) {
 		if(v == accept){
@@ -1106,7 +1095,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	 
 
 	protected void redrawQueue() {
-		// just in casedialog.dismiss();
+		// just in case
+		if(dialog!=null) dialog.dismiss();
 		
 		switch (mTabHost.getCurrentTab()) {
 		case TAB_DISC:
@@ -1141,6 +1131,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		mListView.setSelection(currentQueue.getFirstVisibleItem());
 		// register for long hold on menu items
 		registerForContextMenu(mListView);
+		
+		if(dialog!=null) dialog.dismiss();
 	}
 
 	/**
@@ -1160,7 +1152,19 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		String message = "";
 		switch(mTabHost.getCurrentTab()){
 			case TAB_DISC:
+				currentQueue=discQueue;
+				if (queueDownloadCount.equals(ALL_TITLES_STRING)) {
+					message = "\n\nDownloading "
+							+ queueDownloadCount
+							+ " titles. \n*This may take a while*\n You may adjust this value in Settings.";
+				} else {
+					message = "\n\nDownloading titles up to position #" + currentQueue.getEndIndex()
+								+ ". You may adjust this value in Settings.";
+				
+				}
+				break;
 			case TAB_INSTANT:
+				currentQueue=instantQueue;
 				if (queueDownloadCount.equals(ALL_TITLES_STRING)) {
 					message = "\n\nDownloading "
 							+ queueDownloadCount
@@ -1172,11 +1176,14 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				}
 				break;
 			case TAB_RECOMMEND:
+				currentQueue=recommendedQueue;
 				message = "\n\nDownloading " + recommendDownloadCount + " recommendations.\n"
 				+ ". You may adjust this value in Settings.";
 				break;
 		}
-		showCustomDialog("Retrieving Queue", message);
+		if(currentQueue.getMaxTitles()>0){
+			showCustomDialog("Retrieving Queue", message);  // one call proper, with #10
+		}
 				// now work in background, and redraw after if successful
 		new LoadQueueTask().execute(queue);
 
@@ -1202,7 +1209,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 			if (isOnline()) {
 					// get queue will connect to neflix and resave the currentQ
 				// vairable
-				queue.setMaxTitles(getDownloadCount());
 				queue.retreiveQueue();
 							
 			} else {
@@ -1221,7 +1227,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 
 	     protected void onPostExecute(final Queue queue) {
 	    	 Log.d("QueueMan","LoadQueueTask() | PostExecute");
-		     dialog.dismiss();
 		     NetflixResponse nfr = queue.getLatestNFResponse();
 		     switch (nfr.getHttpCode()) {
 				case 200:
@@ -1260,7 +1265,8 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 							"QueueMan");
 				}	
 	     	
-		     Log.d("QueueMan","LoadQueueTask() | postExecute()<<<");
+		     dialog.dismiss();
+			Log.d("QueueMan","LoadQueueTask() | postExecute()<<<");
 		    	
 	     }
 
@@ -1319,7 +1325,6 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		text.setText(message);
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setImageResource(R.drawable.red_icon);
-
 		dialog.show();
 	}
 
@@ -1440,17 +1445,7 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		 		parameters.put("Queue Type:", "Home Titles");
 		 		FlurryAgent.onEvent("loadHomeTitles", parameters);
 		 		// show custom dialog to let them know
-		 /*		dialog = new Dialog(this);
-		 		dialog.setContentView(R.layout.custom_dialog);
-		 		dialog.setTitle("Loading  at home titles");
-		 		TextView text = (TextView) dialog.findViewById(R.id.text);
-		 		String message = "\nTitles at home...";
-		 		
-		 		text.setText("Patience is a virtue" + message);
-		 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
-		 		image.setImageResource(R.drawable.red_icon);
-		 		// show message
-		 		dialog.show();*/
+		
 		 		Toast t = Toast.makeText(mListView.getContext()
 		 				,"Please wait - at home titles loading"
 		 				,Toast.LENGTH_LONG);

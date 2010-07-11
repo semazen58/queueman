@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -41,6 +42,7 @@ import oauth.signpost.exception.OAuthNotAuthorizedException;
 import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -163,9 +165,11 @@ public class Netflix{
 			// get url for user to lologin and request token
 			String tmp = oaprovider.retrieveRequestToken(callbackUrl);
 			// Netflix.oaprovider.getResponseParameters().get("request_token");
-			// Log.d("Netflix","Url:"+tmp)
+			Log.d("Netflix","Url:"+tmp);
 			result = Uri.parse(tmp + "&application_name=" + APPLICATION_NAME
-					+ "&oauth_consumer_key="+CONSUMER_KEY);
+					+ "&oauth_callback=" + URLEncoder.encode(callbackUrl)
+					+ "&oauth_consumer_key="+CONSUMER_KEY 
+					);
 			
 			
 			
@@ -644,8 +648,8 @@ public class Netflix{
 	public boolean isConnected(){
 		boolean result =false;
 		try{
-			URL url = new URL("http://api.netflix.com/");
-			HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+			URL url = new URL("http://api.netflix.com/catalog");
+			HttpURLConnection urlc = (HttpURLConnection) url.openConnection();			
 			urlc.connect();
 			Log.d("QM","isCOnnected: " + urlc.getResponseCode() );
 			if (urlc.getResponseCode() == 200 || urlc.getResponseCode()==403) {
@@ -693,6 +697,22 @@ public class Netflix{
 	
 		try {
 			postConsumer.sign(httpPost);
+		} catch (OAuthMessageSignerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthExpectationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void sign(HttpPut httpput) {
+		// TODO Auto-generated method stub
+		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
+				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
+		postConsumer.setTokenWithSecret(user.getAccessToken(), user.getAccessTokenSecret());
+	
+		try {
+			postConsumer.sign(httpput);
 		} catch (OAuthMessageSignerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
