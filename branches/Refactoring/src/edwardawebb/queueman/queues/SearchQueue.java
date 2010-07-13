@@ -37,8 +37,8 @@ public class SearchQueue extends BrowsableQueue{
 	@Override
 	protected URL getQueueUrl(User user) throws MalformedURLException {
 		// TODO Auto-generated method stub
-		return  new URL("http://api.netflix.com/catalog/titles?term="
-				+ keywords + expanders);
+		return new URL(netflix.sign("http://api.netflix.com/catalog/titles?term="
+				+ keywords + expanders));
 	}
 
 	@Override
