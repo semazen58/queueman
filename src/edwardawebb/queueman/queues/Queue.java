@@ -185,7 +185,6 @@ public abstract class Queue implements QueueInterface{
 			QueueHandler myQueueHandler = getQueueHandler();
 			
 			HttpURLConnection request = (HttpURLConnection) QueueUrl.openConnection();
-			netflix.sign(request);
 			Log.d("get",""+request.getURL());
 			request.connect();
 	
@@ -275,7 +274,6 @@ public abstract class Queue implements QueueInterface{
 			HttpURLConnection request = (HttpURLConnection) QueueUrl
 					.openConnection();
 
-			netflix.sign(request);
 			request.connect();
 
 			

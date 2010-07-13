@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -32,14 +31,12 @@ import javax.xml.parsers.SAXParserFactory;
 
 import oauth.signpost.OAuthConsumer;
 import oauth.signpost.OAuthProvider;
-import oauth.signpost.basic.DefaultOAuthConsumer;
-import oauth.signpost.basic.DefaultOAuthProvider;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
+import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
-import oauth.signpost.signature.SignatureMethod;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -115,11 +112,17 @@ public class Netflix{
 	
 	//@ TODO Use setters for stage.
 	private Netflix( ){
-		oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
-				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
-		oaprovider = new DefaultOAuthProvider(oaconsumer,
+		/*oaconsumer = new DefaultOAuthConsumer(CONSUMER_KEY,
+				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);*/
+		/*oaprovider = new DefaultOAuthProvider(oaconsumer,
+				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
+				AUTHORIZE_WEBSITE_URL);*/
+		oaconsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
+				CONSUMER_SECRET);
+		oaprovider =  new   CommonsHttpOAuthProvider(
 				REQUEST_TOKEN_ENDPOINT_URL, ACCESS_TOKEN_ENDPOINT_URL,
 				AUTHORIZE_WEBSITE_URL);
+		oaprovider.setOAuth10a(true);
 		
 		
 	}
@@ -130,6 +133,7 @@ public class Netflix{
 	public void setRequestTokens(String requestToken, String requestSecret){
 		
 		oaconsumer.setTokenWithSecret(requestToken,requestSecret);
+		Log.d("OAuth","requestTokenAndSecret:"+requestToken+"|"+requestSecret);
 		
 	}
 	
@@ -163,19 +167,20 @@ public class Netflix{
 			//oaconsumer.setTokenWithSecret("", "");
 			// Log.d("Netflix","token end:"+oaprovider.getRequestTokenEndpointUrl());
 			// get url for user to lologin and request token
-			String tmp = oaprovider.retrieveRequestToken(callbackUrl);
+			String tmp = oaprovider.retrieveRequestToken(oaconsumer,callbackUrl);
 			// Netflix.oaprovider.getResponseParameters().get("request_token");
-			Log.d("Netflix","Url:"+tmp);
+			Log.d("OAuth","Url:"+tmp);
 			result = Uri.parse(tmp + "&application_name=" + APPLICATION_NAME
 					+ "&oauth_callback=" + URLEncoder.encode(callbackUrl)
 					+ "&oauth_consumer_key="+CONSUMER_KEY 
 					);
+			result= Uri.parse(oaconsumer.sign(tmp));
+			Log.d("OAuth","signed:"+oaconsumer.sign(tmp));
 			
 			
-			
-			Log.i("oauth", "request token:"
+			Log.i("OAuth", "request token:"
 					+ result.getQueryParameter("oauth_token"));
-			Log.i("oauth", "secret:"
+			Log.i("OAuth", "secret:"
 					+ result.getQueryParameter("oauth_token_secret"));
 		} catch (OAuthMessageSignerException e) {
 			
@@ -194,16 +199,20 @@ public class Netflix{
 		return result;
 	}
 
-	public boolean negotiateAccessToken(String requestToken) {
+	/**
+	 * Retrieves accesstoken and secret and stores with user object. Current oaconsumer will be set aswell. 
+	 * pass in the VerificationCOde returned wehn a user aiuthicatesd (oauthverifier)
+	 * @param verificationCode
+	 * @return
+	 */
+	public boolean negotiateAccessToken(String verificationCode) {
 		Boolean result = false;
 		// Log.i("oauth", "request token:" + requestToken)
 
 		try {
 
-			// call url to get access token and user id
-			// oaprovider.retrieveAccessToken();
-			// Netflix.oaconsumer.setTokenWithSecret(arg0, arg1)
-			oaprovider.retrieveAccessToken(requestToken);
+			// call url to get access token and user id			
+			oaprovider.retrieveAccessToken(oaconsumer, verificationCode);
 			result = true;
 
 			// dumpMap(oaprovider.getResponseParameters());
@@ -211,7 +220,7 @@ public class Netflix{
 			// Log.d("oauth", "Token secret: " + oaconsumer.getTokenSecret())
 			Log.d("oauth", "User ID:"
 					+ oaprovider.getResponseParameters().get("user_id"));
-			user = new User(oaprovider.getResponseParameters().get("user_id"),oaconsumer.getToken(),oaconsumer.getTokenSecret());
+			user = new User(oaprovider.getResponseParameters().getFirst("user_id"),oaconsumer.getToken(),oaconsumer.getTokenSecret());
 			
 		} catch (OAuthMessageSignerException e) {
 			
@@ -322,14 +331,13 @@ public class Netflix{
 			InputStream xml = null;
 			try {
 	
-				QueueUrl = new URL("http://api.netflix.com/users/" + user.getUserId());
 				oaconsumer.setTokenWithSecret(user.getAccessToken(), user.getAccessTokenSecret());
-				//setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
+				QueueUrl = new URL(sign("http://api.netflix.com/users/" + user.getUserId()));
+				
 				
 				HttpURLConnection request = (HttpURLConnection) QueueUrl
 						.openConnection();
-	
-				oaconsumer.sign(request);
+				
 
 				Log.d("get",""+request.getURL());
 				Log.d("Netflix","getUserDetails() | signed");
@@ -375,15 +383,7 @@ public class Netflix{
 				
 				reportError(e);
 				// Log.i("Netflix", "IO Error connecting to Netflix queue")
-			} catch (OAuthMessageSignerException e) {
-				
-				reportError(e);
-				// Log.i("Netflix", "Unable to Sign request - token invalid")
-			} catch (OAuthExpectationFailedException e) {
-				
-				reportError(e);
-				// Log.i("Netflix", "Expectation failed")
-			}
+			} 
 
 			Log.d("Netflix","getUserDetails()>>>");
 			return result;
@@ -647,7 +647,7 @@ public class Netflix{
 
 	public boolean isConnected(){
 		boolean result =false;
-		try{
+		/*try{
 			URL url = new URL("http://api.netflix.com/catalog");
 			HttpURLConnection urlc = (HttpURLConnection) url.openConnection();			
 			urlc.connect();
@@ -656,11 +656,13 @@ public class Netflix{
 				result = true;
 			}
 			urlc.disconnect();
+			
 		} catch (MalformedURLException e1) {
 		        e1.printStackTrace();
 		} catch (IOException e) {
 		        reportError(e);
-		}
+		}*/
+		result=true;
 		return result;
 	}
 
@@ -669,30 +671,33 @@ public class Netflix{
 	 * 
 	 * @param request unsignedRequest to be mutated
 	 */
-	public void sign(HttpURLConnection request) {
+	public String sign(String urlString) {
 		// TODO Auto-generated method stub
-		Log.d("Netflix","sign() >>>");
+		Log.d("Netflix","sign(String) >>>");
 		/*OAuthConsumer oaconsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
 				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);*/
 		oaconsumer.setTokenWithSecret(user.getAccessToken(), user.getAccessTokenSecret());
-	
+		String result="Exception";
 		//setSignPost(user.getAccessToken(), user.getAccessTokenSecret());
 		try {
-			oaconsumer.sign(request);
+			result=oaconsumer.sign(urlString);
 		} catch (OAuthMessageSignerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (OAuthCommunicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		Log.d("Netflix","sign() <<<");
-		
+		return result;
 	}
 	
 	public void sign(HttpPost httpPost){
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
-				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
+				CONSUMER_SECRET);
 		postConsumer.setTokenWithSecret(user.getAccessToken(), user.getAccessTokenSecret());
 	
 		try {
@@ -703,12 +708,15 @@ public class Netflix{
 		} catch (OAuthExpectationFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (OAuthCommunicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	public void sign(HttpPut httpput) {
 		// TODO Auto-generated method stub
 		OAuthConsumer postConsumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
-				CONSUMER_SECRET, SignatureMethod.HMAC_SHA1);
+				CONSUMER_SECRET);
 		postConsumer.setTokenWithSecret(user.getAccessToken(), user.getAccessTokenSecret());
 	
 		try {
@@ -717,6 +725,9 @@ public class Netflix{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (OAuthExpectationFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (OAuthCommunicationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
