@@ -284,13 +284,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 				}
 				break;
 			case SESSION_ACCESS:
-				//they have request token (2 out of 3) so lets finish them up
-				String rt = uri.getQueryParameter("oauth_token");
-					
+				//they have request token (2 out of 3) so lets finish them up		
+				retrieveAccessToken(uri);	
 				//purge intent so we don't repeat this :)
 				getIntent().setData(null);
 				//retrive handlers will set sessions status and call queue, or report error
-				retrieveAccessToken(rt);
+				
 				
 				break;
 				
@@ -1022,16 +1021,24 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 		}
 	}
 
-	protected void retrieveAccessToken(final String requestToken) {
+	protected void retrieveAccessToken(final Uri uri) {
 		// show custom dialog to let them know
+		Log.d("QueueMan","retrieveAccessToken>>>");
+		Log.d("QueueMan","uri:"+uri.toString());
 		showCustomDialog("Welcome Back",
 				"Grabbing Access Key  \n (A one time operation)");
 		FlurryAgent.onEvent("retrieveAccessToken");
 		if(netflix == null){
 		 loadRequestToken();
 		}
+		
 		Log.d("QueueMan", "Netflix Exists Still:" + netflix.toString());
-		new AccessTokenTask().execute(requestToken);
+		String verificationCode=uri.getQueryParameter("oauth_verifier");
+		
+		new AccessTokenTask().execute(verificationCode);
+		Log.d("QueueMan","verificationCode:"+verificationCode);
+		Log.d("QueueMan","retrieveAccessToken<<<");
+		
 	}
 	/***
 	 * AddTitle class spawns a BG thread to handle the addition of titles to instant of disc queues
@@ -1043,12 +1050,12 @@ public class QueueMan extends TabActivity implements OnItemClickListener,
 	    }
 		 
 		 protected Integer doInBackground(String... arg0) {
-			 String rt=arg0[0];
+			 String verificationCode=arg0[0];
 	    	 int result=36;
 				
 			if (isOnline()) {
 				boolean accessProvided = netflix
-						.negotiateAccessToken(rt);
+						.negotiateAccessToken(verificationCode);
 
 				if (accessProvided) {
 					//populate user for the first time!
